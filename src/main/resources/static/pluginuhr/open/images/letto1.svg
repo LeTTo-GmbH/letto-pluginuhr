@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="10mm"
+   height="10mm"
+   viewBox="0 0 10 10"
+   version="1.1"
+   id="svg924"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="Logo-Icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview926"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     width="10mm"
+     inkscape:zoom="6.2217172"
+     inkscape:cx="43.235652"
+     inkscape:cy="35.922559"
+     inkscape:window-width="1347"
+     inkscape:window-height="1081"
+     inkscape:window-x="660"
+     inkscape:window-y="241"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs921">
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4326"
+       id="radialGradient4324-4-2-1-7-3"
+       cx="238.42239"
+       cy="408.90823"
+       fx="238.42239"
+       fy="408.90823"
+       r="55.130089"
+       gradientTransform="matrix(0.02109521,0,0,0.04842667,-3.0331016,-14.668714)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4326">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop4328" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop4330" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4326"
+       id="radialGradient4316-0-3-6-13-4"
+       cx="276.16656"
+       cy="401.2059"
+       fx="276.16656"
+       fy="401.2059"
+       r="48.52142"
+       gradientTransform="matrix(0.02051914,0,0,0.02434619,-2.9519121,-4.9617246)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.0210951;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4428-2-5-5-2"
+       width="9.6744566"
+       height="6.2010279"
+       x="0.12649204"
+       y="2.0788631"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4143-1-6-4-9-5"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:url(#radialGradient4324-4-2-1-7-3);stroke-width:0.0212743px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 0.83348688,7.8031244 V 2.4635889 H 1.3261045 V 7.1730152 H 3.159449 v 0.6301092 z"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4145-6-2-1-1-8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:url(#radialGradient4316-0-3-6-13-4);stroke-width:0.0171228px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3.3198883,5.2083977 0.3783134,0.048954 Q 3.6087089,5.6042954 3.3666693,5.7958598 3.1246292,5.9874244 2.7483472,5.9874244 q -0.4739096,0 -0.7525606,-0.3043746 -0.2766172,-0.3065025 -0.2766172,-0.8577816 0,-0.570435 0.2806844,-0.8854517 0.280686,-0.3150168 0.7281534,-0.3150168 0.4332324,0 0.7078162,0.3086311 0.2745817,0.3086311 0.2745817,0.868424 0,0.034057 -0.00201,0.1021672 H 2.0975108 q 0.020339,0.3724864 0.2013623,0.5704361 0.1810202,0.1979491 0.4515341,0.1979491 0.2013625,0 0.3437379,-0.1106815 Q 3.2365229,5.4510442 3.3199148,5.2083966 Z M 2.1178243,4.5890068 H 3.3239557 Q 3.2995487,4.303789 3.185647,4.1611799 3.0107275,3.9398174 2.7320765,3.9398174 q -0.2522097,0 -0.4250957,0.1766645 -0.1708523,0.1766646 -0.1891565,0.4725249 z"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.19754px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.0121602px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="7.5398288"
+       y="5.6984863"
+       id="text4424-2-3-5-8"
+       transform="scale(0.95922856,1.0425044)"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png"><tspan
+         style="stroke-width:0.0121602px"
+         sodipodi:role="line"
+         id="tspan4426-2-4-2-5"
+         x="7.5398288"
+         y="5.6984863">o</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:0.0250442"
+       id="rect3988-5-7-1"
+       width="0.51688188"
+       height="4.0118556"
+       x="4.6880503"
+       y="2.636652"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:0.0250442"
+       id="rect3988-9-5-5-4"
+       width="0.51688188"
+       height="4.0118556"
+       x="5.9228268"
+       y="2.636652"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:0.0301646"
+       id="rect3988-4-7-2-8"
+       width="0.51688188"
+       height="5.8200159"
+       x="-2.9698348"
+       y="2.682121"
+       transform="rotate(-90)"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+    <path
+       style="fill:none;stroke:#e80000;stroke-width:0.310495;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 2.5126066,6.6933098 c 0,0 1.6357642,0.4506021 3.0795222,0.4802933 1.4437596,0.029688 3.1360293,-0.4802933 3.1360293,-0.4802933"
+       id="path4022-2-8-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="czc"
+       inkscape:export-xdpi="499.80063"
+       inkscape:export-ydpi="499.80063"
+       inkscape:export-filename="E:\Dropbox\LETTO_Datenaustausch\Bilder\LogoTransparentGross.png" />
+  </g>
+</svg>

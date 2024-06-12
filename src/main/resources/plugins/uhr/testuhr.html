@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="uhrScript.js"> </script>
+    <script src="plugintools.js"> </script>
+</head>
+<body>
+
+<input class='Plugin2_1_inp' value="11:59">
+<div id='Plugin2_1_div' style="width: 30%"></div>
+Unten steht noch Text
+<script type='text/javascript'>
+    let dto = {
+        imageUrl : 'http://localhost/images/plugins/f1/f181a03a3375ea9cfd36d318ebec68.png',
+        pig      : false,
+        result   : true,
+        tagName  : 'Plugin2_1',
+        configTagName : "",
+        width    : 500,
+        height   : 500
+    };
+    initPluginUhr( JSON.stringify(dto), true );
+    initPluginUhr( JSON.stringify(dto), true );
+</script>
+
+
+</body>
+</html>

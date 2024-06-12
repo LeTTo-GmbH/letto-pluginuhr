@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Plugin-Tester</title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="/pluginuhr/open/js/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/pluginuhr/open/css/w3.css"/>
+    <link rel="stylesheet" href="/pluginuhr/open/fonts/font_raleway.css"/>
+    <link rel="stylesheet" href="/pluginuhr/open/fontawesome/4.7.0/css/font-awesome.min.css"/>
+    <style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+        body{background-color: #ddffff}
+        .pluginConfigForm {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100vh; /* 75 Prozent der vollen Höhe des Viewports */
+            box-sizing: border-box;
+        }
+        .configpane {
+            flex: 1;
+            padding: 10px;
+            overflow: auto;
+            border: 1px solid #ccc;
+        }
+        .configresizer {
+            width: 5px;
+            cursor: ew-resize;
+            background-color: #ddd;
+            height: 100%;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+
+    <span th:utext="${jscode}"/>
+    <script>
+        function activateResizer() {
+            // Resizer
+            const resizers = document.querySelectorAll('.configresizer');
+            let currentResizer;
+
+            for (let resizer of resizers) {
+                resizer.addEventListener('mousedown', function (e) {
+                    currentResizer = e.target;
+                    document.addEventListener('mousemove', resize);
+                    document.addEventListener('mouseup', stopResize);
+                });
+            }
+
+            // Funktion für die zwei Resizer zwischen den drei Spalten des Dialogs
+            function resize(e) {
+                const leftPane = currentResizer.previousElementSibling;
+                const rightPane = currentResizer.nextElementSibling;
+
+                if (currentResizer.id === 'resizerLeft') {
+                    const newWidth = e.clientX - leftPane.getBoundingClientRect().left;
+                    leftPane.style.flex = `0 0 ${newWidth}px`;
+                } else if (currentResizer.id === 'resizerRight') {
+                    const newWidth = rightPane.getBoundingClientRect().right - e.clientX;
+                    ;
+                    rightPane.style.flex = `0 0 ${newWidth}px`;
+                }
+            }
+
+            // Beendet den Resize-Vorgang
+            function stopResize() {
+                document.removeEventListener('mousemove', resize);
+                document.removeEventListener('mouseup', stopResize);
+            }
+        }
+        function loadEventHandler(){
+            $( "#ifc_config" ).on( "change", function() { reloadForm(); });
+            $( "#ifc_params" ).on( "change", function() { reloadForm(); });
+        }
+        function reloadForm() {
+            $("#update").click();
+        }
+    </script>
+</head>
+<body>
+    <div th:if="${msg!=null && msg.length()>0 && msg.toLowerCase().startsWith('ok')}" style="color:green;" th:text="${msg}"/>
+    <div th:if="${msg!=null && msg.length()>0 && !msg.toLowerCase().startsWith('ok')}" style="color:red;" th:text="${msg}"/>
+    <form th:action="@{${endpoints.getIframeConfig()}}" method="POST" id="form1">
+        <div class="pluginConfigForm" >
+            <div class="configpane" id="leftPane">
+                <!-- Konfigurationsbereich -->
+                <h1><img th:src="${endpoints.getLogoEP10()}"/>
+                    Plugin-Uhr</h1>
+                typ:    <input type="text" id="ifc_typ"    name="typ" th:value="${form.typ}" readonly /><br>
+                ID: <input type="text" id="ifc_configurationID" name="configurationID" th:value="${form.configurationID}" readonly /><br>
+                config: <input type="text" id="ifc_config" name="config" th:value="${form.config}" /><br>
+                params: <input type="text" id="ifc_params" name="params" th:value="${form.params}" /><br>
+                vars: <input type="text" id="ifc_vars" name="vars" th:value="${pluginQuestionDto.getVars()}" size="40" readonly /><br>
+
+                <button name="userAction" id="update" value="update" th:text="'update'" th:alt-title="'aktualisiert das Formular'" />
+
+            </div>
+            <div class="configresizer" id="resizerLeft"></div>
+            <div class="configpane" id="centerPane">
+                <!-- Vorschaubereich -->
+                <h3>preview</h3>
+                <textarea th:class="${answerFieldClass}" id="vorschau_div_0" name="configVorschau" rows="2" cols="60" readonly ></textarea>
+                <div th:id="${divName}" style="width:100%"></div>
+            </div>
+            <div class="configresizer" id="resizerRight"></div>
+            <div class="configpane" id="rightPane">
+                <!-- Help -->
+                <a href="https://wiki.letto.at/wiki/index.php/Plugins" target="_blank">Wiki-Plugins</a>
+                <div th:utext="${help}"></div>
+            </div>
+            <script>
+                activateResizer();
+                loadEventHandler();
+            </script>
+            <script th:utext="${loadpreviewjs}"/>
+        </div>`
+    </form>
+</body>
+</html>

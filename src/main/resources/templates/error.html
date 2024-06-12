@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Plugin-Tester</title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="/pluginuhr/open/js/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/pluginuhr/open/css/w3.css"/>
+    <link rel="stylesheet" href="/pluginuhr/open/fonts/font_raleway.css"/>
+    <link rel="stylesheet" href="/pluginuhr/open/fontawesome/4.7.0/css/font-awesome.min.css"/>
+    <style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+    </style>
+</head>
+<body>
+    <h1><img th:src="${endpoints.getLogoEP10()}"/>
+        Plugin-Uhr Configuration - ERROR</h1>
+    <div th:if="${msg!=null && msg.length()>0 && msg.toLowerCase().startsWith('ok')}" style="color:green;" th:text="${msg}"/>
+    <div th:if="${msg!=null && msg.length()>0 && !msg.toLowerCase().startsWith('ok')}" style="color:red;" th:text="${msg}"/>
+    <form th:action="@{${endpoints.getIframeConfig()}}" method="POST" id="form1">
+
+    </form>
+</body>
+</html>
