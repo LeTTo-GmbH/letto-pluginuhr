@@ -1,0 +1,14 @@
+/tmp/
+#Intellij
+**/.idea
+**/*.iml
+**/*.iws
+**/*.log
+
+#Maven
+**/target
+**/log
+
+# compilierte Programme
+**/*.war
+**/*.jar
