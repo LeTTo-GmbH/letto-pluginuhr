@@ -183,7 +183,7 @@ function configPluginUhr(dtoString) {
                     url: restUri,
                     data: JSON.stringify({typ: plugin.typ,
                            name: plugin.name,
-                           confg: config.value,
+                           config: config.value,
                            params:'',
                            nr: 0,
                            configurationID: dto.configurationID
