@@ -13,7 +13,7 @@ for i in $@ ; do
 done
 
 # pluginuhr
-cd $pwd/plugin
+cd $pwd
 image=lettohub/letto-service-pluginuhr
 docker rmi $image
 if [ $nocache == "on" ] ; then

@@ -30,7 +30,7 @@ deployok=true
 binary=pluginuhr-1.2.jar
 # pluginservice
 if [ -e $pwd/plugin/target/$binary ] ; then
-  cp $pwd/plugin/target/$binary /deploy/pluginuhr.jar
+  cp $pwd/target/$binary /deploy/pluginuhr.jar
 else
   echo error ! binary $binary not found!
   deployok=false
