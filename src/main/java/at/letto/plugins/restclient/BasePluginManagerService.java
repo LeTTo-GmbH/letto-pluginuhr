@@ -12,7 +12,6 @@ import at.letto.tools.JSON;
 import at.letto.tools.JavascriptLibrary;
 import at.letto.tools.dto.ImageBase64Dto;
 import lombok.Getter;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

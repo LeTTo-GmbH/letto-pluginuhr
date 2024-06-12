@@ -1,7 +1,9 @@
 package at.letto.setup.restclient;
 
+import at.letto.security.LettoToken;
 import at.letto.service.microservice.AdminInfoDto;
 import at.letto.service.rest.RestClient;
+import at.letto.setup.dto.AuthenticationRequestDto;
 import at.letto.setup.dto.CmdResultDto;
 import at.letto.setup.dto.CommandDto;
 import at.letto.setup.endpoints.SetupEndpoint;

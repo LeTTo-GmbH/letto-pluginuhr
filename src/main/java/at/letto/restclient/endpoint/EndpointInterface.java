@@ -7,8 +7,9 @@ public interface EndpointInterface {
     String error = "/error";
     String pingpost = open + "/pingp";
     String pingget  = open + "/pingg";
-    String login = open+"/login";
-    String api   = "/api";
+    String login    = open+"/login";
+    String logout   = open+"/logout";
+    String api      = "/api";
     String apiopen    = api+"/open";
     String apistudent = api+"/student";
     String apiteacher = api+"/teacher";
@@ -43,6 +44,9 @@ public interface EndpointInterface {
     }
     default String LOGIN() {
         return servicepath()   + login;
+    }
+    default String LOGOUT() {
+        return servicepath()  + logout;
     }
 
     default String API() {

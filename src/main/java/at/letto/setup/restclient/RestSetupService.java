@@ -172,4 +172,17 @@ public class RestSetupService extends RestClient implements SetupService {
         return result;
     }
 
+    /**
+     * Überprüft Benutzername und Passwort direkt am Setup-Service für Benutzer
+     * die direkt über das Setup-Service verwaltet werden (admin)
+     * @param username Benutzername
+     * @param password Passwort
+     * @return         Token-String oder Leerstring
+     */
+    public String checkPassword(String username, String password) {
+        AuthenticationRequestDto request = new AuthenticationRequestDto(username, password);
+        String response = post(SetupEndpoint.checkPassword,request,String.class);
+        return response==null?"":response.trim();
+    }
+
 }

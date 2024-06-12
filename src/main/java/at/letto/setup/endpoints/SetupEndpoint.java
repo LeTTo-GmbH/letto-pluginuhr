@@ -236,7 +236,7 @@ public class SetupEndpoint {
     public static final String getSchuleService    = DOCKER_USER+"/getschuleservice";
     public static final String registerPlugin      = DOCKER_USER+"/registerplugin";
     public static final String registerService     = DOCKER_USER+"/registerservice";
-
+    public static final String checkPassword       = DOCKER_USER+"/checkpassword";
 
     /* ----------------------------------------------------------------------------------------------------
                        API-Endpoints am lokalen HOST mit User-Authentifikation
@@ -254,6 +254,10 @@ public class SetupEndpoint {
     public static final String LOCAL_lettoDockerUpdate  = LOCAL_USER+"/lettodockerupdate";
     public static final String checkServiceStatusLocal  = LOCAL_ADMIN+"/checkservicestatus";
     public static final String postSchuleLocal          = LOCAL_USER+"/postschule";
+
+    /* ----------------------------------------------------------------------------------------------------
+                       Docker interne Endpoints ohne Authentifizierung
+      ---------------------------------------------------------------------------------------------------- */
 
 
 }
