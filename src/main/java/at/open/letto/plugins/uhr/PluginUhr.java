@@ -26,6 +26,13 @@ import java.util.regex.Pattern;
 @Getter
 public class PluginUhr extends BasePlugin {
 
+	/** Hintergrundfarbe der Uhr */
+	public Color bgcolor      = Color.white;
+	/** Farbe der Zeiger */
+	public String handcolor   = "blue";
+	/** Meldung welche Fehler in den Params aufgetreten sind */
+	public String configMessage = "";
+
 	// ---------------------------------------------------------------------------------------------------------------------
 	//        Constructor
 	// ---------------------------------------------------------------------------------------------------------------------
@@ -79,7 +86,31 @@ public class PluginUhr extends BasePlugin {
 					case "mode=string" -> configurationMode = PluginConfigurationInfoDto.CONFIGMODE_STRING;
 					case "mode=jsf" -> configurationMode = PluginConfigurationInfoDto.CONFIGMODE_JSF;
 					case "mode=js" -> configurationMode = PluginConfigurationInfoDto.CONFIGMODE_JAVASCRIPT;
+					default->{
+						if (p.trim().length()>0) parseParam(p.trim());
+					}
 				}
+			}
+		}
+	}
+
+	private void configMessage(String msg) {
+		if (configMessage.length()>0) configMessage += ", ";
+		configMessage += msg;
+	}
+
+	/** parst einen beliebigen Parameter welcher in einer Semikolon-getrennten Liste war */
+	private void parseParam(String p) {
+		Matcher m;
+		if ((m=Pattern.compile("^bgcolor=(.+)$").matcher(p)).find()) {
+			String color = m.group(1).trim();
+			switch (color) {
+				case "red"   -> bgcolor = Color.red;
+				case "green" -> bgcolor = Color.green;
+				case "blue"  -> bgcolor = Color.blue;
+				case "gray"  -> bgcolor = Color.gray;
+				case "yellow"-> bgcolor = Color.yellow;
+				default -> configMessage = "bgcolor "+color+" not allowed";
 			}
 		}
 	}
@@ -92,6 +123,9 @@ public class PluginUhr extends BasePlugin {
 		int xMiddle = width/2;
 		int yMiddle = height/2;
 		int radius  = (int)(Math.min(width,height)*0.48);
+
+		g.setColor(bgcolor);
+		g.fillOval(xMiddle-radius,yMiddle-radius,2*radius,2*radius);
 		g.setColor(Color.blue);
 		Stroke stroke = g.getStroke();
 		for (int i=1;i<=12;i++) {
