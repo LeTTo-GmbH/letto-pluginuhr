@@ -79,7 +79,7 @@ public abstract class BasePlugin implements PluginService {
     protected String initPluginJS="";
 
     /** gibt an ob das Plugin eine Java-Script Schnittstelle bei der Beispieldarstellung hat */
-    protected boolean javaScript=true;
+    protected boolean javaScript=false;
 
     /** Plugin ist stateless und liefert bei gleicher Angabe immer das gleiche Verhalten */
     protected boolean cacheable = true;
