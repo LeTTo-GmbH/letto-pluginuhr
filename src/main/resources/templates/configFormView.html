@@ -92,8 +92,8 @@
         // schickt einen ajax-Request zum Speichern von config und params an den Server und baut die Preview neu auf
         function reloadPreview() {
             // Anfrage am Rest-Endpoint restUri mit Token restToken (nocht nicht realisiert!)
-            let config = $("#ifc_config").value;
-            let params = $("#ifc_params").value
+            let config = $("#ifc_config")[0].value;
+            let params = $("#ifc_params")[0].value
             try {
                 if (restToken===null || restToken==="") {
                     $.ajax({
