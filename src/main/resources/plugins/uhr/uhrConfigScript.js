@@ -167,6 +167,7 @@ function configPluginUhr(dtoString) {
     function loadDataConfigUhr() {
         const data   = $('#data1')[0].value;
         config.value = data;
+        vorschau();
     }
 
     /* -----------------------------------------------------------------------------------------------
