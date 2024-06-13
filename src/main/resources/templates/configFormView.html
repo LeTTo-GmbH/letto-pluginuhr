@@ -76,8 +76,8 @@
             }
         }
         function loadEventHandler(){
-            $( "#ifc_config" ).on( "change", function() { reloadForm(); });
-            $( "#ifc_params" ).on( "change", function() { reloadForm(); });
+            $( "#ifc_config" ).on( "input", function() { reloadForm(); });
+            $( "#ifc_params" ).on( "input", function() { reloadForm(); });
         }
         function reloadForm() {
             $("#update").click();
