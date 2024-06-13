@@ -3,6 +3,7 @@ package at.open.letto.plugin.controller;
 import at.letto.math.dto.CalcErgebnisDto;
 import at.letto.plugins.dto.*;
 import at.letto.plugins.endpoints.PluginConnectionEndpoint;
+import at.letto.plugins.interfaces.PluginService;
 import at.letto.plugins.restclient.BasePluginConnectionService;
 import at.letto.tools.dto.ImageBase64Dto;
 import at.open.letto.plugin.config.Endpoint;
@@ -389,6 +390,8 @@ public class ApiController {
         if (pcs!=null) {
             PluginConfigurationConnection conn = pcs.getConfigurationConnection(typ, configurationID);
             if (conn != null) {
+                PluginService pluginService = pcs.createPluginService(r.getTyp(),conn.getName(),r.getConfig());
+                conn.changeConfig(r.getConfig(), pluginService);
                 PluginDto result;
                 //result = connectionService.pm.loadPluginDto(r.getTyp(), r.getName(), r.getConfig(), r.getParams(), conn.pluginQuestionDto, r.getNr());
                 result = pcs.loadPluginDto(r.getTyp(),conn.getName(),r.getConfig(),r.getParams(),conn.pluginQuestionDto,r.getNr());
