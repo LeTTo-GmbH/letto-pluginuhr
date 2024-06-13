@@ -76,11 +76,52 @@
             }
         }
         function loadEventHandler(){
-            $( "#ifc_config" ).on( "input", function() { reloadForm(); });
-            $( "#ifc_params" ).on( "input", function() { reloadForm(); });
+            $( "#ifc_config" ).on( "input", function() { reloadPreview(); });
+            $( "#ifc_params" ).on( "input", function() { reloadPreview(); });
+
+            $( "#ifc_config" ).on( "change", function() { reloadForm(); });
+            $( "#ifc_params" ).on( "change", function() { reloadForm(); });
         }
+        // schickt das Formular zum Server und baut dann die Antwort neu auf
         function reloadForm() {
             $("#update").click();
+        }
+        /* -----------------------------------------------------------------------------------------------
+         *   Holt vom Server über eine ajax-Request ein neues PluginDto
+         * ----------------------------------------------------------------------------------------------- */
+        // schickt einen ajax-Request zum Speichern von config und params an den Server und baut die Preview neu auf
+        function reloadPreview() {
+            // Anfrage am Rest-Endpoint restUri mit Token restToken (nocht nicht realisiert!)
+            try {
+                if (restToken===null || restToken==="") {
+                    $.ajax({
+                        contentType: 'application/json',
+                        url: restUri,
+                        data: JSON.stringify({typ: plugintyp,
+                            name: pluginname,
+                            config: $("#ifc_config")[0].value,
+                            params: $("#ifc_params")[0].value,
+                            nr: 0,
+                            configurationID: dto.configurationID
+                        }),
+                        type: 'POST',
+                        dataType: 'json',
+                        error: function(xhr, status, error) {
+                            // Code, der bei einem Fehler ausgeführt wird
+                            console.error(error);
+                        }
+                    }).then(function (data) {
+                        try {
+                            if (data.tagName != null) {
+                                pluginDto = data;
+                                initPluginUhr(JSON.stringify(pluginDto),true);
+                            }
+                        } catch (error) {
+                        }
+                    });
+                } else {
+                }
+            } catch (error) {}
         }
     </script>
 </head>

@@ -87,7 +87,6 @@ public class IFrameConfigurationController {
             conn.changeConfig(config,pcs.createPluginService(form.getTyp(),conn.getName(),config));
         }
         PluginDto pluginDto = pcs.loadPluginDto(form.getTyp(),conn.getName(),form.getConfig(),form.getParams(),conn.pluginQuestionDto,0);
-
         // setzt die Konfigurations-ID
         model.addAttribute("configurationID", form.getConfigurationID());
         // Initialisiere das Formular-Objekt und setze es im Model
@@ -106,7 +105,12 @@ public class IFrameConfigurationController {
         String tab = "\n        ";
         model.addAttribute("loadpreviewjs",tab+"let pluginDto="+JSON.objToJson(pluginDto)+";"+tab+
             "function initPlugin(pluginDto){"+tab+"   "+conn.pluginService.getPluginGeneralInfo().getInitPluginJS()+"(JSON.stringify(pluginDto),true);"+tab+"};"+tab+
-            "initPlugin(pluginDto);"    );
+            "initPlugin(pluginDto);" +tab+
+            "const restUri   = '"+conn.getPluginConfigDto().getPluginDtoUri()+"';" +tab+
+            "const restToken = '"+conn.getPluginConfigDto().getPluginDtoToken()+"';"+tab+
+            "const plugintyp = '"+form.getTyp()+"';"+tab+
+            "const pluginname= '"+conn.getName()+"';"
+        );
         // setze die Plugin-Hilfe
         model.addAttribute("help",conn.pluginConfigDto.getParams().get("help"));
 
