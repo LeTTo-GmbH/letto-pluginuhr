@@ -109,7 +109,8 @@ public class IFrameConfigurationController {
             "const restUri   = '"+conn.getPluginConfigDto().getPluginDtoUri()+"';" +tab+
             "const restToken = '"+conn.getPluginConfigDto().getPluginDtoToken()+"';"+tab+
             "const plugintyp = '"+form.getTyp()+"';"+tab+
-            "const pluginname= '"+conn.getName()+"';"
+            "const pluginname= '"+conn.getName()+"';"+tab+
+            "const configurationID= '"+conn.getConfigurationID()+"';"
         );
         // setze die Plugin-Hilfe
         model.addAttribute("help",conn.pluginConfigDto.getParams().get("help"));
