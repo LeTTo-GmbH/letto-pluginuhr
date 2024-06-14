@@ -386,14 +386,18 @@ public class ApiController {
     public ResponseEntity<PluginDto> reloadPluginDto(@RequestBody LoadPluginRequestDto r) {
         String configurationID = r.getConfigurationID();
         String typ = r.getTyp();
+        // Suche zuerst das richtige PluginConnectionService zu dem angegebenen Plugin
         BasePluginConnectionService   pcs  = connectionService.getPluginConnectionService(typ);
         if (pcs!=null) {
+            // Suche nun eine bestehende Verbindung mit der confingurationID
             PluginConfigurationConnection conn = pcs.getConfigurationConnection(typ, configurationID);
             if (conn != null) {
+                // Lade das Plugin mit der Konfiguration aus den Request-Parametern
                 PluginService pluginService = pcs.createPluginService(r.getTyp(),conn.getName(),r.getConfig());
+                // aktualisiere die Verbindung, damit dann LeTTo die Konfiguration wieder korrekt abrufen kann
                 conn.changeConfig(r.getConfig(), pluginService);
                 PluginDto result;
-                //result = connectionService.pm.loadPluginDto(r.getTyp(), r.getName(), r.getConfig(), r.getParams(), conn.pluginQuestionDto, r.getNr());
+                // erzeuge das PluginDto welches dann zum Rendern des Plugins verwendet wird
                 result = pcs.loadPluginDto(r.getTyp(),conn.getName(),r.getConfig(),r.getParams(),conn.pluginQuestionDto,r.getNr());
                 return ResponseEntity.ok(result);
             }

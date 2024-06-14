@@ -1,7 +1,7 @@
 $=jQuery;
 
 /* -----------------------------------------------------------------------------------------------
- *   Lädt das Plugin in ein vordefiniertes div-Element plugin.divname
+ *   Lädt das Plugin in ein vordefiniertes div-Element "#" + plugin.name+"_div"
  *   Das Ergebnis einer Eingabe muss in ein verstecktes Textfeld der Klasse "." + plugin.name + "_inp" übergeben werden
  *   LeTTo schickt als Parameter das PluginDto als json-String mit
  *   Ist aktiv auf false, dann darf keine Eingabe vorgenommen werden können (Lösungsansicht eines Tests in LeTTo)
@@ -11,11 +11,18 @@ function initPluginUhr(dtoString, active) {
     let dto = JSON.parse(dtoString);
     dto.data = JSON.parse(dto.jsonData);
     let plugin = new Object();
+
+    // -------------------------- Verbindungskonstante zu LeTTo ---------------------------------------
+    // Div Element in das das Plugin gerendert werden muss - IST VON LETTO VORGEGEBEN und MUSS SO GESETZT SEIN
+    const plugin_div = "#" + dto.tagName+"_div"
+    // verstecktes Input-Element für die Schülereingabe im Plugins - IST VON LETTO VORGEGEBEN und MUSS SO GESETZT SEIN
+    const plugin_inp = "." + dto.tagName + "_inp"
+    // -----------------------------------------------------------------------------------------------
+
     plugin.name = dto.tagName;
     plugin.jimagepath = dto.imageUrl;
     plugin.width = dto.width;
     plugin.height = dto.height;
-    plugin.divName = "#" + plugin.name+"_div";
     plugin.canvas = "canvasContainer"+plugin.name;
     plugin.canvasLine = "canvasLine"+plugin.name;
     plugin.active = active;
@@ -26,6 +33,21 @@ function initPluginUhr(dtoString, active) {
     document.getElementById(plugin.canvasLine).setAttribute("height",plugin.height+"px");
     initUhr();
 
+    // Platziert das Plugin in ein vordefiniertes div-Element $(clsName) - hier als canvas Element
+    function drawCanvas(plugin) {
+        let clsName = "." + plugin.canvas;
+        if ($(clsName).length>0)
+            $(clsName).remove();
+
+        if ($(clsName).length==0)
+            $(plugin_div).append( `       
+            <div class="${plugin.canvas}" >
+                <canvas class="${plugin.canvasLine}" id="${plugin.canvasLine}"></canvas>
+            </div>`
+            );
+    }
+
+    // Zeichnet das Plugin in das zuvor erstellte Canvas-Element
     function initUhr() {
         let imagepath = dto.imageUrl;
         let width  = plugin.width;
@@ -39,8 +61,9 @@ function initPluginUhr(dtoString, active) {
 
         let img = new Image();
         let c = document.getElementById(plugin.canvasLine);
-        let answerField = "." + plugin.name + "_inp";
-        let a = $(answerField)[0];
+
+        // Hier wird die Antwort der Plugineingabe als String oder json gespeichert und dann an den Scorer übergeben
+        let a = $(plugin_inp)[0];
 
         if (c==null || a==null) return;
         let angle = parseTime(a.value);

@@ -1,10 +1,18 @@
 $=jQuery;
 
 /* -----------------------------------------------------------------------------------------------
- *   Lädt den Konfigurationsdialog in das Formular der Plugin-Konfiguration
+ *   Lädt den Konfigurationsdialog in das Formular der Plugin-Konfiguration in ein vordefiniertes div-Element "#configform_div" <br>
+ *   Das Ergebnis der Konfiguration in ein verstecktes Textfeld der Klasse ".configform_config" übergeben werden
  *   Um Konflikte zu vermeiden werden alle Funktionen als innere Funktionen dieser Funktion realisiert!
  * ----------------------------------------------------------------------------------------------- */
 function configPluginUhr(dtoString) {
+    // -------------------------- Verbindungskonstante zu LeTTo ---------------------------------------
+    // Div Element welches im Konfigurations-Formular liegt - MUSS für LETTO SO HEISSEN!!
+    const config_form_div     = "#configform_div";
+    // verstecktes Input-Element für die Eingabe - MUSS für LETTO SO HEISSEN !!
+    const config_form_config = ".configform_config";
+    // ------------------------------------------------------------------------------------------------
+
     // Dies ist das PluginConfigDto
     let dto  = JSON.parse(dtoString);
     dto.data = JSON.parse(dto.jsonData);
@@ -16,13 +24,10 @@ function configPluginUhr(dtoString) {
     plugin.height     = dto.height;
     plugin.config     = dto.config;
 
-    // Parameter für den Config-Teil
-    // Div Element welches im Konfigurations-Formular liegt
-    plugin.divForm    = "#configform_div";
-    // verstecktes Input-Element für die Eingabe
-    plugin.configfield = ".configform_config";
-    let config = $(plugin.configfield)[0];
-    // Klasse für das umgebende div des Konfigurationsdialogs
+    // Textfeld in das die Konfiguration geschrieben werden muss
+    let config = $(config_form_config)[0];
+
+    // Klasse für das umgebende div des Konfigurationsdialogs welches in das div plugin.divForm platziert wird.
     plugin.configContainer = "pluginConfigForm";
 
     // Parameter für die Vorschau des Plugins
@@ -45,7 +50,7 @@ function configPluginUhr(dtoString) {
             $(formName).remove();
 
         if ($(formName).length==0)
-            $(plugin.divForm).append( ` 
+            $(config_form_div).append( ` 
             <style>
                 .pluginConfigForm {
                     display: flex;
