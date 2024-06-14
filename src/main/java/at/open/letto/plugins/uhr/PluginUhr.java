@@ -1,6 +1,7 @@
 package at.open.letto.plugins.uhr;
 
 import at.letto.math.dto.CalcErgebnisDto;
+import at.letto.math.dto.CalcParamsDto;
 import at.letto.math.dto.ToleranzDto;
 import at.letto.math.dto.VarHashDto;
 import at.letto.math.enums.CALCERGEBNISTYPE;
@@ -118,6 +119,12 @@ public class PluginUhr extends BasePlugin {
 	// ---------------------------------------------------------------------------------------------------------------------
 	//        Methoden
 	// ---------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Methode welche das Bild für die Ausgabe erzeugt
+	 * @param g Graphikhandle
+	 * @param pluginImageResultDto Nimmt alle Fehlermeldungen auf, welche beim Rendern des Bildes entstehen
+	 */
 	@Override
 	public void paint(Graphics2D g, PluginImageResultDto pluginImageResultDto) {
 		int xMiddle = width/2;
@@ -143,6 +150,12 @@ public class PluginUhr extends BasePlugin {
 		g.setStroke(stroke);
 	}
 
+	/**
+	 * parst die Parameter des Plugins
+	 * @param params  Parameterstring
+	 * @param q       Frage
+	 * @return        Fehlermeldung oder Leerstring wenn alles ok ist
+	 */
 	@Override
 	public void parseDrawParams(String params, PluginQuestionDto q, PluginImageResultDto pluginImageResultDto) {
 		this.width=500;
@@ -162,11 +175,24 @@ public class PluginUhr extends BasePlugin {
 		}
 	}
 
+	/**
+	 * Liefert eine Liste aller Variablen welche als Dataset benötigt werden.
+	 *
+	 * @return Liste aller Variablen des Plugins
+	 */
 	@Override
 	public Vector<String> getVars() {
 		return null;
 	}
 
+	/**
+	 * Liefert eine Liste aller möglichen Varianten von Bildern
+	 * Element 0 : beschreibender Text
+	 * Element 1 : PIG Tag
+	 * Element 2 : Hilfetext
+	 *
+	 * @return Liefert eine Liste aller möglichen Varianten von Bildern
+	 */
 	@Override
 	public Vector<String[]> getImageTemplates() {
 		Vector<String[]> ret = new Vector<String[]>();
@@ -174,6 +200,40 @@ public class PluginUhr extends BasePlugin {
 		return ret;
 	}
 
+	/**
+	 * Wird verwendet wenn im Lösungsfeld die Funktion plugin("pluginname",p1,p2,p3) verwendet wird
+	 *
+	 * @param vars Alle Variablen der Frage
+	 * @param cp   Berechnungsparameter
+	 * @param p    Liste von CalcErgebnis-Werten, welche an das Plugin von der Question aus übergeben werden können
+	 * @return Ergebnis der Funktion
+	 */
+	@Override
+	public CalcErgebnisDto parserPlugin(VarHashDto vars, CalcParamsDto cp, CalcErgebnisDto ... p) {
+		return null;
+	}
+
+	/**
+	 * Bestimmt die Recheneinheit, welche bei der Methode parserPlugin als Ergebnis herauskomment wenn die Parameter die Einheiten wie in der Liste p haben
+	 *
+	 * @param p Einheiten der Parameter
+	 * @return Recheneinheit des Ergebnisses
+	 */
+	@Override
+	public String parserPluginEinheit(String... p) {
+		return null;
+	}
+
+	/**
+	 * Prüft die Eingabe eines Schülers
+	 * @param pluginDto           PluginDto welches für die Java-Script aktive Eingabe aufbereitet wurde
+	 * @param antwort             Antwort die der Schüler eingegeben hat
+	 * @param toleranz            Toleranz für die Lösung
+	 * @param varsQuestion        Referenz auf VarHash, wird dynamisch nachgeladen
+	 * @param pluginAnswerDto     Antwort des Schülers
+	 * @param grade               Maximale Punktanzahl für die richtige Antwort
+	 * @return                    Bewertung
+	 */
 	@Override
 	public PluginScoreInfoDto score(PluginDto pluginDto, String antwort, ToleranzDto toleranz, VarHashDto varsQuestion, PluginAnswerDto pluginAnswerDto, double grade){
 		String ze = pluginAnswerDto.getZe();
@@ -191,9 +251,19 @@ public class PluginUhr extends BasePlugin {
     	return info;
 	}
 
+	/**
+	 * Rendern des Plugin-Images, Aufbau eines DTOs zur späteren Javascript - Bearbeitung
+	 *
+	 * @param params       Plugin-Parameter
+	 * @param q            Question, in die das Plugin eingebettet ist
+	 * @param nr           Laufende Nummer für alle PIG-Tags und Question-Plugins
+	 * @return PluginDto
+	 */
 	@Override
 	public PluginDto loadPluginDto(String params, PluginQuestionDto q,int nr) {
-		return new PluginDto(params, this, q,  nr);
+		PluginDto pluginDto = new PluginDto(params, this, q,  nr);
+		// TODO hier könnten noch weitere Parameter und Daten gesetzt werden
+		return pluginDto;
 	}
 
 	/**
