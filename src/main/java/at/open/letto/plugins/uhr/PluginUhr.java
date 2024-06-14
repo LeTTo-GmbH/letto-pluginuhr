@@ -50,7 +50,7 @@ public class PluginUhr extends BasePlugin {
 		super(name, params);
 		version           = "1.0";         		// Version des Plugins
 		helpfiles         = new String[]{"plugins/uhr/Uhr.html"};    	// Plugin Hilfe als HTML für den Plugin - Dialog
-		javascriptLibs    = new String[]{"plugins/uhr/uhrScript.js","plugins/uhr/uhrConfigScript.js","plugins/plugintools.js"};  // Javascript Libraries für das Plugin
+		javascriptLibs    = new String[]{"plugins/uhr/uhrScript.js","plugins/uhr/uhrConfigScript.js"};  // Javascript Libraries für das Plugin
 		javaScript        = true;  				// gibt an ob das Plugin eine Java-Script Schnittstelle bei der Beispieldarstellung hat
 		initPluginJS      = "initPluginUhr";  	// Name der JAVA-Script Methode zur Plugin-Initialisierung für die interaktive Ergebniseingabe
 		configPluginJS    = "configPluginUhr";  // Name der JAVA-Script Methode zur Configuration des Plugins
