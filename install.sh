@@ -17,7 +17,7 @@ cd $pwd
 image=lettohub/letto-service-pluginuhr
 docker rmi $image
 if [ $nocache == "on" ] ; then
-  docker build --no-cache -t $image .
+  docker build -f Dockerfile-prebuilt -t $image .
   if ! [ $? -eq 0 ] ; then installok=false; fi
 else
   docker build -t $image .

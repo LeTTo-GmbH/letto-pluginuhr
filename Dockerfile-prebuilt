@@ -1,0 +1,15 @@
+FROM lettobase-jdk17-temurin
+
+EXPOSE 5080 7080 8080
+
+RUN mkdir /scripts -p
+COPY target/pluginuhr-1.2.jar pluginuhr.jar
+COPY scripts/*.sh     /scripts/
+COPY src/main/resources/revision.txt revision.txt
+RUN dos2unix /scripts/*.sh
+
+RUN chmod 755 /scripts/*.sh
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 CMD bash /scripts/healthcheck.sh
+
+ENTRYPOINT ["/scripts/start.sh"]
