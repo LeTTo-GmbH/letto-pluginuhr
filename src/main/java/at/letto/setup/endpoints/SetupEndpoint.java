@@ -102,6 +102,7 @@ public class SetupEndpoint {
     public static final String SL_fileedit         = SESSION_LOCAL + "/fileedit";
     public static final String SL_update           = SL_ADMIN + "/update";
     public static final String SL_serverToken      = SL_ADMIN + "/servertoken";
+    public static final String SL_plugins          = SL_ADMIN + "/plugins";
     public static final String SL_doc              = SL_ADMIN + "/doc";
     public static final String SL_fileview         = SESSION_LOCAL + "/fileview";
     public static final String SL_reload           = SESSION_LOCAL + "/reload";
@@ -155,6 +156,7 @@ public class SetupEndpoint {
     public static final String fileedit            = SESSION + "/fileedit";
     public static final String DOCKER_update       = SESSION_ADMIN + "/update";
     public static final String DOCKER_serverToken  = SESSION_ADMIN + "/servertoken";
+    public static final String DOCKER_plugins      = SESSION_ADMIN + "/plugins";
     public static final String DOCKER_doc          = SESSION_ADMIN + "/doc";
     public static final String fileview            = SESSION + "/fileview";
     public static final String authDownload        = SESSION + "/download";
