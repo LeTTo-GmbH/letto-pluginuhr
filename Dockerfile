@@ -1,5 +1,7 @@
 FROM eclipse-temurin:21-jdk-jammy
-MAINTAINER letto.at
+LABEL maintainer="letto.at"
+LABEL description="Demo-Plugin Uhr based on ubuntu"
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Linux Grundeinrichtung
