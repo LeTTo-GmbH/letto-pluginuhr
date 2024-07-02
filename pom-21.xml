@@ -54,7 +54,7 @@
 
 		<slf4j-simple.version>2.0.13</slf4j-simple.version>
 		<slf4jVersion>2.0.13</slf4jVersion>
-		<jaxb.version>4.0.5</jaxb.version>
+		<!--jaxb.version>4.0.5</jaxb.version-->
 	</properties>
 	<dependencies>
 		<dependency>

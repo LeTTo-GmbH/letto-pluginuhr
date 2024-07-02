@@ -46,7 +46,7 @@
 
         <slf4j-simple.version>1.7.36</slf4j-simple.version>
         <slf4jVersion>1.7.36</slf4jVersion>
-        <jaxb.version>4.0.3</jaxb.version>
+        <!--jaxb.version>4.0.3</jaxb.version-->
     </properties>
     <dependencies>
         <dependency>
