@@ -417,7 +417,7 @@ public interface MicroServiceConfigurationInterface {
     int getLehrplanAjpPort();
     String DEFlehrplanHttpsPort = "service_lehrplan_https_port:9104";
     int getLehrplanHttpsPort();
-    String DEFlehrplanServiceUri = "letto_lehrplan_uri:https://s5.letto.at";
+    String DEFlehrplanServiceUri = "letto_lehrplan_uri:https://lehrplan.letto.at";
     String getLehrplanServiceUri();
 
     // Letto-Data-Service
