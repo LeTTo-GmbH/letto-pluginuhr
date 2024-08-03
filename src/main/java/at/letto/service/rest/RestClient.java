@@ -3,9 +3,7 @@ package at.letto.service.rest;
 import at.letto.security.LettoToken;
 import at.letto.service.interfaces.MicroService;
 import at.letto.tools.JSON;
-import at.letto.tools.rest.AuthException;
-import at.letto.tools.rest.MsgException;
-import at.letto.tools.rest.TokenException;
+import at.letto.tools.rest.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -22,6 +20,7 @@ import jakarta.ws.rs.core.Response;
 
 
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.cxf.logging.NoOpFaultListener;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -48,6 +47,9 @@ public abstract class RestClient implements MicroService {
     /** Passwort des Benutzers, welcher mit dem Dienst verbunden ist */
     private String password="";
 
+    /** Erzwingt vorherhehendes exteres JSON-Umwandeln mit JSON.objToJson */
+    @Getter @Setter
+    private boolean forceJsonExternal = false;
     /**
      * Erzeugt eine REST-Client Verbindung zu einem Microservice mit Authentifikation
      * @param baseURI  Basis-URI des Microservices zb: https://localhost:9091/
@@ -377,8 +379,12 @@ public abstract class RestClient implements MicroService {
         try {
             Entity entity=null;
             if (dto!=null) {
-                entity = jsonExternal ? Entity.json(JSON.objToJson(dto)) :
-                                        Entity.entity(dto, MediaType.APPLICATION_JSON);
+                if (dto instanceof String)
+                    entity = jsonExternal || forceJsonExternal ? Entity.json(dto) :
+                            Entity.entity(dto, MediaType.APPLICATION_JSON);
+                else
+                    entity = jsonExternal || forceJsonExternal ? Entity.json(JSON.objToJson(dto)) :
+                            Entity.entity(dto, MediaType.APPLICATION_JSON);
                 if (!post)
                     uri=loadGetUri(uri, dto);
             }
@@ -448,8 +454,12 @@ public abstract class RestClient implements MicroService {
         try {
             Entity entity = null;
             if (dto != null) {
-                entity = jsonExternal ? Entity.json(JSON.objToJson(dto)) :
-                        Entity.entity(dto, MediaType.APPLICATION_JSON);
+                if (dto instanceof String)
+                    entity = jsonExternal || forceJsonExternal ? Entity.json(dto) :
+                            Entity.entity(dto, MediaType.APPLICATION_JSON);
+                else
+                    entity = jsonExternal || forceJsonExternal ? Entity.json(JSON.objToJson(dto)) :
+                            Entity.entity(dto, MediaType.APPLICATION_JSON);
                 if (!post)
                     uri = loadGetUri(uri, dto);
             }
@@ -472,7 +482,13 @@ public abstract class RestClient implements MicroService {
 
             }
             else if (response.getStatus() == 403) {
-                throw new AuthException("Token-Error");
+                DtoAndMsg<Object> ret = new DtoAndMsg<>();
+                ret.setData(null);
+                ret.setMsg(new Msg("auth.error",MsgType.ERROR,""));
+                String json = JSON.objToJson(ret);
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.disable(SerializationFeature.INDENT_OUTPUT);
+                return mapper.readValue(json, type);
             }
             else if (jsonExternal) {
                 List<String> err = new Vector<>();

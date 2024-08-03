@@ -65,6 +65,7 @@ public class DtoAndMsg<A> {
 
     public DtoAndMsg(Throwable stack) {
         this.data = null;
+        stack.printStackTrace();
         // Stack-Trace in String umwandeln
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
