@@ -64,10 +64,14 @@ public class RestImageService extends RestClient implements ImageService {
         if (!pfad.exists()) pfad.mkdirs();
         String check = checkFilesystem();
         String checkservice = checkService();
-        if (check==null) throw new RuntimeException("Check vom Image-Service konnte nicht durchgeführt werden!");
+        /*if (check==null) throw new RuntimeException("Check vom Image-Service konnte nicht durchgeführt werden!");
         else if (check.length()>0) throw new RuntimeException("Check vom Image-Service liefert: "+check);
         if (checkservice==null) throw new RuntimeException("CheckService vom Image-Service konnte nicht durchgeführt werden!");
-        else if (checkservice.length()>0) throw new RuntimeException("CheckService vom Image-Service liefert: "+checkservice);
+        else if (checkservice.length()>0) throw new RuntimeException("CheckService vom Image-Service liefert: "+checkservice);*/
+        if (check==null) System.out.println("Check vom Image-Service konnte nicht durchgeführt werden!");
+        else if (check.length()>0) System.out.println("Check vom Image-Service liefert: "+check);
+        if (checkservice==null) System.out.println("CheckService vom Image-Service konnte nicht durchgeführt werden!");
+        else if (checkservice.length()>0) System.out.println("CheckService vom Image-Service liefert: "+checkservice);
     }
 
     @Override

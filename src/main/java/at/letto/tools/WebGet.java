@@ -131,6 +131,7 @@ public class WebGet {
 
 	public static byte[] getUrlByteArray(String webPath) {
 		try {
+			//System.out.println("WebGet from:"+webPath);
 			// Lade die URL in ein Byte-Array
 			BufferedInputStream in = getBufferedInputStreamFromURL(webPath);
 					// new BufferedInputStream(new URL(webPath).openStream());
@@ -138,6 +139,7 @@ public class WebGet {
 			byte dataBuffer[] = new byte[1024];
 			int bytesRead;
 			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+				//System.out.println("Bytes Read:"+bytesRead);
 				buffer.write(dataBuffer, 0, bytesRead);
 			}
 			buffer.flush();

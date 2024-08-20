@@ -12,3 +12,4 @@
 # compilierte Programme
 **/*.war
 **/*.jar
+src/main/resources/static/pluginuhr/open/javadoc

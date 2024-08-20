@@ -152,9 +152,9 @@ public class PluginUhr extends BasePlugin {
 
 	/**
 	 * parst die Parameter des Plugins
-	 * @param params  Parameterstring
-	 * @param q       Frage
-	 * @return        Fehlermeldung oder Leerstring wenn alles ok ist
+	 * @param params                 Parameterstring
+	 * @param q                      Frage
+	 * @param pluginImageResultDto   Objekt welches alle Fehlermeldungen aufnimmt
 	 */
 	@Override
 	public void parseDrawParams(String params, PluginQuestionDto q, PluginImageResultDto pluginImageResultDto) {

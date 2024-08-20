@@ -262,7 +262,6 @@ public class CmdThread implements Runnable {
      * @param charset Character-Set
      * @param out     Output des Programmes als Vektor von Strings
      * @param err     Fehlerausgabe des Programmes, wenn null - dann Fehler in out!
-     * @return        stdout des Programmes
      */
     public void systemcall(String cmd, String charset,Vector<String> out, Vector<String> err) {
         p=null;
