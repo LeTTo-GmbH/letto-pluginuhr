@@ -7,6 +7,7 @@ import at.letto.tools.dto.ImageBase64Dto;
 import at.open.letto.plugin.config.Endpoint;
 import at.open.letto.plugin.service.ConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ import java.util.Vector;
  */
 @RestController
 @RequestMapping(Endpoint.EXTERN_API)
+@Tag(name = "Api Extern Controller", description = "\nPlugin-REST Endpoints für eine gesicherte Verbindung von einem externen LeTTo-Server\n" +
+        "wenn Plugin und LeTTo nicht auf dem gleichen Server liegen (noch nicht fertig implementiert)\n" +
+        "jedoch gleiche Funktion wie ApiController (von extern erreichbar) [JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/open/letto/plugin/controller/ApiExternController.html)")
 public class ApiExternController {
 
     @Autowired private ConnectionService connectionService;

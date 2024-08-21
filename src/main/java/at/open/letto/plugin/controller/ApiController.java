@@ -8,9 +8,15 @@ import at.letto.plugins.restclient.BasePluginConnectionService;
 import at.letto.tools.dto.ImageBase64Dto;
 import at.open.letto.plugin.config.Endpoint;
 import at.open.letto.plugin.service.ConnectionService;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +56,9 @@ public class ApiController {
      */
     @Operation(summary = "liefert die allgemeinen Konfigurationsinformationen zu einem Plugin")
     @PostMapping(PluginConnectionEndpoint.getPluginGeneralInfo)
-    public ResponseEntity<PluginGeneralInfo> pluginGeneralInfo(@Parameter(description = "Typ des Plugins als String", example = "Uhr") @RequestBody String plugintyp) {
+    public ResponseEntity<PluginGeneralInfo> pluginGeneralInfo(
+            @RequestBody(description = "Der Name des Plugins", required = true,
+            content = @Content(schema = @Schema(implementation = String.class))) String plugintyp) {
         PluginGeneralInfo result = connectionService.pm.getPluginGeneralInfo(plugintyp);
         return ResponseEntity.ok(result);
     }
@@ -67,7 +75,9 @@ public class ApiController {
      */
     @Operation(summary = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT Tag")
     @PostMapping(PluginConnectionEndpoint.getHTML)
-    public ResponseEntity<String> getHtml(@RequestBody PluginRequestDto r) {
+    public ResponseEntity<String> getHtml(
+            @RequestBody(description = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT Tag", required = true,
+            content = @Content(schema = @Schema(implementation = PluginRequestDto.class, description = "[JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)"))) PluginRequestDto r) {
         String result = connectionService.pm.getHTML(r.getTyp(),r.getName(),r.getConfig(),r.getParams(),r.getQ());
         return ResponseEntity.ok(result);
     }
