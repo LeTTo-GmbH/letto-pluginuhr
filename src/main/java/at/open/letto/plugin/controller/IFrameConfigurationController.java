@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Wenn die Konfiguration des Plugins nicht über JavaScript sondern über ein IFrame
+ * in LeTTo eingebunden wird ist hier der Konfigurationsdialog des Plugins (von extern erreichbar)
+ */
 @Controller
 @RequestMapping(Endpoint.open)
 public class IFrameConfigurationController {

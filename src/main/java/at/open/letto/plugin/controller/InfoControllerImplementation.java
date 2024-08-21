@@ -10,9 +10,12 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-
 import java.util.jar.Manifest;
 
+/**
+ * Konfigurationsinformationen welches jedes Service liefern muss.
+ * Sie werden über den at.letto.basespringboot.controller.BaseInfoController verwendet
+ */
 @Service
 public class InfoControllerImplementation implements InfoControllerInterface {
 

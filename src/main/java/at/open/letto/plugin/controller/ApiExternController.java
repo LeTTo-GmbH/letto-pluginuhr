@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * Plugin-REST Endpoints für eine gesicherte Verbindung von einem externen LeTTo-Server
+ * wenn Plugin und LeTTo nicht auf dem gleichen Server liegen (noch nicht fertig implementiert)
+ * jedoch gleiche Funktion wie ApiController (von extern erreichbar)
+ */
 @RestController
 @RequestMapping(Endpoint.EXTERN_API)
 public class ApiExternController {

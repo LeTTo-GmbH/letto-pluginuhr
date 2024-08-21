@@ -13,6 +13,9 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Map;
 
+/**
+ * Endpoint für die Umleitung bei Fehlermeldungen
+ */
 @Controller
 public class ErrorHandlerController implements ErrorController {
 

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
+/**
+ * allgemeine Information und externer Ping (von extern erreichbar)
+ */
 @RestController
 @RequestMapping
 public class InfoController {

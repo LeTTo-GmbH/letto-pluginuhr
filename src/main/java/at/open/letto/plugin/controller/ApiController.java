@@ -9,14 +9,20 @@ import at.letto.tools.dto.ImageBase64Dto;
 import at.open.letto.plugin.config.Endpoint;
 import at.open.letto.plugin.service.ConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * REST-Schnittstelle des Plugins zwischen LeTTo und Plugin (nur aus dem Docker-Netzwerk erreichbar)
+ */
 @RestController
 @RequestMapping(Endpoint.LOCAL_API)
+@Tag(name = "Api Controller", description = "REST-Schnittstelle des Plugins zwischen LeTTo und Plugin (nur aus dem Docker-Netzwerk erreichbar) [JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/open/letto/plugin/controller/ApiController.html)")
 public class ApiController {
 
     @Autowired private ConnectionService connectionService;
@@ -44,7 +50,7 @@ public class ApiController {
      */
     @Operation(summary = "liefert die allgemeinen Konfigurationsinformationen zu einem Plugin")
     @PostMapping(PluginConnectionEndpoint.getPluginGeneralInfo)
-    public ResponseEntity<PluginGeneralInfo> pluginGeneralInfo(@RequestBody String plugintyp) {
+    public ResponseEntity<PluginGeneralInfo> pluginGeneralInfo(@Parameter(description = "Typ des Plugins als String", example = "Uhr") @RequestBody String plugintyp) {
         PluginGeneralInfo result = connectionService.pm.getPluginGeneralInfo(plugintyp);
         return ResponseEntity.ok(result);
     }
