@@ -187,21 +187,27 @@ public class BaseInfoController {
         return serviceInfoDTO;
     }
 
-    @Operation(summary = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar!")
+    @Operation(summary = "Serviceinformation",
+            description = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar!<br>" +
+            "Result: [ServiceInfoDTO](https://build.letto.at/pluginuhr/open/javadoc/at/letto/dto/ServiceInfoDTO.html)")
     @GetMapping(BaseEndpoints.INFO)
     public ResponseEntity<ServiceInfoDTO> info()  {
         ServiceInfoDTO serviceInfoDTO = calcInfo(false);
         return ResponseEntity.ok(serviceInfoDTO);
     }
 
-    @Operation(summary = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar!")
+    @Operation(summary = "Serviceinformation",
+            description = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar!<br>" +
+            "Result: [ServiceInfoDTO](https://build.letto.at/pluginuhr/open/javadoc/at/letto/dto/ServiceInfoDTO.html)")
     @GetMapping(BaseEndpoints.INFO_OPEN)
     public ResponseEntity<ServiceInfoDTO> infoOpen()  {
         ServiceInfoDTO serviceInfoDTO = calcInfo(false);
         return ResponseEntity.ok(serviceInfoDTO);
     }
 
-    @Operation(summary = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar! Authentifiziert als User admin",
+    @Operation(summary = "Serviceinformation",
+            description  = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar! Authentifiziert als User admin<br>" +
+            "Result: [ServiceInfoDTO](https://build.letto.at/pluginuhr/open/javadoc/at/letto/dto/ServiceInfoDTO.html)",
             security = { @SecurityRequirement(name = "BasicAuth")})
     @GetMapping(BaseEndpoints.INFO_AUTH_ADMIN)
     public ResponseEntity<ServiceInfoDTO> infoAuthAdmin()  {
@@ -209,7 +215,9 @@ public class BaseInfoController {
         return ResponseEntity.ok(serviceInfoDTO);
     }
 
-    @Operation(summary = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar! Authentifiziert mit Admin-Token",
+    @Operation(summary = "Serviceinformation",
+            description  = "Information über das Service - Nur aus dem Docker-Netzwerk erreichbar! Authentifiziert mit Admin-Token<br>" +
+            "Result: [ServiceInfoDTO](https://build.letto.at/pluginuhr/open/javadoc/at/letto/dto/ServiceInfoDTO.html)",
             security = { @SecurityRequirement(name = "BasicAuth")})
     @GetMapping(BaseEndpoints.INFO_API_ADMIN)
     public ResponseEntity<ServiceInfoDTO> infoApiAdmin()  {
@@ -217,7 +225,8 @@ public class BaseInfoController {
         return ResponseEntity.ok(serviceInfoDTO);
     }
 
-    @Operation(summary = "Information über die Service-Version - Nur aus dem Docker-Netzwerk erreichbar!")
+    @Operation(summary = "Serviceversion",
+            description  = "Information über die Service-Version als String - Nur aus dem Docker-Netzwerk erreichbar!")
     @GetMapping(BaseEndpoints.VERSION)
     public ResponseEntity<String> version()  {
         return ResponseEntity.ok(ServerStatus.getRevision());
