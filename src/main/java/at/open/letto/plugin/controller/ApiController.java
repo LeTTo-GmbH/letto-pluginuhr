@@ -88,6 +88,11 @@ public class ApiController {
             summary = "HTML Fragetext",
             description = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT Tag <br>" +
                           "Body: [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                          " - .typ  : String - Typ des Plugins<br>" +
+                          " - .name : String - Name des Plugins in der Frage<br>" +
+                          " - .config : String - Konfigurationsstring des Plugins<br>" +
+                          " - .params : String - Plugin-Parameter<br>" +
+                          " - .q      : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Frage wo das Plugin eingebettet ist<br>" +
                           "Result: String"
     )
     @PostMapping(PluginConnectionEndpoint.getHTML)
@@ -110,6 +115,10 @@ public class ApiController {
             summary = "Angabetext erzeugen",
             description = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT TagLiefert einen Angabestring für die Text-Angabe <br>" +
                     "Body  : [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .params : String - Plugin-Parameter<br>" +
                     "Result: String"
     )
     @PostMapping(PluginConnectionEndpoint.getAngabe)
@@ -130,6 +139,9 @@ public class ApiController {
             summary = "alle Datensätze bestimmen",
             description = "Liefert alle Datensätze, welche für das Plugin in der Frage vorhanden sein sollten <br>" +
                     "Body  : [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
                     "Result: [PluginDatasetListDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginDatasetListDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.generateDatasets)
@@ -153,6 +165,12 @@ public class ApiController {
             summary = "Maxima Berechung des Plugins",
             description = "Liefert einen Maxima-Berechnungsstring für die Berechnung des Plugins <br>" +
                     "Body  : [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .params : String - Plugin-Parameter<br>" +
+                    " - .q      : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Frage wo das Plugin eingebettet ist<br>" +
+                    " - .pluginsMaximaCalcMode : [PluginMaximaCalcModeDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginMaximaCalcModeDto.html) - Berechnungsmode der Frage<br>" +
                     "Result: String"
     )
     @PostMapping(PluginConnectionEndpoint.getMaxima)
@@ -175,6 +193,11 @@ public class ApiController {
             summary = "Bild berechnen",
             description = "Liefert ein Base64 codiertes Bild mit den angegebenen Parametern <br>" +
                     "Body  : [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .params : String - Plugin-Parameter<br>" +
+                    " - .q      : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Frage wo das Plugin eingebettet ist<br>" +
                     "Result: [ImageBase64Dto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/tools/dto/ImageBase64Dto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.getImage)
@@ -198,6 +221,9 @@ public class ApiController {
             summary = "PIG Templates bestimmen",
             description = "Liefert eine Liste aller möglichen Varianten von Bildern in String-Arrays <br>" +
                     "Body  : [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
                     "Result: Vector&lt;String[]&gt;<br>" +
                     " Element 0 : beschreibender Text<br>" +
                     " Element 1 : PIG Tag<br>" +
@@ -224,6 +250,12 @@ public class ApiController {
             summary = "Parser Plugin Methode",
             description = "Wird verwendet wenn im Lösungsfeld die Funktion plugin(\"pluginname\",p1,p2,p3) verwendet wird <br>" +
                     "Body  : [PluginParserRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginParserRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .vars : [VarHashDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/VarHashDto.html) - Alle Variablen der Frage<br>" +
+                    " - .cp   : [CalcParamsDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/CalcParamsDto.html) - Berechnungsparameter<br>" +
+                    " - .p    : [CalcErgebnisDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/CalcErgebnisDto.html)[]: Liste von CalcErgebnis-Werten, welche an das Plugin von der Question aus übergeben werden können<br>" +
                     "Result: [CalcErgebnisDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/CalcErgebnisDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.parserPlugin)
@@ -245,6 +277,10 @@ public class ApiController {
             summary = "Recheneinheit von parserPlugin",
             description = "Bestimmt die Recheneinheit, welche bei der Methode parserPlugin als Ergebnis herauskomment wenn die Parameter die Einheiten wie in der Liste p haben<br>" +
                     "Body  : [PluginEinheitRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginEinheitRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .p      : String[] - Einheiten der Parameter als Recheneinheiten<br>" +
                     "Result: String"
     )
     @PostMapping(PluginConnectionEndpoint.parserPluginEinheit)
@@ -271,6 +307,15 @@ public class ApiController {
             summary = "Score Methode",
             description = "Prüft die Eingabe eines Schülers <br>" +
                     "Body  : [PluginScoreRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginScoreRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .pluginDto    : [PluginDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginDto.html) - PluginDto welches für die Java-Script aktive Eingabe aufbereitet wurde<br>" +
+                    " - .antwort      : String - Antwort die der Schüler eingegeben hat<br>" +
+                    " - .toleranz     : [ToleranzDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/ToleranzDto.html) - Toleranz für die Lösung<br>" +
+                    " - .varsQuestion : [VarHashDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/VarHashDto.html) - Alle Variablen der Frage<br>" +
+                    " - .answerDto    : [PluginAnswerDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginAnswerDto.html) - korrekte Antwort und Informationen für den Scorer des Plugins<br>" +
+                    " - .grade        : double - Maximale Punktanzahl für die richtige Antwort<br>" +
                     "Result: [PluginScoreInfoDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginScoreInfoDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.score)
@@ -291,6 +336,9 @@ public class ApiController {
             summary = "benötigte Variablen bestimmen",
             description = "Liefert eine Liste aller Variablen welche als Dataset benötigt werden <br>" +
                     "Body  : [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
                     "Result: Vector&lt;String&gt;"
     )
     @PostMapping(PluginConnectionEndpoint.getVars)
@@ -314,6 +362,11 @@ public class ApiController {
             summary = "Angabe anpassen",
             description = "verändert einen Angabetext, der in der Angabe in PI Tags eingeschlossen wurde<br>" +
                     "Body  : [PluginAngabeRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginAngabeRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .text  : String - Text der innerhalb der PI Tags gestanden ist<br>" +
+                    " - .q      : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Frage wo das Plugin eingebettet ist<br>" +
                     "Result: String"
     )
     @PostMapping(PluginConnectionEndpoint.modifyAngabe)
@@ -337,6 +390,11 @@ public class ApiController {
             summary = "Angabe neu",
             description = "verändert den kompletten Angabetext der Frage. Dieser muss als Parameter übergeben werden!<br>" +
                     "Body  : [PluginAngabeRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginAngabeRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .text  : String - Text der innerhalb der PI Tags gestanden ist<br>" +
+                    " - .q      : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Frage wo das Plugin eingebettet ist<br>" +
                     "Result: String - veränderter Angabetext"
     )
     @PostMapping(PluginConnectionEndpoint.modifyAngabeTextkomplett)
@@ -359,6 +417,11 @@ public class ApiController {
             summary = "update des Pluginstrings ",
             description = "Passt die Plugindefinition an die Eingabe aus dem Javascipt-Result an. zB: Interaktive Karte<br>" +
                     "Body  : [PluginUpdateJavascriptRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginUpdateJavascriptRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .pluginDef  : String - akt. Plugin-Definition<br>" +
+                    " - .jsResult   : String - Rückgabe von Javascript<br>" +
                     "Result: String - aktualiesierte Plugindefinition"
     )
     @PostMapping(PluginConnectionEndpoint.updatePluginstringJavascript)
@@ -382,6 +445,12 @@ public class ApiController {
             summary = "berechne das PluginDto",
             description = "Rendern des Plugin-Images, Aufbau eines DTOs zur späteren Javascript - Bearbeitung <br>" +
                     "Body  : [LoadPluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/LoadPluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config : String - Konfigurationsstring des Plugins<br>" +
+                    " - .params : String - Plugin-Parameter<br>" +
+                    " - .q      : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Frage wo das Plugin eingebettet ist<br>" +
+                    " - .nr     : int - Laufende Nummer für alle PIG-Tags und Question-Plugins<br>" +
                     "Result: [PluginDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.loadPluginDto)
@@ -405,6 +474,12 @@ public class ApiController {
             summary = "Latex rendern",
             description = "Rendert ein Plugins für den Fragedruck als Latex-Sourcode <br>" +
                     "Body  : [PluginRenderLatexRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRenderLatexRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config    : String - Konfigurationsstring des Plugins<br>" +
+                    " - .pluginDto : [PluginDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginDto.html) -  Das PluginDto welches am Webserver an das Java-Script des Plugins zum Rendern gesandt wird<br>" +
+                    " - .answer    : String - Inhalt des Antwortfeldes welches der Schüler eingegeben hat<br>" +
+                    " - .mode      : String - Druckmode<br>" +
                     "Result: [PluginRenderDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRenderDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.renderLatex)
@@ -433,6 +508,16 @@ public class ApiController {
             summary = "Plugin rendern",
             description = "Rendert das Plugin inklusive der Schülereingabe und korrekter Lösung. Es wird dabei entweder direkt ein HTML-Code oder LaTeX-Code erzeugt <br>" +
                     "Body  : [PluginRenderResultRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRenderResultRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config    : String - Konfigurationsstring des Plugins<br>" +
+                    " - .tex    : boolean - true für LaTeX-Code, false für html-Code<br>" +
+                    " - .pluginDto : [PluginDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginDto.html) -  Das PluginDto welches am Webserver an das Java-Script des Plugins zum Rendern gesandt wird<br>" +
+                    " - .antwort    : String - Antwort die der Schüler eingegeben hat<br>" +
+                    " - .toleranz     : [ToleranzDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/ToleranzDto.html) - Toleranz für die Lösung<br>" +
+                    " - .varsQuestion : [VarHashDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/math/dto/VarHashDto.html) - Alle Variablen der Frage<br>" +
+                    " - .answerDto    : [PluginAnswerDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginAnswerDto.html) - korrekte Antwort und Informationen für den Scorer des Plugins<br>" +
+                    " - .grade        : double - Maximale Punktanzahl für die richtige Antwort<br>" +
                     "Result: [PluginRenderDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRenderDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.renderPluginResult)
@@ -457,6 +542,11 @@ public class ApiController {
             summary = "Konfigurations Information",
             description = "Liefert die Informationen welche notwendig sind um einen Konfigurationsdialog zu starten. Ist die configurationID gesetzt wird eine Konfiguration gestartet und damit auch die restlichen Endpoints für die Konfiguration aktiviert. <br>" +
                     "Body  : [PluginConfigurationInfoRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginConfigurationInfoRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config    : String - Konfigurationsstring des Plugins<br>" +
+                    " - .configurationID    : String - eindeutige ID welche für die Verbindung zwischen Edit-Service, Browser und Plugin-Konfiguration verwendet wird<br>" +
+                    " - .timeout    : long - maximale Gültigkeit der Konfigurations-Verbindung in Sekunden ohne Verbindungsanfragen, Notwendig um bei Verbindungsabbruch die Daten am Plugin-Service auch wieder zu löschen<br>" +
                     "Result: [PluginConfigurationInfoDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginConfigurationInfoDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.configurationInfo)
@@ -485,6 +575,9 @@ public class ApiController {
             summary = "setze Konfigurationsdaten",
             description = "Sendet alle notwendigen (im ConfigurationInfo) angeforderten Daten im Mode CONFIGMODE_URL an die Plugin-Konfiguration <br>" +
                     "Body  : [PluginSetConfigurationDataRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginSetConfigurationDataRequestDto.html)<br>" +
+                    " - .configurationID    : String - eindeutige ID welche für die Verbindung zwischen Edit-Service, Browser und Plugin-Konfiguration verwendet wird<br>" +
+                    " - .configuration      : String - aktueller Konfigurationsstring des Plugins<br>" +
+                    " - .questionDto        : [PluginQuestionDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginQuestionDto.html) - Question-DTO mit Varhashes<br>" +
                     "Result: [PluginConfigDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginConfigDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.setConfigurationData)
@@ -506,6 +599,8 @@ public class ApiController {
             summary = "liefert die Konfigurationsdaten",
             description = "Liefert die aktuelle Konfiguration eines Plugins welches sich gerade in einem CONFIGMODE_URL Konfigurationsdialog befindet <br>" +
                     "Body  : [PluginConfigurationRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginConfigurationRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .configurationID    : String - zu verwendende Konfigurations-ID (muss am Plugin-Service zuvor angelegt worden sein  mit configurationInfo)<br>" +
                     "Result: String - Konfigurationsstring des Plugins"
     )
     @PostMapping(PluginConnectionEndpoint.getConfiguration)
@@ -529,6 +624,12 @@ public class ApiController {
             summary = "setze Konfigurationsdaten",
             description = "Rendern des Plugin-Images, Aufbau eines DTOs zur späteren Javascript - Bearbeitung <br>" +
                     "Body  : [LoadPluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/LoadPluginRequestDto.html)<br>" +
+                    " - .typ  : String - Typ des Plugins<br>" +
+                    " - .name : String - Name des Plugins in der Frage<br>" +
+                    " - .config    : String - Konfigurationsstring des Plugins<br>" +
+                    " - .params    : String - Plugin-Parameter<br>" +
+                    " - .nr        : int - Laufende Nummer für alle PIG-Tags und Question-Plugins<br>" +
+                    " - .configurationID    : String - ID der aktuellen Konfiguration<br>" +
                     "Result: [PluginDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.reloadPluginDto)
