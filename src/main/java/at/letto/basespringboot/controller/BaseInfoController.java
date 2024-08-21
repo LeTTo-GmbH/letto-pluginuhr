@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 @RequestMapping
 @Tag(name = "Base Info Controller",
         description = "allgemeine Information welche jedes Service liefern muss (nur aus dem Docker-Netzwerk erreichbar) - Muss von jedem Service realisiert werden" +
-                      "[JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/basespringboot/controller/BaseInfoController.html)"
+                      " [JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/basespringboot/controller/BaseInfoController.html)"
 )
 public class BaseInfoController {
 

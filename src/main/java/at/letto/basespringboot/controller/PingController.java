@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 @Tag(name = "Ping Controller",
      description = "ping über REST an das Service - Muss von jedem Service realisiert werden" +
-                   "[JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/basespringboot/controller/PingController.html)"
+                   " [JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/basespringboot/controller/PingController.html)"
 )
 public class PingController {
 
