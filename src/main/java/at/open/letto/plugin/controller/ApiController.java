@@ -78,14 +78,14 @@ public class ApiController {
      */
     @Operation(
             summary = "HTML Fragetext",
-            description = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT Tag " +
-                          "[PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)"
+            description = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT Tag <br>" +
+                          "Body: [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)<br>" +
+                          "Result: String"
     )
     @PostMapping(PluginConnectionEndpoint.getHTML)
     public ResponseEntity<String> getHtml(
-            @RequestBody(description = "Berechnet den Fragetext für das Fragefeld des Webservers für die angegebenen Parameter für die Verwendung in einem PIT Tag [PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)",
-                         required = true,
-                         content = @Content(schema = @Schema(implementation = PluginRequestDto.class))) PluginRequestDto r) {
+            @RequestBody(description = "[PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)",
+                         required = true) PluginRequestDto r) {
         String result = connectionService.pm.getHTML(r.getTyp(),r.getName(),r.getConfig(),r.getParams(),r.getQ());
         return ResponseEntity.ok(result);
     }
