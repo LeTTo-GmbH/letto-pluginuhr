@@ -3,6 +3,7 @@ package at.letto.basespringboot.controller;
 import at.letto.restclient.endpoint.BaseEndpoints;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping
+@Tag(name = "Ping Controller",
+     description = "ping über REST an das Service - Muss von jedem Service realisiert werden" +
+                   "[JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/basespringboot/controller/PingController.html)"
+)
 public class PingController {
 
     @Operation(summary = "Ping für den Verbindungs-check - Nur aus dem Docker-Netzwerk erreichbar!")

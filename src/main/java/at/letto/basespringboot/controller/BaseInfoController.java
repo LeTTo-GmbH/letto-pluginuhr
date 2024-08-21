@@ -8,6 +8,7 @@ import at.letto.tools.Datum;
 import at.letto.tools.ServerStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Setter;
 import org.apache.catalina.startup.Tomcat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping
+@Tag(name = "Base Info Controller",
+        description = "allgemeine Information welche jedes Service liefern muss (nur aus dem Docker-Netzwerk erreichbar) - Muss von jedem Service realisiert werden" +
+                      "[JavaDoc](https://build.letto.at/pluginuhr/open/javadoc/at/letto/basespringboot/controller/BaseInfoController.html)"
+)
 public class BaseInfoController {
 
     @Autowired private ApplicationContext applicationContext;
