@@ -13,4 +13,4 @@
 **/*.war
 **/*.jar
 src/main/resources/static/pluginuhr/open/javadoc
-pom-*.xml
+/pom-*.xml
