@@ -14,6 +14,7 @@ import at.letto.tools.dto.ImageBase64Dto;
 import lombok.Getter;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -21,6 +22,9 @@ import java.util.Vector;
  * Implementierung welche lokale Plugins und auch externe Plugin-Services verwalten kann
  */
 public class BasePluginManagerService implements PluginManagerService {
+
+    /** alle JavaScript-Libraries zum gemeinsamen Speichern */
+    protected HashMap<String,String> jsLibs;
 
     @Getter private String publicJs = null;
 
@@ -30,6 +34,7 @@ public class BasePluginManagerService implements PluginManagerService {
     @Getter private List<JavascriptLibrary> javascriptLibrariesLocal = new ArrayList<>();
 
     public BasePluginManagerService(){
+        jsLibs = new HashMap<>();
         pluginConnections = new Vector<>();
         /** Prüft ob das Verzeichnis public_js vorhanden ist - dort werden alle JavaScript und Css-Dateien aus den Resourcen gespeichert */
         try {
@@ -66,8 +71,10 @@ public class BasePluginManagerService implements PluginManagerService {
                 //speichere alle Java-Script und CSS-Dateien in das public_js Verzeichnis
                 for (PluginGeneralInfo info: connection.getPluginGeneralInfoList()) {
                     for (JavascriptLibrary lib : info.getJavascriptLibrariesLocal())
-                        if (lib.getName()!=null && lib.getName().length()>0 && lib.getJs_code()!=null && lib.getJs_code().length()>0)
-                            Cmd.writefile(lib.getJs_code(),publicJs+"/"+lib.getName());
+                        if (lib.getName()!=null && lib.getName().length()>0 && lib.getJs_code()!=null && lib.getJs_code().length()>0) {
+                            Cmd.writefile(lib.getJs_code(), publicJs + "/" + lib.getName());
+                            jsLibs.put(lib.getName(), lib.getJs_code());
+                        }
                 }
             }
 
@@ -98,6 +105,16 @@ public class BasePluginManagerService implements PluginManagerService {
                 }
             this.javascriptLibrariesLocal = libs;
         }
+    }
+
+    /** speichert alle registrierten JS-Libraries in einer Datei */
+    public void saveJsLibs() {
+        StringBuilder sb = new StringBuilder();
+        for(String libname:jsLibs.keySet()) {
+            sb.append(jsLibs.get(libname));
+            sb.append("\n");
+        }
+        Cmd.writefile(sb.toString(), publicJs + "/plugins.js");
     }
 
     @Override

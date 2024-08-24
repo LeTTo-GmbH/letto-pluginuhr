@@ -1,6 +1,7 @@
 package at.letto.setup.dto.config;
 
 import at.letto.service.microservice.AdminInfoDto;
+import at.letto.tools.Datum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -94,5 +95,13 @@ public class ConfigServiceDto {
 
     /** zusätzliche nicht weiter definierte Parameter des Plugins */
     private HashMap<String,String> params;
+
+    public String htmlServiceStartTime() {
+        return Datum.formatDateTime(serviceStartTime);
+    }
+
+    public String htmlLastRegistrationTime() {
+        return Datum.formatDateTime(lastRegistrationTime);
+    }
 
 }

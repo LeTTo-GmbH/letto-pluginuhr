@@ -5,6 +5,7 @@ import at.letto.plugins.dto.*;
 import at.letto.plugins.endpoints.PluginConnectionEndpoint;
 import at.letto.plugins.interfaces.PluginService;
 import at.letto.plugins.restclient.BasePluginConnectionService;
+import at.letto.tools.JSON;
 import at.letto.tools.dto.ImageBase64Dto;
 import at.open.letto.plugin.config.Endpoint;
 import at.open.letto.plugin.service.ConnectionService;
@@ -12,12 +13,13 @@ import at.open.letto.plugin.service.ConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -69,7 +71,7 @@ public class ApiController {
     )
     @PostMapping(PluginConnectionEndpoint.getPluginGeneralInfo)
     public ResponseEntity<PluginGeneralInfo> pluginGeneralInfo(
-            @RequestBody(description = "Der Name des Plugins", required = true) String plugintyp) {
+            @RequestBody String plugintyp) {
         PluginGeneralInfo result = connectionService.pm.getPluginGeneralInfo(plugintyp);
         return ResponseEntity.ok(result);
     }
@@ -97,7 +99,7 @@ public class ApiController {
     )
     @PostMapping(PluginConnectionEndpoint.getHTML)
     public ResponseEntity<String> getHtml(
-            @RequestBody(description = "[PluginRequestDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginRequestDto.html)",required = true) PluginRequestDto r) {
+            @RequestBody PluginRequestDto r) {
         String result = connectionService.pm.getHTML(r.getTyp(),r.getName(),r.getConfig(),r.getParams(),r.getQ());
         return ResponseEntity.ok(result);
     }
@@ -550,6 +552,7 @@ public class ApiController {
                     "Result: [PluginConfigurationInfoDto](https://build.letto.at/pluginuhr/open/javadoc/at/letto/plugins/dto/PluginConfigurationInfoDto.html)"
     )
     @PostMapping(PluginConnectionEndpoint.configurationInfo)
+    //public ResponseEntity<PluginConfigurationInfoDto> configurationInfo(@RequestBody PluginConfigurationInfoRequestDto r) {
     public ResponseEntity<PluginConfigurationInfoDto> configurationInfo(@RequestBody PluginConfigurationInfoRequestDto r) {
         String configurationID = r.getConfigurationID();
         String typ             = r.getTyp();
