@@ -150,7 +150,7 @@ public class ApiExternController {
     @Operation(summary = "Liefert die Informationen welche notwendig sind um einen Konfigurationsdialog zu starten. Ist die configurationID gesetzt wird eine Konfiguration gestartet und damit auch die restlichen Endpoints für die Konfiguration aktiviert.")
     @PostMapping(PluginConnectionEndpoint.configurationInfo)
     public ResponseEntity<PluginConfigurationInfoDto> configurationInfo(@RequestBody PluginConfigurationInfoRequestDto r) {
-        return null;//apiController.configurationInfo(r);
+        return apiController.configurationInfo(r);
     }
 
     @Operation(summary = "Sendet alle notwendigen (im ConfigurationInfo) angeforderten Daten im Mode CONFIGMODE_URL an die Plugin-Konfiguration")
