@@ -350,6 +350,17 @@ public abstract class BaseMicroServiceConfiguration implements MicroServiceConfi
     @Value("${"+DEFlettoEditServiceUri+"}")
     private String lettoEditServiceUri;
 
+    //Letto-App-Service
+    @Value("${"+DEFlettoAppHttpPort+"}")
+    private int lettoAppHttpPort;
+    @Value("${"+DEFlettoAppAjpPort+"}")
+    private int lettoAppAjpPort;
+    @Value("${"+DEFlettoAppHttpsPort+"}")
+    private int lettoAppHttpsPort;
+    @Value("${"+DEFlettoAppServiceUri+"}")
+    private String lettoAppServiceUri;
+
+
     // Frontend Edit
     @Value("${"+DEFlettoFrontendEditServiceUri+"}")
     private String lettoFrontendEditServiceUri;

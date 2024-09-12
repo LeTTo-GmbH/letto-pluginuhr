@@ -407,6 +407,16 @@ public interface MicroServiceConfigurationInterface {
     String DEFlettoEditServiceUri = "letto_edit_uri:http://localhost:8103";
     String getLettoEditServiceUri();
 
+    //Letto-App-Service
+    String DEFlettoAppHttpPort = "service_app_http_port:8199";
+    int getLettoAppHttpPort();
+    String DEFlettoAppAjpPort = "service_app_ajp_port:7199";
+    int getLettoAppAjpPort();
+    String DEFlettoAppHttpsPort = "service_app_https_port:9199";
+    int getLettoAppHttpsPort();
+    String DEFlettoAppServiceUri = "letto_app_uri:http://localhost:8199";
+    String getLettoAppServiceUri();
+
     String DEFlettoFrontendEditServiceUri = "frontend_edit_uri:http://localhost:8080";
     String getLettoFrontendEditServiceUri();
 

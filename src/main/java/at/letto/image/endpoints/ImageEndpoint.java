@@ -1,6 +1,13 @@
 package at.letto.image.endpoints;
 
-public class ImageEndpoint {
+
+import at.letto.restclient.endpoint.EndpointInterface;
+
+public class ImageEndpoint implements EndpointInterface {
+    @Override
+    public String servicepath() {
+        return servicepath;
+    }
 
     public static final String servicepath = "/image";
     public static final String error       = "/error";

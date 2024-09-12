@@ -10,7 +10,10 @@ import org.springframework.boot.system.ApplicationPid;
 import org.springframework.core.SpringVersion;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
@@ -125,22 +128,6 @@ public class BaseSystemInfoService {
             File f = new File(ServerStatus.getSystemHome());
             return f.getUsableSpace();
         } catch (Exception ex) {return 0;}
-    }
-    public double getCpuUsage() {
-        try {
-            OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-            Double load = null;
-            for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) try {
-                method.setAccessible(true);
-                String methodName = method.getName();
-                if (methodName.startsWith("get") && methodName.contains("Cpu") && methodName.contains("Load")
-                        && Modifier.isPublic(method.getModifiers())) {
-                    load = (Double) method.invoke(operatingSystemMXBean);
-                }
-            } catch (Exception ex) {} catch (Error er){}
-            if (load != null) return load;
-        } catch (Exception ex) {} catch (Error er){}
-        return -1;
     }
 
     public int getCPUanzahl() {
