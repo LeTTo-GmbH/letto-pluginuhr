@@ -1,4 +1,4 @@
-FROM lettobase-jdk17-temurin
+FROM lettobase-jdk21-temurin
 
 EXPOSE 5080 7080 8080
 
