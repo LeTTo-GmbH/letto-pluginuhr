@@ -1,4 +1,6 @@
-$=jQuery;
+try {
+    $=jQuery;
+} catch (e) {}
 
 /* -----------------------------------------------------------------------------------------------
  *   Lädt den Konfigurationsdialog in das Formular der Plugin-Konfiguration in ein vordefiniertes div-Element "#configform_div" <br>

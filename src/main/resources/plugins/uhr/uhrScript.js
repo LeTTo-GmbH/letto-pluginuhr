@@ -1,4 +1,6 @@
-$=jQuery;
+try {
+    $=jQuery;
+} catch (e) {}
 
 /* -----------------------------------------------------------------------------------------------
  *   Lädt das Plugin in ein vordefiniertes div-Element "#" + plugin.name+"_div"
