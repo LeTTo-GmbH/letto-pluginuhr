@@ -5,8 +5,11 @@ import com.google.common.io.ByteStreams;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -399,6 +402,38 @@ public class FileMethods {
             return Cmd.writelnfile(lines, file);
         } catch (Exception igonre) {}
         return false;
+    }
+
+    /** löscht das angegebene Verzeichnis inklusive aller Unterverzeichnisse */
+    public static boolean rmDir(String filename) {
+        return rmDir(new File(filename.replaceAll("\\\\","/")));
+    }
+
+    /** löscht das angegebene Verzeichnis inklusive aller Unterverzeichnisse */
+    public static boolean rmDir(File f) {
+        return rmDir(f.toPath());
+    }
+
+    /** löscht das angegebene Verzeichnis inklusive aller Unterverzeichnisse */
+    public static boolean rmDir(Path dir) {
+        try {
+            // Durchläuft das Verzeichnis und löscht alle Dateien und Unterverzeichnisse
+            Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file); // Löscht jede Datei
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.delete(dir); // Löscht das Verzeichnis nach dem Löschen seiner Inhalte
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }

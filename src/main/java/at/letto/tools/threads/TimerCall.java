@@ -135,9 +135,6 @@ public class TimerCall {
 			} catch (LettoTimeoutException e) {
 				logger.logMessage("TimeO,CT="+ct+",M="+methode.getMethodeName());
 				throw e;
-			} catch (ThreadDeath e) {
-				logger.logMessage("Death,CT="+ct+",M="+methode.getMethodeName());
-				throw new LettoTimeoutException();
 			} catch (Error e) {
 				logger.logMessage("Error,CT="+ct+",M="+methode.getMethodeName());
 				ret = new CallResult(RESULT.ERROR,e);

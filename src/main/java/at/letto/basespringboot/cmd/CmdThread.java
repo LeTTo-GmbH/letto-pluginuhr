@@ -432,4 +432,22 @@ public class CmdThread implements Runnable {
         return ret;
     }
 
+    /**
+     * Wartet seconds Sekunden bis weitergemacht wird
+     * @param seconds Wartezeit in Sekunden
+     */
+    public void wait(int seconds) {
+        wait(seconds*1000);
+    }
+
+    /**
+     * Wartet milliseconds Millisekunden bis weitergemacht wird
+     * @param milliseconds Wartezeit in Millisekunden
+     */
+    public void waitms(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) { }
+    }
+
 }
