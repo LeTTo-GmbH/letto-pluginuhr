@@ -98,7 +98,7 @@ function configPluginUhr(dtoString) {
                 <div class="configresizer" id="resizerRight"></div>
                 <div class="configpane" id="rightPane">
                     <!-- Help -->
-                    <a href="https://wiki.letto.at/wiki/index.php/Plugins" target="_blank">Wiki-Plugins</a>
+                    <a href="https://doc.letto.at/wiki/Plugins" target="_blank">Wiki-Plugins</a>
                     <div id="configPluginHelp"></div>
                     <div id="configPluginWiki"></div>
                 </div>

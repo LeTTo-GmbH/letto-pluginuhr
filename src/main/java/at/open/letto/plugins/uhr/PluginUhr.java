@@ -295,9 +295,6 @@ public class PluginUhr extends BasePlugin {
 		pluginConfigDto.getParams().put("TEST","testinhalt");
 		pluginConfigDto.getParams().put("help",this.getHelp());
 		pluginConfigDto.getParams().put("vars",questionDto.getVars()!=null?questionDto.getVars().toString():"null");
-		/*if (getWikiHelp().length()>0) {
-			pluginConfigDto.getParams().put("wikiurl", "https://wiki.letto.at/wiki/index.php/" + getWikiHelp());
-		}*/
 		return pluginConfigDto;
 	}
 
