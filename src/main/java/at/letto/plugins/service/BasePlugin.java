@@ -185,10 +185,16 @@ public abstract class BasePlugin implements PluginService {
      */
     @Override
     public String getHelp() {
+        StringBuilder sb = new StringBuilder();
         String help = "";
-        if (this.getHelpfiles()!=null)
-            for (String hf : this.getHelpfiles())
-                help += PluginResource.replaceUmlautHTML(getHelpMessageFromResource(hf));
+        if (this.getHelpfiles()!=null) {
+            for (String hf : this.getHelpfiles()) {
+                String msg = getHelpMessageFromResource(hf);
+                //msg = PluginResource.replaceUmlautHTML(msg);
+                sb.append(msg);
+            }
+            help = sb.toString().trim();
+        }
         if (help.length()<1) help = "<h1>Plugin-Template</h1>Help ist noch nicht konfiguriert!";
         return help;
     }

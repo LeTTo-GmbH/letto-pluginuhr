@@ -727,17 +727,21 @@ public abstract class Tex {
 		ret +="\\end{tabular}\n\n";
 		return ret;
 	}
-	
-	public static String generateBspKopf(int nr, String name, String pointscolor, String pointsSoll, String pointsIst, boolean line) {
+
+	public static String generateBspKopf(String nr, String name, String pointscolor, String pointsSoll, String pointsIst, boolean line) {
 		String ret = "";
-		if (line) {			
-		    ret = "\\begin{tabular}{|p{130mm}|p{25mm}|p{25mm}}\n" +
-		    	  "\\hline "+nr+". "+name+"&Soll:"+pointsSoll+"& Ist:"+pointscolor+pointsIst+"}\\\\\\end{tabular} \\\\";
+		if (line) {
+			ret = "\\begin{tabular}{|p{130mm}|p{25mm}|p{25mm}}\n" +
+					"\\hline "+nr+". "+name+"&Soll:"+pointsSoll+"& Ist:"+pointscolor+pointsIst+"}\\\\\\end{tabular} \\\\";
 		} else {
 			if (pointsIst.length()>0) pointsIst += "/";
 			ret = FormatH2+nr+". "+name+pointscolor+"("+pointsIst+pointsSoll+")}}\n\n";
 		}
 		return ret;
+	}
+	
+	public static String generateBspKopf(int nr, String name, String pointscolor, String pointsSoll, String pointsIst, boolean line) {
+		return generateBspKopf(""+nr,name,pointscolor,pointsSoll,pointsIst,line);
 	}
 		
 }

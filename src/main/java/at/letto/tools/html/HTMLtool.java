@@ -140,4 +140,19 @@ public class HTMLtool {
         return s;
     }
 
+    /** setzt einen Text als roten Text in HTML und ersetzt dabei alle Umlaute etc. durch Entitäten */
+    public static String redText(String s){
+        return colorText(toHTML(s),"red");
+    }
+
+    /** setzt einen Text als färbigen Text in HTML und ersetzt dabei alle Umlaute etc. durch Entitäten */
+    public static String colorText(String s, String color){
+        return colorHtml(toHTML(s),color);
+    }
+
+    /** setzt einen HTML-Code in ein span mit einer Textfarbe */
+    public static String colorHtml(String html,String color){
+       return "<span style='color:"+color+"'>"+html+"</span>";
+    }
+
 }
