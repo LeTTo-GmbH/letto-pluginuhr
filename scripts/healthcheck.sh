@@ -17,12 +17,20 @@ else
   ct="$(expr $ct + 1)"
   echo $ct >$hc
   # Prüfen ob schon zu oft unhealthy
-  if [ $ct -gt 3 ] ; then
-    # Container stoppen, da schon zu oft unhealthy
-    echo 0 >$hc
-    date=$(date)
-    echo "$date : Plugin-Service unhealthy - Stop Service" >>$logfile
-    bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)' ;
+  regexp='^[0-9]+$'
+  if [[ $UNHEALTHY_RETRIES =~ $regexp ]] ; then
+    retries=$UNHEALTHY_RETRIES
+  else
+    retries=100
+  fi
+  if [ $retries -gt 0 ] ; then
+    if [ $ct -gt $retries ] ; then
+      # Container stoppen, da schon zu oft unhealthy
+      echo 0 >$hc
+      date=$(date)
+      echo "$date : Plugin-Service unhealthy - Stop Service" >>$logfile
+      bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)' ;
+    fi
   fi
   exit 1
 fi

@@ -8,9 +8,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,8 +36,13 @@ public class Datum {
     public static String[] MONTHGERMAN = {"Jänner","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
     public static Pattern patternDateYYYYMMDD = Pattern.compile("^(?<y>\\d\\d\\d\\d)(?<m>\\d\\d)(?<d>\\d\\d)$");
-    public static Pattern patternDateYYYYMD = Pattern.compile("^(?<y>\\d\\d\\d\\d)[\\.\\-\\/\\:\\s]*(?<m>\\d+)[\\.\\-\\/\\:\\s]*(?<d>\\d+)$");
-    public static Pattern patternDateDMY = Pattern.compile("^(?<d>\\d+)[\\.\\-\\/\\:\\s]*(?<m>\\d+)[\\.\\-\\/\\:\\s]*(?<y>\\d+)$");
+    public static Pattern patternDateYYYYMD = Pattern.compile("^(?<y>\\d\\d\\d\\d)[\\.\\-\\/\\s]*(?<m>\\d+)[\\.\\-\\/\\s]*(?<d>\\d+)$");
+    public static Pattern patternDateDMY = Pattern.compile("^(?<d>\\d+)[\\.\\-\\/\\s]*(?<m>\\d+)[\\.\\-\\/\\s]*(?<y>\\d+)$");
+
+/*
+    static String dateFormats[] = {"d.M.yyyy","d.MMM.yyyy","d/M/yyyy","d/MMM/yyyy","d-M-yyyy","d-MMM-yyyy","yyyy.M.d", "yyyy.MMM.d",
+            "yyyy/M/d","yyyy/MMM/d","yyyy-M-d","yyyy-MMM-d","d.M.yy","d.MMM.yy","yy-M-d","yy-MMM-d",
+            "d.MMM.y","y-M-d","y-MMM-d"};*/
 
     public static int second(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -170,7 +177,7 @@ public class Datum {
             d = Integer.parseInt(matcher.group("d"));
             return setDate(y,m,d);
         }
-        return null;
+        return parseDate(s);
     }
 
     static SimpleDateFormat formatter[] = {
@@ -184,7 +191,7 @@ public class Datum {
             new SimpleDateFormat("yyyy.MMM.dd")
     };
 
-    public static Date parseDate(String dat) {
+    private static Date parseDate(String dat) {
         Date date = null;
         for (SimpleDateFormat format: formatter) {
             try {
@@ -194,6 +201,12 @@ public class Datum {
         }
         return null;
     }
+
+    // ------------------------------------------------------- parse DATE -----------------------------
+    private static final String  pTime = "\\s*(?<h>\\d\\d?):(?<m>\\d\\d?)(:(?<s>\\d\\d?)(\\.(?<nk>\\d+?)?)?)?\\s*";
+    private static final Pattern patternTime=Pattern.compile("^"+pTime+"$");
+    private static final Pattern patternTimeDate=Pattern.compile("^(?<time>"+pTime+")\\s(?<date>[a-zA-Z0-9]+.*)$");
+    private static final Pattern patternDateTime=Pattern.compile("^(?<date>[a-zA-Z0-9]+.*)\\s(?<time>"+pTime+")$");
 
     public static Date addDays(Date date, int days) {
         Calendar c = Calendar.getInstance();
@@ -234,6 +247,39 @@ public class Datum {
         return sek;
     }
 
+    /**
+     * Parst einen Zeitstring i eine Zeit in Sekunden
+     * @param s Zeitstring 10:30 bzw. 10:30:22 bzw. 10:30:22.435423
+     * @return Zeit in Sekunden
+     */
+    public static int[] parseTimeArray(String s) {
+        s=s.trim();
+        Matcher m;
+        int h=0, min=0, sek=0, millis=0;
+        if ((m=Pattern.compile("^(\\d+):(\\d+)$").matcher(s)).find()) {
+            h = Integer.parseInt(m.group(1));
+            min = Integer.parseInt(m.group(2));
+        } else if ((m=Pattern.compile("^(\\d+):(\\d+):(\\d+)$").matcher(s)).find()) {
+            h = Integer.parseInt(m.group(1));
+            min = Integer.parseInt(m.group(2));
+            sek = Integer.parseInt(m.group(3));
+        } else if ((m=Pattern.compile("^(\\d+):(\\d+):(\\d+)\\.(\\d+)$").matcher(s)).find()) {
+            h = Integer.parseInt(m.group(1));
+            min = Integer.parseInt(m.group(2));
+            sek = Integer.parseInt(m.group(3));
+            String ms = m.group(4);
+            if (ms.length()>3) ms = ms.substring(0,3);
+            while (ms.length()<3) ms = ms+"0";
+            millis = Integer.parseInt(ms);
+        } else return null;
+        int[] result = new int[4];
+        result[0] = h;
+        result[1] = min;
+        result[2] = sek;
+        result[3] = millis;
+        return result;
+    }
+
     public static String formatSimple(Date date) {
         if (date==null) return "";
         return simpleDate.format(date);
@@ -263,6 +309,14 @@ public class Datum {
         LocalDateTime localDateTime = dateIntegerToLocalDateTime(d);
         return formatDateTime(localDateTime);
     }
+    public static String formatDate(long d) {
+        LocalDate localDate = dateIntegerToLocalDate(d);
+        return formatDateTime(localDate);
+    }
+    public static String formatTime(long d) {
+        LocalDateTime localDateTime = dateIntegerToLocalDateTime(d);
+        return formatTime(localDateTime);
+    }
 
     public static long nowDateInteger() { return toDateInteger(LocalDateTime.now()); }
 
@@ -270,32 +324,21 @@ public class Datum {
     static String dateFormats[] = {"d.M.yyyy","d.MMM.yyyy","d/M/yyyy","d/MMM/yyyy","d-M-yyyy","d-MMM-yyyy","yyyy.M.d", "yyyy.MMM.d",
                                    "yyyy/M/d","yyyy/MMM/d","yyyy-M-d","yyyy-MMM-d","d.M.yy","d.MMM.yy","yy-M-d","yy-MMM-d",
                                    "d.MMM.y","y-M-d","y-MMM-d"};
-    static String timeFormats[] = {"H:m:s","H:m","H:m:s.S","H:m:s.SS","H:m:s.SSS"};
+    static String timeFormats[] = {"H:m:s","H:m","H:m:s.S","H:m:s.SS","H:m:s.n"};
 
-    private static DateTimeFormatter[] formatterLD=initFormatterLD();
     private static DateTimeFormatter[] formatterLDT=initFormatterLDT();
-    private static DateTimeFormatter[] formatterLT=initFormatterLT();
-    public static DateTimeFormatter[] initFormatterLD() {
-        DateTimeFormatter[] f=new DateTimeFormatter[dateFormats.length];
-        for (int i=0;i<dateFormats.length;i++)
-            f[i] = DateTimeFormatter.ofPattern(dateFormats[i]);
-        return f;
-    }
-    public static DateTimeFormatter[] initFormatterLT() {
-        DateTimeFormatter[] f=new DateTimeFormatter[timeFormats.length];
-        for (int i=0;i<timeFormats.length;i++)
-            f[i] = DateTimeFormatter.ofPattern(timeFormats[i]);
-        return f;
-    }
+
     public static DateTimeFormatter[] initFormatterLDT() {
-        DateTimeFormatter[] f=new DateTimeFormatter[dateFormats.length*(timeFormats.length*2+1)];
+        Vector<String> fo = new Vector<String>();
         for (int i=0;i<dateFormats.length;i++) {
-            f[i*(timeFormats.length*2+1)] = DateTimeFormatter.ofPattern(dateFormats[i]);
             for (int j=0;j<timeFormats.length;j++) {
-                f[i * (timeFormats.length * 2+1) + 1 + j * 2]   = DateTimeFormatter.ofPattern(dateFormats[i]+" "+timeFormats[j]);
-                f[i * (timeFormats.length * 2+1) + 1 + j * 2+1] = DateTimeFormatter.ofPattern(timeFormats[j]+" "+dateFormats[i]);
+                fo.add(dateFormats[i]+" "+timeFormats[j]);
+                fo.add(timeFormats[j]+" "+dateFormats[i]);
             }
         }
+        DateTimeFormatter[] f=new DateTimeFormatter[fo.size()];
+        for (int i=0;i<fo.size();i++)
+            f[i] = DateTimeFormatter.ofPattern(fo.get(i));
         return f;
     }
 
@@ -303,10 +346,52 @@ public class Datum {
         LocalDateTime date = null;
         String datumstring = dat.replaceAll("T"," ");
         for (DateTimeFormatter format: formatterLDT) try {
-            return LocalDateTime.parse(datumstring,format); } catch (Exception e) {}
+            TemporalAccessor dx = format.parse(datumstring);
+            return LocalDateTime.parse(datumstring,format);
+        } catch (Exception e) {}
         return null;
     }
 
+    // Prüft ob es sich bei der Eingabe um ein Datum mit Zeit handelt
+    public static boolean isDateTime(String dat) {
+        Matcher m;
+        try {
+            if ((m = patternDateTime.matcher(dat)).matches()) {
+                String d = m.group(1);
+                String t = m.group(2);
+                if (isDate(d) && isTime(t)) return true;
+            }
+            if ((m = patternTimeDate.matcher(dat)).matches()) {
+                String t = m.group(1);
+                String d = m.group(2);
+                if (isDate(d) && isTime(t)) return true;
+            }
+        } catch (Exception e) {}
+        return false;
+    }
+    //** Prüft ob es sich bei der Eingabe um ein Datum handelt
+    public static boolean isDate(String dat) {
+        try {
+            Matcher m;
+            if (isTime(dat)) return false;
+            if (isDateTime(dat)) return false;
+            if (parseDate(dat)!=null) return true;
+        } catch (Exception e) {}
+        return false;
+    }
+    /** Prüft ob es sich bei der Eingabe um eine Zeit handelt */
+    public static boolean isTime(String dat) {
+        try {
+            Matcher m;
+            if ((m=patternTime.matcher(dat)).matches()) {
+                double t = parseTime(dat);
+                return true;
+            }
+        } catch (Exception e) {}
+        return false;
+    }
+
+    // -------------------------------------------------------
     /** Bestimmt die Tagesanzahl vom 1.1.0000 bis zum angegebenen Datum */
     public static long calcDays(int y, int m, int d) {
         LocalDate refdate = LocalDate.of(0, 1, 1);
@@ -340,8 +425,29 @@ public class Datum {
 
     /** Bestimmt die Sekunden seit dem 1.1.0000 eines gegebenen Datums als String */
     public static long toDateInteger(String s) {
-        LocalDateTime date = parseLocalDateTime(s);
-        return toDateInteger(date);
+        if (isTime(s)) {
+            int[] time = parseTimeArray(s);
+            if (time!=null)
+                return toDateInteger(0,0,0,time[0],time[1],time[2]);
+        } else if (isDate(s)) {
+            return toDateInteger(parse(s));
+        } else if (isDateTime(s)) {
+            Matcher m;
+            String d,t;
+            if ((m = patternDateTime.matcher(s)).matches()) {
+                d = m.group(1);
+                t = m.group(2);
+            } else if ((m = patternTimeDate.matcher(s)).matches()) {
+                t = m.group(1);
+                d = m.group(2);
+            } else throw new RuntimeException("cannot parse Date");
+            int[] time = parseTimeArray(t);
+            long rt = toDateInteger(0,1,1,time[0],time[1],time[2]);
+            if (time[3]>499) rt++;
+            long rd = toDateInteger(parse(d));
+            return rt + rd;
+        }
+        throw new RuntimeException("cannot parse Date");
     }
 
     public static long toDateInteger(int y, int m, int d, int h, int min, int sec) {

@@ -732,7 +732,7 @@ public abstract class Tex {
 		String ret = "";
 		if (line) {
 			ret = "\\begin{tabular}{|p{130mm}|p{25mm}|p{25mm}}\n" +
-					"\\hline "+nr+". "+name+"&Soll:"+pointsSoll+"& Ist:"+pointscolor+pointsIst+"}\\\\\\end{tabular} \\\\";
+					"\\hline "+nr+". "+Tex.stringToTex(name)+"&Soll:"+pointsSoll+"& Ist:"+pointscolor+pointsIst+"}\\\\\\end{tabular} \\\\";
 		} else {
 			if (pointsIst.length()>0) pointsIst += "/";
 			ret = FormatH2+nr+". "+name+pointscolor+"("+pointsIst+pointsSoll+")}}\n\n";
