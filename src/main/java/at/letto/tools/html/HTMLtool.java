@@ -155,4 +155,9 @@ public class HTMLtool {
        return "<span style='color:"+color+"'>"+html+"</span>";
     }
 
+    /** setzt einen HTML-Code in ein span mit einer Textfarbe */
+    public static String colorHtml(String html,String color, String bgcolor){
+        return "<span style='color:"+color+";background-color:"+bgcolor+"'>"+html+"</span>";
+    }
+
 }

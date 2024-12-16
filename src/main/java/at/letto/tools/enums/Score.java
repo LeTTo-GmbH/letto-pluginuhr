@@ -1,5 +1,6 @@
 package at.letto.tools.enums;
 
+import at.letto.tools.html.HTMLtool;
 import at.letto.tools.tex.Tex;
 
 /**
@@ -82,5 +83,32 @@ public enum Score implements Cloneable {
 			return Tex.ColorAntwortNichtentschieden;
 		}
 		return "";
+	}
+
+	public String htmlColor(String text) {
+		switch (this) {
+			case ANGABEFEHLER_EH:
+			case EINHEITENFEHLER_Lehrer:
+			case FALSCH_Lehrer:
+			case PARSERFEHLER_SYSTEM:
+				return HTMLtool.colorHtml(text,"magenta");
+			case TEILWEISE_OK:
+			case TEILWEISE_OK_Lehrer:
+			case EINHEITENFEHLER:
+			case MEHRFACHANTWORT_TW_RICHTIG:
+			case MEHRFACHANTWORT_TW_RICHTIG_LEHRER:
+				return HTMLtool.colorHtml(text,"black","yellow");
+			case FALSCH:
+				return HTMLtool.colorHtml(text,"black","red");
+			case OK:
+			case OK_Lehrer:
+			case MEHRFACHANTWORT_OK:
+			case MEHRFACHANTWORT_OK_LEHRER:
+				return HTMLtool.colorHtml(text,"black","green");
+			case NotScored:
+			case NichtEntschieden:
+				return HTMLtool.colorHtml(text,"black");
+		}
+		return text;
 	}
 }
