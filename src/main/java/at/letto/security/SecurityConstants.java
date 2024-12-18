@@ -44,7 +44,7 @@ public final class SecurityConstants {
     public static final String TOKEN_AUDIENCE  = "LeTTo";
 
     /* Standard Dauer in ms für die Gültigkeit eines Tokens */
-    public static final long   EXPIRATION_TIME = 1000 * 60 * 10;
+    public static final long   EXPIRATION_TIME = 1000 * 60 * 60;
 
     /* Wenn übrige Gültigkeitsdauer eines Tokens unter die Refresh-Time kommt sollte der Token aktualisiert werden */
     public static final long   REFRESH_TIME    = 1000 * 60 * 2;
