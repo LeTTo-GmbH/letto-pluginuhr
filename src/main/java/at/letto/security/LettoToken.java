@@ -7,9 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
 
