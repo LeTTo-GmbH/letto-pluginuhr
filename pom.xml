@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.3.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -72,8 +72,10 @@
         <letto.version>1.2</letto.version>
 
         <tomcat.version>10.1.34</tomcat.version>
-        <spring-boot-starter.version>3.4.1</spring-boot-starter.version>
-        <spring.security.version>6.4.2</spring.security.version>
+        <!--spring-boot-starter.version>3.4.1</spring-boot-starter.version>
+        <spring.security.version>6.4.2</spring.security.version -->
+        <spring-boot-starter.version>3.3.7</spring-boot-starter.version>
+        <spring.security.version>6.3.1</spring.security.version>
         <spring-web.version>6.2.1</spring-web.version>
         <springdoc.version>2.2.0</springdoc.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
@@ -86,7 +88,7 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <modelmapper.version>3.2.2</modelmapper.version>
         <fx.version>20</fx.version>
-        <primefaces.version>14.0.6</primefaces.version>
+        <primefaces.version>14.0.9</primefaces.version>
         <primefaces.lehrplan.version>8.0</primefaces.lehrplan.version>
         <primefaces.lettoserver.version>8.0</primefaces.lettoserver.version>
         <resources-ckeditor.version>6.1.0</resources-ckeditor.version>
@@ -100,12 +102,13 @@
         <eclipselink.version>2.7.3</eclipselink.version>
         <javax.faces-api.version>2.3</javax.faces-api.version>
         <javax.activation.version>1.1.1</javax.activation.version>
+        <jakarta.jakarta.activation-api.version>2.1.3</jakarta.jakarta.activation-api.version>
         <owasp-java-html-sanitizer.version>20220608.1</owasp-java-html-sanitizer.version>
         <jsoup.version>1.16.1</jsoup.version>
         <jacomax.version>0.2.3</jacomax.version>
         <jlatexmath.version>1.0.7</jlatexmath.version>
         <google-code-prettify.version>1.0.5</google-code-prettify.version>
-        <com.google.zxing.version>3.5.0</com.google.zxing.version>
+        <com.google.zxing.version>3.5.3</com.google.zxing.version>
         <bootsfaces.version>1.5.0</bootsfaces.version>
 
         <jackson.version>2.18.2</jackson.version>
@@ -119,7 +122,7 @@
         <jjwt-api.version>0.11.5</jjwt-api.version>
         <batik-transcoder.version>1.18</batik-transcoder.version>
         <pdfbox.version>2.0.32</pdfbox.version>
-        <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
+        <xmlgraphics-commons.version>2.10</xmlgraphics-commons.version>
         <xercesImpl.version>2.12.2</xercesImpl.version>
         <poi.version>5.2.3</poi.version>
         <poi-ooxml>4.0.1</poi-ooxml>
@@ -129,13 +132,14 @@
         <generex.version>1.0.2</generex.version>
         <javaparser-core.version>3.24.10</javaparser-core.version>
         <net.openhft.compiler.version>2.23ea0</net.openhft.compiler.version>
-        <janino.version>3.1.10</janino.version>
+        <janino.version>3.1.12</janino.version>
         <jsch.agentproxy.svnkit-trilead-ssh2.version>0.0.9</jsch.agentproxy.svnkit-trilead-ssh2.version>
 
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.17.1</commons-codec.version>
-        <commons-collections4.version>4.2</commons-collections4.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
         <commons-lang.version>2.6</commons-lang.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
         <commons-io.version>2.18.0</commons-io.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
