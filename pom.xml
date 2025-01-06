@@ -53,46 +53,98 @@
         <url>https://github.com/LeTTo-GmbH/letto-pluginuhr</url>
     </scm>
 
-    <properties>
+    <properties><!-- automatisch ersetzt aus shared properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
+        <maven-archiver.version>3.6.1</maven-archiver.version>
+        <maven-mapping.version>3.0.0</maven-mapping.version>
+        <maven-core.version>3.9.4</maven-core.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
+        <typescript-generator-maven-plugin.version>3.2.1263</typescript-generator-maven-plugin.version>
 
         <letto.version>1.2</letto.version>
 
-        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <tomcat.version>10.1.34</tomcat.version>
+        <spring-boot-starter.version>3.4.1</spring-boot-starter.version>
         <spring.security.version>6.4.2</spring.security.version>
         <spring-web.version>6.2.1</spring-web.version>
+        <springdoc.version>2.2.0</springdoc.version>
+        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <thymeleaf-extras-springsecurity5.version>3.1.3.RELEASE</thymeleaf-extras-springsecurity5.version>
 
         <jersey.version>3.1.9</jersey.version>
         <lombok.version>1.18.36</lombok.version>
         <apache.cxf.version>4.1.0</apache.cxf.version>
         <jaxb.version>4.0.5</jaxb.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
         <modelmapper.version>3.2.2</modelmapper.version>
+        <fx.version>20</fx.version>
+        <primefaces.version>14.0.6</primefaces.version>
+        <primefaces.lehrplan.version>8.0</primefaces.lehrplan.version>
+        <primefaces.lettoserver.version>8.0</primefaces.lettoserver.version>
+        <resources-ckeditor.version>6.1.0</resources-ckeditor.version>
+        <all-themes.version>1.0.10</all-themes.version>
+        <aristo.version>1.1.0</aristo.version>
+        <javaee-web-api.version>8.0</javaee-web-api.version>
+        <jakarta.jakartaee-web-api.version>10.0.0</jakarta.jakartaee-web-api.version>
+        <jakarta.mail.version>2.0.1</jakarta.mail.version>
+        <ldapsdk.version>4.1</ldapsdk.version>
+        <jldap.version>4.3</jldap.version>
+        <eclipselink.version>2.7.3</eclipselink.version>
+        <javax.faces-api.version>2.3</javax.faces-api.version>
+        <javax.activation.version>1.1.1</javax.activation.version>
+        <owasp-java-html-sanitizer.version>20220608.1</owasp-java-html-sanitizer.version>
+        <jsoup.version>1.16.1</jsoup.version>
+        <jacomax.version>0.2.3</jacomax.version>
+        <jlatexmath.version>1.0.7</jlatexmath.version>
+        <google-code-prettify.version>1.0.5</google-code-prettify.version>
+        <com.google.zxing.version>3.5.0</com.google.zxing.version>
+        <bootsfaces.version>1.5.0</bootsfaces.version>
 
-        <jackson.version>2.15.4</jackson.version>
-        <commons-codec.version>1.17.1</commons-codec.version>
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <jackson.version>2.18.2</jackson.version>
         <junit.version>5.11.4</junit.version>
         <junit.platform.version>1.10.2</junit.platform.version>
+        <snakeyaml.version>2.3</snakeyaml.version>
+
+        <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
+        <h2.version>1.4.200</h2.version>
 
         <jjwt-api.version>0.11.5</jjwt-api.version>
         <batik-transcoder.version>1.18</batik-transcoder.version>
         <pdfbox.version>2.0.32</pdfbox.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-
+        <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
+        <xercesImpl.version>2.12.2</xercesImpl.version>
+        <poi.version>5.2.3</poi.version>
+        <poi-ooxml>4.0.1</poi-ooxml>
+        <jtidy.version>r938</jtidy.version>
+        <svnkit.version>1.9.3</svnkit.version>
         <guava.version>33.4.0-jre</guava.version>
+        <generex.version>1.0.2</generex.version>
+        <javaparser-core.version>3.24.10</javaparser-core.version>
+        <net.openhft.compiler.version>2.23ea0</net.openhft.compiler.version>
+        <janino.version>3.1.10</janino.version>
+        <jsch.agentproxy.svnkit-trilead-ssh2.version>0.0.9</jsch.agentproxy.svnkit-trilead-ssh2.version>
+
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <commons-codec.version>1.17.1</commons-codec.version>
+        <commons-collections4.version>4.2</commons-collections4.version>
+        <commons-lang.version>2.6</commons-lang.version>
         <commons-text.version>1.13.0</commons-text.version>
         <commons-io.version>2.18.0</commons-io.version>
+        <commons-fileupload.version>1.5</commons-fileupload.version>
+        <commons-fileupload2-javax.version>2.0.0-M2</commons-fileupload2-javax.version>
+        <unbescape.version>1.1.6.RELEASE</unbescape.version>
+        <juniversalchardet.version>1.0.3</juniversalchardet.version>
         <slf4j-simple.version>2.0.16</slf4j-simple.version>
-        <slf4jVersion>2.0.16</slf4jVersion>
-
-        <tomcat.version>10.1.34</tomcat.version>
-        <snakeyaml.version>2.3</snakeyaml.version>
-    </properties>
+        <log4j-core.version>2.20.0</log4j-core.version>
+    </properties><!-- automatisch ersetzt aus shared properties -->
 
     <dependencies>
         <dependency>
@@ -113,10 +165,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -138,6 +192,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -148,15 +203,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
-            <version>3.1.2.RELEASE</version>
+            <version>${thymeleaf-extras-springsecurity5.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -167,17 +224,17 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.2.0</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-common</artifactId>
-            <version>2.2.0</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version> <!-- Aktualisiere dies auf die neueste Version -->
+            <version>${springfox-boot-starter.version}</version> <!-- Aktualisiere dies auf die neueste Version -->
         </dependency>
 
         <!--        PARENT-CLIENT            -->
@@ -195,7 +252,7 @@
         <dependency>
             <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
-            <version>1.0.3</version>
+            <version>${juniversalchardet.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -234,7 +291,7 @@
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>xmlgraphics-commons</artifactId>
-            <version>2.9</version>
+            <version>${xmlgraphics-commons.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
@@ -341,7 +398,7 @@
         <dependency>
             <groupId>org.unbescape</groupId>
             <artifactId>unbescape</artifactId>
-            <version>1.1.6.RELEASE</version>
+            <version>${unbescape.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
@@ -352,7 +409,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.5</version>
+            <version>${commons-fileupload.version}</version>
         </dependency>
 
     </dependencies>
@@ -374,7 +431,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
                     <additionalJOption>-private</additionalJOption>
                     <show>private</show>

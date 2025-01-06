@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** User-Service for receiving authentication-information of users */
 @Service
@@ -67,7 +68,7 @@ public class BaseLettoUserDetailsService implements UserDetailsService {
     private String userLettoRoles;
 
     /** Liste aller Benutzer, welche sich an dem Server anmelden können */
-    protected HashMap<String, RestUser> users = new HashMap<String, RestUser>();
+    protected ConcurrentHashMap<String, RestUser> users = new ConcurrentHashMap<String, RestUser>();
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
