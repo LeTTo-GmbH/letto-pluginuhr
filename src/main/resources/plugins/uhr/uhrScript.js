@@ -44,7 +44,7 @@ function initPluginUhr(dtoString, active) {
         if ($(clsName).length==0)
             $(plugin_div).append( `       
             <div class="${plugin.canvas}" >
-                <canvas class="${plugin.canvasLine}" id="${plugin.canvasLine}"></canvas>
+                <canvas class="${plugin.canvasLine} lettoimage" id="${plugin.canvasLine}"></canvas>
             </div>`
             );
     }
