@@ -46,7 +46,7 @@ public abstract class Tex {
 	public static final String GRADSHORT   = "^{\\circ}";
 	
 	/** Euro-Symbol */
-	public static final String EURO       = "€";
+	public static final String EURO       = "\\text{€}";
 	
 	/** neue Zeile */
 	public static final String LF         = "\n\n";
