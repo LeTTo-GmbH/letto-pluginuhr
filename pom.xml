@@ -118,6 +118,9 @@
 
         <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
         <h2.version>1.4.200</h2.version>
+        <mongodb-driver-sync.version>5.1.4</mongodb-driver-sync.version>
+        <mongodb-crypt.version>1.8.0</mongodb-crypt.version>
+        <lettuce-core.version>6.5.2.RELEASE</lettuce-core.version>
 
         <jjwt-api.version>0.11.5</jjwt-api.version>
         <batik-transcoder.version>1.18</batik-transcoder.version>
