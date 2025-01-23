@@ -409,10 +409,8 @@ public abstract class BaseMicroServiceConfiguration implements MicroServiceConfi
     private String schuleStandardLettoLoginUriExtern;
     @Value("${"+DEFschuleStandardLettoUriExtern+"}")
     private String schuleStandardLettoUriExtern;
-
     @Value("${"+DEFschulen+"}")
     private String schulen;
-
     @Value("${"+DEFschule+"}")
     private String schule;
 
