@@ -3,6 +3,7 @@ package at.letto.basespringboot.service;
 import at.letto.tools.Cmd;
 import at.letto.tools.Datum;
 import at.letto.tools.ServerStatus;
+import at.letto.tools.dto.LeTToServiceInfoDto;
 import at.letto.tools.enums.Betriebssystem;
 import lombok.Getter;
 import org.springframework.boot.system.ApplicationHome;
@@ -23,6 +24,7 @@ import java.lang.reflect.Modifier;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,28 +36,29 @@ import java.util.regex.Pattern;
 public class BaseSystemInfoService {
 
     private String          startTime            = Datum.formatDateTime(Datum.now());
+    private long            startTimeDateInteger = Datum.toDateInteger(Datum.now());
     private long            startMilliseconds    = System.currentTimeMillis();
     private String          pid                  = new ApplicationPid().toString();
     private Betriebssystem  betriebssystem       = Betriebssystem.UNDEF;
-    private String          betriebssystemVersion = "";
-    private String          appHome               = new ApplicationHome().toString();;
-    private boolean         debugMode = ServerStatus.isDebug;
-    private String          localIP   = ServerStatus.getIP();
-    private String          hostname  = ServerStatus.getHostname();
-    private String          linuxDistribution= ServerStatus.getLinuxDistribution();
-    private String          linuxRelease = ServerStatus.getLinuxRelease();
-    private String          javaVendor = ServerStatus.getJavaVendor();
+    private String          betriebssystemVersion= "";
+    private String          appHome              = new ApplicationHome().toString();;
+    private boolean         debugMode         = ServerStatus.isDebug;
+    private String          localIP           = ServerStatus.getIP();
+    private String          hostname          = ServerStatus.getHostname();
+    private String          linuxDistribution = ServerStatus.getLinuxDistribution();
+    private String          linuxRelease      = ServerStatus.getLinuxRelease();
+    private String          javaVendor        = ServerStatus.getJavaVendor();
     private String          javaVersionNumber = ServerStatus.getJavaVersionNumber();
     private String          javaSpecificationVersion = ServerStatus.getJavaSpecificationVersion();
-    private String          springVersion = SpringVersion.getVersion();
-    private String          encoding = ServerStatus.getEncoding();
-    private String          fileEncoding = ServerStatus.getFileEncoding();
-    private String          userDir = ServerStatus.getUserDir();
-    private String          systemHome = ServerStatus.getSystemHome();
-    private String          language = ServerStatus.getLanguage();
-    private String          fileSeparator = ServerStatus.getFileSeparator();
-    private String          systemUsername = ServerStatus.getServerUsername();
-    protected String        cmdCharset = ServerStatus.getEncoding();
+    private String          springVersion     = SpringVersion.getVersion();
+    private String          encoding          = ServerStatus.getEncoding();
+    private String          fileEncoding      = ServerStatus.getFileEncoding();
+    private String          userDir           = ServerStatus.getUserDir();
+    private String          systemHome        = ServerStatus.getSystemHome();
+    private String          language          = ServerStatus.getLanguage();
+    private String          fileSeparator     = ServerStatus.getFileSeparator();
+    private String          systemUsername    = ServerStatus.getServerUsername();
+    protected String        cmdCharset        = ServerStatus.getEncoding();
 
     public BaseSystemInfoService() {
         if (ServerStatus.isUbuntu()) { betriebssystem = Betriebssystem.UBUNTU; betriebssystemVersion = ServerStatus.getBetriebssystem(); }
@@ -193,6 +196,62 @@ public class BaseSystemInfoService {
             return m.group(1);
         }
         return javaVersionNumber;
+    }
+
+    public String getServiceName() {
+        return "Spring-Boot-Service";
+    }
+
+    public LeTToServiceInfoDto getLeTToServiceInfo() {
+        LeTToServiceInfoDto dto = new LeTToServiceInfoDto(
+                hostname,
+                getLocalIP(),
+                getHostname(),               // Container-Name
+                getServiceName(),            // Korrekter Name des Services
+                true,                        // Health-Zustand
+                getStartTimeDateInteger(),
+                new ArrayList<Long>(),       // Zeitpunkte der letzten Service-Starts als Date-Integer
+                Datum.nowDateInteger(),
+                (long)getUpTime(),           // korrrekte Zeit wie lange das Service läuft
+                0,                           // Dauer (in Sekunden) wie lange das Service beim vorherigen Start bis zum Neustart gelaufen ist
+                0,                           // http
+                0,                           // ajp
+                0,                           // https
+                0,                           // debug
+                "",                          // Version
+                getBetriebssystem().toString(),
+                getBetriebssystemVersion(),
+                getLinuxDistribution(),
+                getLinuxRelease(),
+                getPid(),
+                isDebugMode(),
+                isWindows(),
+                isLinux(),
+                isUbuntu(),
+                isMac(),
+                getJavaVersion(),
+                getJavaVendor(),
+                getJavaVersionNumber(),
+                getJavaSpecificationVersion(),
+                getJavaMajorVersion(),
+                getJavaMinorVersion(),
+                getSpringVersion(),
+                getEncoding(),
+                getFileEncoding(),
+                getUserDir(),
+                getSystemHome(),
+                getLanguage(),
+                getFileSeparator(),
+                getSystemUsername(),
+                getCmdCharset(),
+                getCPUanzahl(),
+                getMemoryInit(),
+                getMemoryUsed(),
+                getMemoryMax(),
+                getMemoryInitCommited(),
+                new HashMap<>()             // zusätzliche Infos über das Service
+        );
+        return dto;
     }
 
 }
