@@ -202,6 +202,27 @@ public class BaseSystemInfoService {
         return "Spring-Boot-Service";
     }
 
+    public int getDebugPort() {
+        try {
+            List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+            for (String arg : arguments) {
+                if (arg.startsWith("-agentlib:jdwp")) {
+                    String[] parts = arg.split(",");
+                    for (String part : parts) {
+                        if (part.startsWith("address=")) {
+                            String address = part.split("=")[1];
+                            if (address.contains(":")) {
+                                address = address.split(":")[1];
+                            }
+                            return Integer.parseInt(address);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {}
+        return 0; // Kein Debugging-Port gefunden
+    }
+
     public LeTToServiceInfoDto getLeTToServiceInfo() {
         LeTToServiceInfoDto dto = new LeTToServiceInfoDto(
                 hostname,
@@ -212,13 +233,13 @@ public class BaseSystemInfoService {
                 getStartTimeDateInteger(),
                 new ArrayList<Long>(),       // Zeitpunkte der letzten Service-Starts als Date-Integer
                 Datum.nowDateInteger(),
-                (long)getUpTime(),           // korrrekte Zeit wie lange das Service läuft
+                (long)(getUpTime()/1000),    // korrekte Zeit wie lange das Service läuft
                 0,                           // Dauer (in Sekunden) wie lange das Service beim vorherigen Start bis zum Neustart gelaufen ist
                 0,                           // http
                 0,                           // ajp
                 0,                           // https
-                0,                           // debug
-                "",                          // Version
+                getDebugPort(),              // debug
+                ServerStatus.getRevision(),                          // Version
                 getBetriebssystem().toString(),
                 getBetriebssystemVersion(),
                 getLinuxDistribution(),
