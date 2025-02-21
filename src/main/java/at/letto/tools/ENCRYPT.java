@@ -157,6 +157,26 @@ public class ENCRYPT {
 		return hash;
 	}
 
+	public static String sha256(String s) {
+		String hash = "";
+		try {
+			byte[] digest = MessageDigest
+					.getInstance("SHA-256")
+					.digest(s.getBytes());
+			for (int i = 0; i < digest.length; i++) {
+				String p = (Integer.toHexString(digest[i] & 0xff));
+				if (p.length()<2) p = "0"+p;
+				hash += p;
+			}
+		} catch (Exception ex) {}
+		return hash;
+	}
+
+	public static void main(String[] args) {
+		String md5 = "md5";
+		System.out.println(sha256(md5));
+	}
+
 	private static final byte[] SALT = {
 			(byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
 			(byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
