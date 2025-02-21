@@ -149,13 +149,14 @@
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
         <!-- Wegen Spring-Boot wird 2.11.0 genommen -->
-        <commons-io.version>2.11.0</commons-io.version>
+        <commons-io.version>2.18.0</commons-io.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-fileupload2-javax.version>2.0.0-M2</commons-fileupload2-javax.version>
         <unbescape.version>1.1.6.RELEASE</unbescape.version>
         <juniversalchardet.version>1.0.3</juniversalchardet.version>
         <slf4j-simple.version>2.0.16</slf4j-simple.version>
         <log4j-core.version>2.20.0</log4j-core.version>
+        <logback-core.version>1.5.13</logback-core.version>
     </properties><!-- automatisch ersetzt aus shared properties -->
 
     <dependencies>
