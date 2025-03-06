@@ -4,12 +4,12 @@ public class SetupEndpoint {
     public static final String LeTToIcon = "lettoTT";   // .svg .png .ico
 
     /* Endpoints für die Verwendung als lokale Setup-Instanz direkt am Host */
-    public static final String SETUP_LOCAL  = "/setup";
-    public static final String SETUP_DOCKER = "/config";
-    public static final String LOCAL_ERROR  = SETUP_LOCAL+"/error";
-    public static final String DOCKER_ERROR = SETUP_DOCKER+"/error";
-    public static final String LOCAL_OPEN   = SETUP_LOCAL+"/open";
-    public static final String DOCKER_OPEN  = SETUP_DOCKER+"/open";
+    public static final String SETUP_LOCAL           = "/setup";
+    public static final String SETUP_DOCKER          = "/config";
+    public static final String LOCAL_ERROR           = SETUP_LOCAL+"/error";
+    public static final String DOCKER_ERROR          = SETUP_DOCKER+"/error";
+    public static final String LOCAL_OPEN            = SETUP_LOCAL+"/open";
+    public static final String DOCKER_OPEN           = SETUP_DOCKER+"/open";
     public static final String LOCAL_CSS             = LOCAL_OPEN+"/css";
     public static final String DOCKER_CSS            = DOCKER_OPEN+"/css";
     public static final String LOCAL_IMAGES          = LOCAL_OPEN+"/images";

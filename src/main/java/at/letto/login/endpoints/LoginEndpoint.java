@@ -43,14 +43,14 @@ public class LoginEndpoint {
     public static final String login       = OPEN + "/login";        //Login
     public static final String loginletto  = OPEN + "/loginletto";   // Login mit LeTTo-User
     public static final String logout      = OPEN + "/logout";
-    public static final String jwtlogin    = OPENAPI  + "/jwtlogin";     // JWT-Token-Login
-    public static final String jwttemptoken= OPENAPI  + "/jwttemptoken"; // JWT-Token aus einem TempToken erzeugen
+    public static final String jwtlogin            = OPENAPI  + "/jwtlogin";     // JWT-Token-Login
+    public static final String jwttemptoken        = OPENAPI  + "/jwttemptoken"; // JWT-Token aus einem TempToken erzeugen
     public static final String jwtgettemptokenuri  = OPENAPI  + "/jwtgettemptokenuri"; // TempToken aus einem JWT Token erzeugen und eine URI damit liefern
-    public static final String jwtgettemptoken  = API  + "/jwtgettemptoken"; // TempToken aus einem JWT Token erzeugen
-    public static final String logincheck  = OPEN + "/logincheck";
-    public static final String logoutletto = OPEN + "/logoutletto";
-    public static final String templogin = OPEN+"/templogin";
-    public static final String setpassword = OPEN+"/setpassword";
+    public static final String jwtgettemptoken     = API  + "/jwtgettemptoken"; // TempToken aus einem JWT Token erzeugen
+    public static final String logincheck          = OPEN + "/logincheck";
+    public static final String logoutletto         = OPEN + "/logoutletto";
+    public static final String templogin           = OPEN+"/templogin";
+    public static final String setpassword         = OPEN+"/setpassword";
 
     public static final String getServerToken        = AUTH_ADMIN+"/getservertoken";
     public static final String serverTokenList       = AUTH_ADMIN+"/servertokenlist";

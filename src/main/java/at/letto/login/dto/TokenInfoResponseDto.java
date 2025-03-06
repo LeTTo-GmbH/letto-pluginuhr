@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.HashMap;
 
 @Data
 @NoArgsConstructor
@@ -55,6 +56,9 @@ public class TokenInfoResponseDto {
 
     /** Wenn der Token ein Alias-Token ist, der Benutzername welcher sich ursrpünglich eingeloggt hat */
     String originuser;
+
+    /** Zusätzliche Infos über den Token wie zB. Abos als JSON etc. */
+    HashMap<String,String> infos;
 
     boolean valid=false;
     boolean admin=false;
