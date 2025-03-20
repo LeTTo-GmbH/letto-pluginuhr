@@ -52,7 +52,7 @@ public class PluginDto {
 
     public PluginDto(String params, PluginService pi, PluginQuestionDto q, int nr) {
         setSize(params);
-        tagName = pi.getName() + "_" + nr;
+        tagName = q.getId() + "_" + pi.getName() + "_" + nr;
         try {
             ImageBase64Dto imageBase64Dto = pi.getImageDto(params,q);
             String src="data:image/png;base64,"+imageBase64Dto.getBase64Image();
@@ -66,9 +66,9 @@ public class PluginDto {
         return JSON.objToJson(this);
     }
 
-    public PluginDto(String params, String name, int nr) {
+    public PluginDto(String params, String name, int nr, long idQuestion) {
         setSize(params);
-        tagName = name + "_" + nr;
+        tagName = idQuestion + "_" + name + "_" + nr;
     }
 
     @JsonIgnore
