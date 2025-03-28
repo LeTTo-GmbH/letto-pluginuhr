@@ -1,8 +1,8 @@
 package at.letto.login.dto.user;
 
-import lombok.*;
+import lombok.Data;
 
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
+@Data
 public class UserKeyDto extends UserBaseDto {
 
     private Integer idSchule;
