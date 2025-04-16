@@ -83,7 +83,7 @@ public class JSON {
             T erg = getMapper().readValue(json, tClass);
             return erg;
         } catch (JsonProcessingException e) {
-            System.out.println("JSON kann nicht in Klasse "+tClass.toString()+" geparst werden!!");
+//            System.out.println("JSON kann nicht in Klasse "+tClass.toString()+" geparst werden!!");
             //e.printStackTrace();
             return null;
         }
@@ -94,7 +94,7 @@ public class JSON {
             T erg = getMapper().readValue(json, typeRef);
             return erg;
         } catch (JsonProcessingException e) {
-            System.out.println("JSON kann nicht in Klasse "+typeRef.getType().toString()+" geparst werden!!");
+//            System.out.println("JSON kann nicht in Klasse "+typeRef.getType().toString()+" geparst werden!!");
             // e.printStackTrace();
             return null;
         }
@@ -111,7 +111,7 @@ public class JSON {
             Object erg = getMapper().readValue(json, Class.forName(tClass));
             return erg;
         } catch (JsonProcessingException | ClassNotFoundException e) {
-            System.out.println("JSON kann nicht in Klasse "+tClass+" geparst werden!!");
+//            System.out.println("JSON kann nicht in Klasse "+tClass+" geparst werden!!");
             // e.printStackTrace();
             return null;
         }

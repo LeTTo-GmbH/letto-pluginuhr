@@ -1,13 +1,18 @@
 package at.letto.tools.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static at.letto.tools.rest.ResponseTools.loadToken;
 
 public class ResponseToolsObject {
+
+    private Logger logger = LoggerFactory.getLogger(ResponseToolsObject.class);
 
     private String serviceName;
     private String controllerName;
@@ -17,6 +22,7 @@ public class ResponseToolsObject {
     }
     
     private DtoAndMsg createServiceError(Exception e) {
+        logger.error(Arrays.toString(e.getStackTrace()));
         DtoAndMsg<Object> m = new DtoAndMsg<>(e);
         m.getMsg().setMeldung("Exception in: " + serviceName + "-" + controllerName);
         return m;
