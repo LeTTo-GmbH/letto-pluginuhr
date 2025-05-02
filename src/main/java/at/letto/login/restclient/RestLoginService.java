@@ -52,8 +52,8 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public LettoToken jwtLogin(String username, String password, String school, String jwtsecret) {
-        AuthenticationRequest request = new AuthenticationRequest(username, password, school);
+    public LettoToken jwtLogin(String username, String password, String school, String jwtsecret, String fingerprint) {
+        AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint);
         JWTTokenResponse response = post(LoginEndpoint.jwtlogin,request,JWTTokenResponse.class);
         if (response!=null && response.getToken()!=null)
             return new LettoToken(response.getToken(), jwtsecret);
@@ -61,8 +61,8 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public String jwtLogin(String username, String password, String school) {
-        AuthenticationRequest request = new AuthenticationRequest(username, password, school);
+    public String jwtLogin(String username, String password, String school, String fingerprint) {
+        AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint);
         JWTTokenResponse response = post(LoginEndpoint.jwtlogin,request,JWTTokenResponse.class);
         if (response!=null && response.getToken()!=null)
             return response.getToken();
@@ -123,8 +123,8 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public boolean tempLogin(String username, String tempPassword, String school) {
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, tempPassword, school);
+    public boolean tempLogin(String username, String tempPassword, String school, String fingerprint) {
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, tempPassword, school, fingerprint);
         String response = post(LoginEndpoint.templogin,authenticationRequest,String.class);
         return response.equalsIgnoreCase("ok");
     }
@@ -210,8 +210,8 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public String getUserToken(String serverTokenString, String userTokenFremd,String language, String backlink, boolean tempToken) {
-        GetUserTokenRequest request = new GetUserTokenRequest(serverTokenString, userTokenFremd, language, backlink, tempToken);
+    public String getUserToken(String serverTokenString, String userTokenFremd,String language, String backlink, boolean tempToken, String fingerprint) {
+        GetUserTokenRequest request = new GetUserTokenRequest(serverTokenString, userTokenFremd, language, backlink, tempToken, fingerprint);
         String response = post(LoginEndpoint.getUserToken,request,String.class);
         return response;
     }

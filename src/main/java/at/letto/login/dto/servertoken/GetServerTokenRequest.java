@@ -52,4 +52,5 @@ public class GetServerTokenRequest {
     /** Gültigkeitsdauer in Sekunden */
     private long expiration;
 
+
 }

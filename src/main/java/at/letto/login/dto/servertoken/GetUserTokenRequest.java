@@ -25,4 +25,7 @@ public class GetUserTokenRequest {
     /** bei True wird ein TempToken, ansonsten ein normaler Token erzeugt */
     private boolean tempToken;
 
+    /** Fingerprint des Browsers mit dem zugegriffen wird */
+    private String fingerprint="";
+
 }

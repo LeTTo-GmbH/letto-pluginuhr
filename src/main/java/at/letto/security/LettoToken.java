@@ -108,10 +108,11 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
+                      String  fingerprint,
                       List<String> roles) {
         this(  secret, SecurityConstants.TOKEN_ISSUER, SecurityConstants.TOKEN_AUDIENCE,
                 expiration,username,vorname,nachname,activDirectoryname,
-                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,roles
+                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,fingerprint,roles
         );
     }
 
@@ -130,9 +131,10 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
+                      String  fingerprint,
                       List<String> roles) {
         this(secret, issuer, audience, expiration, username, vorname, nachname, activDirectoryname, email,
-             sprache, idUser, idSchule, school, lettoUri, serverRestkey, roles, null);
+             sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, null);
     }
 
     public LettoToken(String  secret,
@@ -150,6 +152,7 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
+                      String  fingerprint,
                       List<String> roles,
                       HashMap<String,String> payload) {
         final Date createdDate = new Date();
@@ -202,6 +205,7 @@ public class LettoToken {
             getSchool(),
             getLettoUri(),
             getServerRestkey(),
+            getFingerprint(),
             getRoles(),
             getPayload()
         );
@@ -332,6 +336,14 @@ public class LettoToken {
     public String getServerRestkey() {
         try {
             return claims.get("serverRestkey", String.class);
+        } catch (Exception ex) {}
+        return null;
+    }
+
+    /** @return Liefert den Restkey des Servers */
+    public String getFingerprint() {
+        try {
+            return claims.get("fingerprint", String.class);
         } catch (Exception ex) {}
         return null;
     }

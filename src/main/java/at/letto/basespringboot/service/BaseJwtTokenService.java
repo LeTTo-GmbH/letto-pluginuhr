@@ -46,6 +46,7 @@ public class BaseJwtTokenService {
                                          String  school,
                                          String  lettoUri,
                                          String  serverRestkey,
+                                         String  fingerprint,
                                          List<String> roles) {
         LettoToken lettoToken = new LettoToken(
                 secret,
@@ -61,6 +62,7 @@ public class BaseJwtTokenService {
                 school,
                 lettoUri,
                 serverRestkey,
+                fingerprint,
                 roles
         );
         return lettoToken;
@@ -81,6 +83,7 @@ public class BaseJwtTokenService {
                 lettoToken.getSchool(),
                 lettoToken.getLettoUri(),
                 lettoToken.getServerRestkey(),
+                lettoToken.getFingerprint(),
                 lettoToken.getRoles()
         );
         return newToken;
