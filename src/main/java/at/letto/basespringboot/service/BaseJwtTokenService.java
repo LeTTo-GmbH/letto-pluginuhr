@@ -70,7 +70,7 @@ public class BaseJwtTokenService {
 
     public LettoToken refreshToken(String token) {
         LettoToken lettoToken = new LettoToken(token, secret);
-        //TODO check ob der Token zu lange abgelaufen ist !!
+        if (!lettoToken.isValid() || !lettoToken.isTokenNotExpired()) return null;
         LettoToken newToken = generateLettoToken(
                 lettoToken.getUsername(),
                 lettoToken.getVorname(),
@@ -88,5 +88,12 @@ public class BaseJwtTokenService {
         );
         return newToken;
     }
+
+    public boolean tokenValidation(String token) {
+        LettoToken lettoToken = new LettoToken(token, secret);
+        return lettoToken.isValid();
+    }
+
+
 
 }

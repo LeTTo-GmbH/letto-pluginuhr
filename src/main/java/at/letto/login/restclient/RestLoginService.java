@@ -85,11 +85,36 @@ public class RestLoginService extends RestClient implements LoginService {
         return null;
     }
 
+    @Override
+    public boolean jwtLogout(String token) {
+        String response = post(LoginEndpoint.jwtlogout,token,String.class, token);
+        if (response!=null && response.equals("true"))
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean logout(String token, String username, String school) {
+        AuthenticationRequest request = new AuthenticationRequest(username, "", school, "");
+        String response = post(LoginEndpoint.userlogout,request,String.class, token);
+        if (response!=null && response.equals("true"))
+            return true;
+        return false;
+    }
+
     public String jwtRefreshGet(String token) {
         JWTTokenResponse response = get(LoginEndpoint.jwtrefresh,JWTTokenResponse.class, token);
         if (response!=null && response.getToken()!=null)
             return response.getToken();
         return null;
+    }
+
+    @Override
+    public boolean jwtValidate(String token) {
+        String response = get(LoginEndpoint.jwtvalidate,String.class, token);
+        if (response!=null && response.equals("true"))
+            return true;
+        return false;
     }
 
     @Override

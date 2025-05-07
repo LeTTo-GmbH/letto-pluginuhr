@@ -28,7 +28,10 @@ public class LoginEndpoint {
     public static final String SERVER      = API+"/server";
     public static final String OPENAPI     = API+"/open";
     public static final String jwtrefresh  = API + "/jwtrefresh";   // JWT-Token-Refresh
-    public static final String tokeninfo   = API + "/tokeninfo"; // liefert die Info über einen Token
+    public static final String jwtvalidate = API + "/jwtvalidate";
+    public static final String jwtlogout   = API + "/jwtlogout";    // JWT-Token-Logout
+    public static final String tokeninfo   = API + "/tokeninfo";    // liefert die Info über einen Token
+    public static final String userlogout  = API + "/userlogout";
     public static final String getaliastoken = TEACHER + "/getaliastoken"; // liefert einen Alias-Token eines anderen Benutzers
 
     /* ----------------------------------------------------------------------------------------------------

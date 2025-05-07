@@ -41,12 +41,35 @@ public interface LoginService {
     String jwtLogin(String username, String password, String school, String fingerprint);
 
     /**
+     * Führt einen Logout des Tokens durch und vernichtet den Token im Token-Store - danach ist kein Token-Refresh dieses Tokens mehr möglich!
+     * @param token      Token der ausgeloggt werden soll
+     * @return           true wenn der logout erfolgreich war, sonst false
+     */
+    boolean jwtLogout(String token);
+
+    /**
+     * Entfernt alle Tokens des Benutzers sodass kein Token-Refresh für diese Tokens mehr möglich ist!
+     * @param token        Token des Benutzers(Lehrer,Admin) der den Benutzer username ausloggen möchte
+     * @param username     Benutzername
+     * @param school       Schulenkennung welche auch in der URL verwendet wird (eindeutig am Server)
+     * @return             true wenn der logout erfolgreich war, sonst false
+     */
+    boolean logout(String token, String username, String school);
+
+    /**
      * Aktualisiert einen gültigen Token
      * @param lettoToken      Token der aktualisiert werden muss
      * @param jwtsecret  gemeinsames jwtsecret für den JWT-Token
      * @return           gültiger LeTTo-Token oder null
      */
     LettoToken jwtRefresh(LettoToken lettoToken, String jwtsecret);
+
+    /**
+     * Überprüft die Gültigkeit eines Tokens
+     * @param token      Token der geprüft werden muss
+     * @return           true wenn der Token gültig ist, sonst false
+     */
+    boolean jwtValidate(String token);
 
     /**
      * Aktualisiert einen gültigen Token

@@ -180,6 +180,7 @@ public class LettoToken {
                 .claim("lettoUri",lettoUri)
                 .claim("serverRestkey",serverRestkey)
                 .claim("payload",payload)
+                .claim("fingerprint",fingerprint)
                 .compact();
         this.claims = getAllClaimsFromToken();
     }
@@ -380,7 +381,7 @@ public class LettoToken {
         return null;
     }
 
-    /** @return Liefert eine Hashmap eines Wertes des Payloads */
+    /** @return Liefert einen Werte des Payloads */
     public String getPayload(String key) {
         try {
             return getPayload().get(key);

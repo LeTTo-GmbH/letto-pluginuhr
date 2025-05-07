@@ -61,7 +61,12 @@ public enum Schwierigkeit implements Selectable {
 	 */
 	public static List<Schwierigkeit> getSchwierigkeiten(SQMODE typ) {
 		Vector<Schwierigkeit> ret = new Vector<Schwierigkeit>();
-		for (Schwierigkeit a : Schwierigkeit.values()) 
+		if (typ.equals(SQMODE.SINGLECHOICE)) {
+			ret.add(Schwierigkeit.Normal);
+			ret.add(Schwierigkeit.HundertProz);
+			return ret;
+		}
+		for (Schwierigkeit a : Schwierigkeit.values())
 			if (a.qTyp==null || a.qTyp.equals(typ))
 				ret.add(a);
 		return ret;		
