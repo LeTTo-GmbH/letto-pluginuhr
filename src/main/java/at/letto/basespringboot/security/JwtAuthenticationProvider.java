@@ -17,11 +17,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtTokenService jwtService;
 
-//    @SuppressWarnings("unused")
-//    public JwtAuthenticationProvider() {
-//        this(null);
-//    }
-
     @Autowired
     public JwtAuthenticationProvider(JwtTokenService jwtService) {
         this.jwtService = jwtService;

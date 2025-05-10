@@ -14,6 +14,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filter to check the JWT token in the request header.
+ */
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
@@ -23,7 +26,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         final String requestHeader = request.getHeader(SecurityConstants.TOKEN_HEADER);
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
+            // Extract the token from the header
             String  authToken = requestHeader.substring(7);
+            // Create a LettoToken object from the token
             LettoToken lettoToken = new LettoToken(authToken,jwtSecret);
             JwtAuthentication authentication = new JwtAuthentication(lettoToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);

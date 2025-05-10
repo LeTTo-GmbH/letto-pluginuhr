@@ -1,11 +1,17 @@
 package at.letto.security;
 
 import at.letto.tools.ENCRYPT;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.*;
 import java.util.function.Function;
@@ -14,6 +20,7 @@ import java.util.function.Function;
  * Ein JWT-Token welcher in LeTTo verwendet wird als Objekt mit Methoden zur
  * Analyse des Tokens
  */
+@Getter
 public class LettoToken {
 
     /** globaler Administrator */
@@ -62,17 +69,28 @@ public class LettoToken {
     public static final String ROLE_CREATE_CATEGORY     = "createcategory";
 
     // JWT-Token als String
-    @Getter private  final String token;
+    private  final String token;
     // Secret welches für die Prüfung des Tokens verwendet wird
-    private final String secret;
-    //private final Key keyJwt;
+    // private final String secret;
+    // private final Key keyJwt;
 
     // Gibt an ob ein Token angelegt (false) oder empfangen und geprüft wird (true)
     private final boolean created;
     // Claims
-    private Claims claims = null;
+    private final DefaultClaims claims;
     // JWT
-    private Jwt jwt = null;
+    private final Jwt jwt;
+
+    @JsonCreator
+    public LettoToken(@JsonProperty("token") String token,
+                      @JsonProperty("created") boolean created,
+                      @JsonProperty("claims") DefaultClaims claims,
+                      @JsonProperty("jwt") Jwt jwt) {
+        this.token   = token;
+        this.created = created;
+        this.claims  = claims;
+        this.jwt     = jwt;
+    }
 
     private String checkSecret(String secret) {
         if (secret==null || secret.length()==0)
@@ -86,13 +104,9 @@ public class LettoToken {
 
     public LettoToken(String token, String secret) {
         this.token   = token;
-        this.secret=checkSecret(secret);
         this.created = false;
-        try {
-            this.claims = getAllClaimsFromToken();
-        } catch (Exception ex) {
-
-        }
+        this.claims  = (DefaultClaims)calcAllClaimsFromToken(secret);
+        this.jwt     = calcJwt(secret);
     }
 
     public LettoToken(String  secret,
@@ -117,6 +131,28 @@ public class LettoToken {
     }
 
     public LettoToken(String  secret,
+                      Long    expiration,
+                      String  username,
+                      String  vorname,
+                      String  nachname,
+                      String  activDirectoryname,
+                      String  email,
+                      String  sprache,
+                      Integer idUser,
+                      Integer idSchule,
+                      String  school,
+                      String  lettoUri,
+                      String  serverRestkey,
+                      String  fingerprint,
+                      List<String> roles,
+                      HashMap<String,String> payload) {
+        this(  secret, SecurityConstants.TOKEN_ISSUER, SecurityConstants.TOKEN_AUDIENCE,
+                expiration,username,vorname,nachname,activDirectoryname,
+                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,fingerprint,roles,payload
+        );
+    }
+
+    public LettoToken(String  secret,
                       String  issuer,
                       String  audience,
                       Long    expiration,
@@ -137,6 +173,28 @@ public class LettoToken {
              sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, null);
     }
 
+    public LettoToken(String secret, LettoTokenDto lettoTokenDto) {
+        this(   secret,
+                lettoTokenDto.getIssuer(),
+                lettoTokenDto.getAudience(),
+                lettoTokenDto.getIssuedAt(),
+                lettoTokenDto.getExpirationDate(),
+                lettoTokenDto.getUsername(),
+                lettoTokenDto.getVorname(),
+                lettoTokenDto.getNachname(),
+                lettoTokenDto.getActivDirectoryname(),
+                lettoTokenDto.getEmail(),
+                lettoTokenDto.getSprache(),
+                lettoTokenDto.getIdUser(),
+                lettoTokenDto.getIdSchule(),
+                lettoTokenDto.getSchool(),
+                lettoTokenDto.getLettoUri(),
+                lettoTokenDto.getServerRestkey(),
+                lettoTokenDto.getFingerprint(),
+                lettoTokenDto.getRoles(),
+                lettoTokenDto.getPayload());
+    }
+
     public LettoToken(String  secret,
                       String  issuer,
                       String  audience,
@@ -155,19 +213,63 @@ public class LettoToken {
                       String  fingerprint,
                       List<String> roles,
                       HashMap<String,String> payload) {
-        final Date createdDate = new Date();
-        final Date expirationDate = calculateExpirationDate(createdDate, expiration);
-        this.secret=checkSecret(secret);
+        this(secret, issuer, audience, new Date(), expiration , username, vorname, nachname, activDirectoryname, email,
+             sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, payload);
+    }
+
+    private LettoToken(String  secret,
+                      String  issuer,
+                      String  audience,
+                      Date    createDate,
+                      Long    expiration,
+                      String  username,
+                      String  vorname,
+                      String  nachname,
+                      String  activDirectoryname,
+                      String  email,
+                      String  sprache,
+                      Integer idUser,
+                      Integer idSchule,
+                      String  school,
+                      String  lettoUri,
+                      String  serverRestkey,
+                      String  fingerprint,
+                      List<String> roles,
+                      HashMap<String,String> payload) {
+        this(secret, issuer, audience, createDate, calculateExpirationDate(createDate, expiration) ,
+             username, vorname, nachname, activDirectoryname, email,
+             sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, payload);
+    }
+
+    public LettoToken(String  secret,
+                      String  issuer,
+                      String  audience,
+                      Date    createDate,
+                      Date    expirationDate,
+                      String  username,
+                      String  vorname,
+                      String  nachname,
+                      String  activDirectoryname,
+                      String  email,
+                      String  sprache,
+                      Integer idUser,
+                      Integer idSchule,
+                      String  school,
+                      String  lettoUri,
+                      String  serverRestkey,
+                      String  fingerprint,
+                      List<String> roles,
+                      HashMap<String,String> payload) {
         this.created = true;
         this.token   = Jwts.builder()
                 .setClaims(new HashMap<>())
                 .setSubject(username)
-                .setIssuedAt(createdDate)
+                .setIssuedAt(createDate)
                 .setExpiration(expirationDate)
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
                 .setIssuer(issuer)
                 .setAudience(audience)
-                .signWith(SignatureAlgorithm.HS512, this.secret)
+                .signWith(SignatureAlgorithm.HS512, checkSecret(secret))
                 .claim("idschule",idSchule)
                 .claim("roles",roles)
                 .claim("vorname",vorname)
@@ -182,7 +284,8 @@ public class LettoToken {
                 .claim("payload",payload)
                 .claim("fingerprint",fingerprint)
                 .compact();
-        this.claims = getAllClaimsFromToken();
+        this.claims  = (DefaultClaims)calcAllClaimsFromToken(secret);
+        this.jwt     = calcJwt(secret);
     }
 
     /**
@@ -218,11 +321,12 @@ public class LettoToken {
         return this.getToken();
     }
 
-    private Date calculateExpirationDate(Date createdDate, Long expiration) {
+    private static Date calculateExpirationDate(Date createdDate, Long expiration) {
         if (expiration==null || expiration<1) expiration = SecurityConstants.EXPIRATION_TIME;
         return new Date(createdDate.getTime() + expiration);
     }
 
+    @JsonIgnore
     /** @return gibt an wie lange der Token noch gültig ist */
     public long getValidMillis() {
         try {
@@ -232,6 +336,7 @@ public class LettoToken {
         return -1;
     }
 
+    @JsonIgnore
     /** @return Liefert den Benutzernamen welcher im Token gespeichert wurde */
     public String getUsername() {
         try {
@@ -240,6 +345,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert das Datum an dem der Token abläuft */
     public Date getExpirationDate() {
         try {
@@ -248,6 +354,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert das Datum an dem der Token erzeugt wurde */
     public Date getCreatedDate() {
         try {
@@ -256,11 +363,13 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert die id eines Users  */
     public Integer getIdUser() {
         return getId();
     }
 
+    @JsonIgnore
     /** @return Liefert die id der Schule  */
     public Integer getIdSchule() {
         try {
@@ -269,6 +378,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert die id des Users  */
     public Integer getId() {
         try {
@@ -277,6 +387,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Vornamen des Users  */
     public String getVorname() {
         try {
@@ -285,6 +396,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Nachnamen des Users  */
     public String getNachname() {
         try {
@@ -293,6 +405,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Activ-Directory-Namen des Users  */
     public String getActiveDirectoryName() {
         try {
@@ -301,6 +414,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert die Email-Adresse des Users  */
     public String getEmail() {
         try {
@@ -309,6 +423,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert die Spracheinstellung des Users  */
     public String getSprache() {
         try {
@@ -317,6 +432,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Kurznamen der Schule welcher auch in der URI zur Identifikation verwendet wird */
     public String getSchool() {
         try {
@@ -325,6 +441,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert die URI der Schule */
     public String getLettoUri() {
         try {
@@ -333,6 +450,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Restkey des Servers */
     public String getServerRestkey() {
         try {
@@ -341,6 +459,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Restkey des Servers */
     public String getFingerprint() {
         try {
@@ -349,6 +468,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Erzeuger des Tokens  */
     public String getIssuer() {
         try {
@@ -357,6 +477,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert den Zuständigkeitsbereich des Tokens */
     public String getAudience() {
         try {
@@ -365,6 +486,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert eine Liste aller Rollen des Benutzers */
     public List<String> getRoles() {
         try {
@@ -373,6 +495,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert eine Hashmap des Payloads */
     public HashMap<String,String> getPayload() {
         try {
@@ -381,6 +504,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert einen Werte des Payloads */
     public String getPayload(String key) {
         try {
@@ -389,6 +513,7 @@ public class LettoToken {
         return null;
     }
 
+    @JsonIgnore
     /** @return Liefert alle Rollen des Benutzers als Array von Strings */
     public String[] getRolesArray() {
         List<String> roles = getRoles();
@@ -401,30 +526,38 @@ public class LettoToken {
         return new String[0];
     }
 
-    private <T> T getClaimFromToken(Function<Claims, T> claimsResolver) {
+    /*private <T> T getClaimFromToken(Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken();
         return claimsResolver.apply(claims);
-    }
+    }*/
 
-
-
-    private Claims getAllClaimsFromToken() {
-        if (claims==null)
-            claims = Jwts.parserBuilder().setSigningKey(secret)
+    private Claims calcAllClaimsFromToken(String secret) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(checkSecret(secret))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        return claims;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     /** @return Liefert eine Java-Web-Token-Darstellung des LeTTo-Tokens */
-    public Jwt getJwt() {
-        if (jwt==null)
-//            jwt = Jwts.parser().setSigningKey(secret).parse(token);
-             jwt = Jwts.parserBuilder().setSigningKey(secret).build().parse(token);
-        return jwt;
+    public Jwt calcJwt(String secret) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(checkSecret(secret)).build().parse(token);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
+    @JsonIgnore
+    /** @return Liefert eine Java-Web-Token-Darstellung des LeTTo-Tokens */
+    public Jwt getJwt() {
+       return jwt;
+    }
+
+    @JsonIgnore
     /** @return gibt an ob der Token noch gültig ist */
     public boolean isTokenNotExpired() {
         try {
@@ -434,6 +567,7 @@ public class LettoToken {
         return false;
     }
 
+    @JsonIgnore
     /** @return gibt an ob der Token gültige Inhalte hat, aber nicht ob er noch nicht abgelaufen ist ( siehe isTokenNotExpired ) */
     public boolean isValid() {
         return claims!=null;
@@ -457,6 +591,7 @@ public class LettoToken {
         return false;
     }
 
+    @JsonIgnore
     /** @return Wenn der Token ein Alias-Token ist, der Benutzername welcher sich ursrpünglich eingeloggt hat, andernfalls ein Leerstring. */
     public String getOriginUser() {
         for (String r : getRolesArray()) {
@@ -465,20 +600,35 @@ public class LettoToken {
         }
         return "";
     }
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Admin-Rolle hat */
     public boolean isAdmin()         { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_ADMIN); }
+
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Global-Rolle hat */
     public boolean isGlobal()        { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_GLOBAL); }
+
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Teacher-Rolle hat */
     public boolean isTeacher()       { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_TEACHER); }
+
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Student-Rolle hat */
     public boolean isStudent()       { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_STUDENT); }
+
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Paying-Student-Rolle hat */
     public boolean isPayingStudent() { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_PAYINGSTUDENT); }
+
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Multiple-Login-Rolle hat */
     public boolean isMultipleLogin() { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_MULTIPLE_LOGIN); }
+
+    @JsonIgnore
     /** @return true wenn der Benutzer nicht disabled ist und die Extern-Rolle hat */
     public boolean isExtern()        { return !hasRole(ROLE_DISABLED) && hasRole(ROLE_EXTERN); }
+
+    @JsonIgnore
     /** @return true wenn es sich um einen Alias-Benutzer handelt - d.h. wenn sich ein Lehrer oder Admin als anderer User verkleidet hat */
     public boolean isAlias()         { return getOriginUser().length()>0; }
 

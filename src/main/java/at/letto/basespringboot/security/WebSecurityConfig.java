@@ -1,6 +1,7 @@
 package at.letto.basespringboot.security;
 
 import at.letto.basespringboot.config.BaseMicroServiceConfiguration;
+import at.letto.login.restclient.RestLoginService;
 import at.letto.restclient.endpoint.BaseEndpoints;
 import at.letto.restclient.endpoint.EndpointInterface;
 import at.letto.security.SecurityConstants;
@@ -58,6 +59,7 @@ public class WebSecurityConfig {
         mc.webSecurityConfig = this;
         setJwtSecret(mc.getJwtSecret(), mc.getJwtExpiration());
         this.endpoint= endpoint;
+        RestLoginService restLoginService = new RestLoginService(mc.getLoginServiceUri());
         /*userInfoService.loadUserList(mc.getUserGastPassword(), "gast",
                 mc.getUserUserPassword(), "gast,user",
                 mc.getUserAdminPassword(), "gast,user,admin"
