@@ -51,6 +51,8 @@ public class RestLoginService extends RestClient implements LoginService {
         return rev;
     }
 
+    /**
+    @Deprecated
     @Override
     public LettoToken jwtLogin(String username, String password, String school, String jwtsecret, String fingerprint) {
         AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint);
@@ -58,7 +60,7 @@ public class RestLoginService extends RestClient implements LoginService {
         if (response!=null && response.getToken()!=null)
             return new LettoToken(response.getToken(), jwtsecret);
         return null;
-    }
+    }*/
 
     @Override
     public String jwtLogin(String username, String password, String school, String fingerprint) {
@@ -70,11 +72,26 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
+    public LettoToken jwtLettoLogin(String username, String password, String school, String fingerprint) {
+        AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint);
+        LettoToken response = post(LoginEndpoint.jwtlettologin,request,LettoToken.class);
+        return response;
+    }
+
+    /*
+    @Deprecated
+    @Override
     public LettoToken jwtRefresh(LettoToken token, String secret) {
         JWTTokenResponse response = post(LoginEndpoint.jwtrefresh,token.getToken(),JWTTokenResponse.class, token);
         if (response!=null && response.getToken()!=null)
             return new LettoToken(response.getToken(), secret);
         return null;
+    }*/
+
+    @Override
+    public LettoToken jwtRefresh(LettoToken lettoToken) {
+        LettoToken response = get(LoginEndpoint.lettotokenrefresh,LettoToken.class, lettoToken.getToken());
+        return response;
     }
 
     @Override
@@ -118,13 +135,19 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public String jwtGetTempTokenUri(LettoToken lettoToken, String secret) {
+    public LettoToken lettoTokenFromTokenString(String token) {
+        LettoToken response = get(LoginEndpoint.jwtgetlettotoken,LettoToken.class, token);
+        return response;
+    }
+
+    @Override
+    public String jwtGetTempTokenUri(LettoToken lettoToken) {
         String response = post(LoginEndpoint.jwtgettemptokenuri,lettoToken.getToken(),String.class, lettoToken);
         return response;
     }
 
     @Override
-    public String jwtGetTempToken(LettoToken lettoToken, String secret) {
+    public String jwtGetTempToken(LettoToken lettoToken) {
         String response = post(LoginEndpoint.jwtgettemptoken,lettoToken.getToken(),String.class, lettoToken);
         return response;
     }

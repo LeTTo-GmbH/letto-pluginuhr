@@ -1,18 +1,9 @@
 package at.letto.login.restclient;
 
-import at.letto.login.dto.AuthenticationRequest;
-import at.letto.login.dto.SetPasswordRequest;
 import at.letto.login.dto.TokenInfoResponseDto;
 import at.letto.login.dto.servertoken.*;
-import at.letto.login.endpoints.LoginEndpoint;
 import at.letto.security.LettoToken;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Service für die Authentifikation von Benutzern
@@ -27,11 +18,14 @@ public interface LoginService {
      * @param jwtsecret gemeinsames Secret für den JWT-Token
      * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
      * @return          gültiger LeTTo-Token oder null
-     */
+     * @deprecated      nimm jwtLogin oder jwtLettoLogin
+     *
+    @Deprecated
     LettoToken jwtLogin(String username, String password, String school, String jwtsecret, String fingerprint);
+    */
 
     /**
-     * Prüft Benutzernamen und Passwort über das Loginservice und checkt den gelieferten Token mit dem Secret
+     * Prüft Benutzernamen und Passwort über das Loginservice
      * @param username  Benutzername
      * @param password  Passwort unverschlüsselt
      * @param school    Schulkennung welche auch in der URL verwendet wird (eindeutig am Server)
@@ -39,6 +33,16 @@ public interface LoginService {
      * @return          gültiger token als String oder null
      */
     String jwtLogin(String username, String password, String school, String fingerprint);
+
+    /**
+     * Prüft Benutzernamen und Passwort über das Loginservice und liefert einen LettoToken zurück
+     * @param username  Benutzername
+     * @param password  Passwort unverschlüsselt
+     * @param school    Schulkennung welche auch in der URL verwendet wird (eindeutig am Server)
+     * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @return          gültiger LettoToken oder null
+     */
+    LettoToken jwtLettoLogin(String username, String password, String school, String fingerprint);
 
     /**
      * Führt einen Logout des Tokens durch und vernichtet den Token im Token-Store - danach ist kein Token-Refresh dieses Tokens mehr möglich!
@@ -58,11 +62,20 @@ public interface LoginService {
 
     /**
      * Aktualisiert einen gültigen Token
-     * @param lettoToken      Token der aktualisiert werden muss
+     * @param lettoToken Token der aktualisiert werden muss
      * @param jwtsecret  gemeinsames jwtsecret für den JWT-Token
      * @return           gültiger LeTTo-Token oder null
-     */
+     *
+    @Deprecated
     LettoToken jwtRefresh(LettoToken lettoToken, String jwtsecret);
+    */
+
+    /**
+     * Aktualisiert einen gültigen Token
+     * @param lettoToken Token der aktualisiert werden muss
+     * @return           gültiger LeTTo-Token oder null
+     */
+    LettoToken jwtRefresh(LettoToken lettoToken);
 
     /**
      * Überprüft die Gültigkeit eines Tokens
@@ -70,6 +83,13 @@ public interface LoginService {
      * @return           true wenn der Token gültig ist, sonst false
      */
     boolean jwtValidate(String token);
+
+    /**
+     * Liefert einen kompletten LettoToken aus einem Tokenstring wenn der Token gültig ist
+     * @param token     Token der geprüft werden muss
+     * @return          gültiger LeTTo-Token oder null
+     */
+    LettoToken lettoTokenFromTokenString(String token);
 
     /**
      * Aktualisiert einen gültigen Token
@@ -88,17 +108,16 @@ public interface LoginService {
 
     /**
      * @param lettoToken gültiger Token
-     * @param jwtsecret  gemeinsames jwtsecret für den JWT-Token
      * @return Liefert eine URI mit einem temporären Token zur Weiterleitung an LeTTo
      */
-    String jwtGetTempTokenUri(LettoToken lettoToken, String jwtsecret);
+    String jwtGetTempTokenUri(LettoToken lettoToken);
 
     /**
      * Liefert aus einem gültigen Token einen Temptoken für einen neuen refreshten Token
      * @param lettoToken  gültiger Token
      * @return            Temptoken
      */
-    String jwtGetTempToken(LettoToken lettoToken, String jwtsecret);
+    String jwtGetTempToken(LettoToken lettoToken);
 
     /**
      * @param token gültiger Token
@@ -212,7 +231,7 @@ public interface LoginService {
     /**
      * Erzeugt einen neuen UserToken auf dem Remote-Server mit dem auf den Remotserver zugegriffen werden kann
      * @param userTokenRequestDto  ServerToken für die Verbindung zum Fremdserver und Benutzerdaten
-     * @return
+     * @return UserToken auf dem Remote-Server
      */
     String getUserTokenDirect(UserTokenRequestDto userTokenRequestDto);
 
