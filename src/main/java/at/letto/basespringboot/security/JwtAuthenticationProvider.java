@@ -1,5 +1,8 @@
 package at.letto.basespringboot.security;
 
+import at.letto.basespringboot.config.BaseMicroServiceConfiguration;
+import at.letto.databaseclient.service.BaseLettoRedisDBService;
+import at.letto.login.restclient.RestLoginService;
 import at.letto.security.LettoToken;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
@@ -15,16 +18,22 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
-    private final JwtTokenService jwtService;
-
-    @Autowired
-    public JwtAuthenticationProvider(JwtTokenService jwtService) {
+    @Autowired private JwtTokenService jwtService;
+    /*@Autowired public JwtAuthenticationProvider(JwtTokenService jwtService) {
         this.jwtService = jwtService;
-    }
+    }*/
+    @Autowired private BaseMicroServiceConfiguration baseMicroServiceConfiguration;
 
+    /**
+     * Initializes the JWT service with the secret and expiration time.     *
+     * @param secret          The secret key used for signing the JWT.
+     * @param jwtExpiration   The expiration time for the JWT in milliseconds.
+     */
     public void init(String secret, long jwtExpiration) {
         jwtService.setExpiration(jwtExpiration);
         jwtService.setSecret(secret);
+        RestLoginService restLoginService = new RestLoginService(baseMicroServiceConfiguration.getLoginServiceUri());
+        jwtService.setRestLoginService(restLoginService);
     }
 
     @Override

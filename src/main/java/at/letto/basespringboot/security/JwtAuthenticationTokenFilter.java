@@ -15,12 +15,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Filter to check the JWT token in the request header.
+ * Filter to check the JWT token in the request header.<br>
+ * Speichert den LettoToken als Authentication-Objekt in der SecurityContext.<br>
  */
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Setter private String jwtSecret;
+    @Autowired private JwtTokenService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -29,7 +30,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             // Extract the token from the header
             String  authToken = requestHeader.substring(7);
             // Create a LettoToken object from the token
-            LettoToken lettoToken = new LettoToken(authToken,jwtSecret);
+            LettoToken lettoToken = jwtService.toLettoToken(authToken);
             JwtAuthentication authentication = new JwtAuthentication(lettoToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

@@ -69,7 +69,6 @@ public class WebSecurityConfig {
 
     public void setJwtSecret(String jwtSecret, long jwtExpiration) {
         jwtAuthenticationProvider.init(jwtSecret, jwtExpiration);
-        jwtAuthenticationFilter.setJwtSecret(jwtSecret);
     }
 
     @Bean

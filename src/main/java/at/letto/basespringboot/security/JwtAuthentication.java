@@ -7,6 +7,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.Collection;
 
+/**
+ * Authentication-Objekt mit einem LettoToken welches im SecurityContext gespeichert wird
+ */
 public class JwtAuthentication implements Authentication {
     private final LettoToken lettoToken;
 

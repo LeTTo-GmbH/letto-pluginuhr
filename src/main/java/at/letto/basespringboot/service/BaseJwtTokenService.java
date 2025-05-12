@@ -1,6 +1,5 @@
 package at.letto.basespringboot.service;
 
-import at.letto.basespringboot.config.BaseMicroServiceConfiguration;
 import at.letto.security.LettoToken;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +16,6 @@ public class BaseJwtTokenService {
     @Getter @Setter private String secret;
     /** Lebensdauer eines Tokens */
     @Getter @Setter private long expiration;
-
-
-//    public BaseJwtTokenService(String secret, long jwtExpiration) {
-//        this.secret = secret;
-//        this.expiration = jwtExpiration;
-//    }
 
     public LettoToken toLettoToken(String token) {
         return new LettoToken(token,secret);
@@ -93,7 +86,5 @@ public class BaseJwtTokenService {
         LettoToken lettoToken = new LettoToken(token, secret);
         return lettoToken.isValid();
     }
-
-
 
 }
