@@ -1,6 +1,7 @@
 package at.letto.basespringboot.security;
 
 import at.letto.basespringboot.config.BaseMicroServiceConfiguration;
+import at.letto.databaseclient.service.BaseLettoRedisDBService;
 import at.letto.login.restclient.RestLoginService;
 import at.letto.restclient.endpoint.BaseEndpoints;
 import at.letto.restclient.endpoint.EndpointInterface;

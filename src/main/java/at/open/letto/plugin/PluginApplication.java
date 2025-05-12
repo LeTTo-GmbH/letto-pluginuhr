@@ -10,7 +10,8 @@ import java.util.jar.Manifest;
 				"at.open.letto.plugin",
 				"at.letto.basespringboot.security",
 				"at.letto.basespringboot.config",
-				"at.letto.basespringboot.controller"
+				"at.letto.basespringboot.controller",
+				"at.letto.databaseclient"
 		})
 public class PluginApplication {
 

@@ -22,7 +22,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     /*@Autowired public JwtAuthenticationProvider(JwtTokenService jwtService) {
         this.jwtService = jwtService;
     }*/
-    @Autowired private BaseMicroServiceConfiguration baseMicroServiceConfiguration;
 
     /**
      * Initializes the JWT service with the secret and expiration time.     *
