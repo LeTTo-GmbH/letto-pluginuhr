@@ -29,10 +29,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
      * @param secret          The secret key used for signing the JWT.
      * @param jwtExpiration   The expiration time for the JWT in milliseconds.
      */
-    public void init(String secret, long jwtExpiration) {
+    public void init(String secret, long jwtExpiration, RestLoginService restLoginService) {
         jwtService.setExpiration(jwtExpiration);
         jwtService.setSecret(secret);
-        RestLoginService restLoginService = new RestLoginService(baseMicroServiceConfiguration.getLoginServiceUri());
         jwtService.setRestLoginService(restLoginService);
     }
 

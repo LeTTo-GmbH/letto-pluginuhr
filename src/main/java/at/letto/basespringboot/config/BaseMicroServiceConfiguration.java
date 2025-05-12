@@ -418,12 +418,12 @@ public abstract class BaseMicroServiceConfiguration implements MicroServiceConfi
 
     public void setJwtSecret(String jwtSecret) {
         this.jwtSecret = jwtSecret;
-        webSecurityConfig.setJwtSecret(jwtSecret,jwtExpiration);
+        webSecurityConfig.setJwtSecret(jwtSecret,jwtExpiration,this);
     }
 
     public void setJwtExpiration(long jwtExpiration) {
         this.jwtExpiration = jwtExpiration;
-        webSecurityConfig.setJwtSecret(jwtSecret,jwtExpiration);
+        webSecurityConfig.setJwtSecret(jwtSecret,jwtExpiration,this);
     }
 
     /**

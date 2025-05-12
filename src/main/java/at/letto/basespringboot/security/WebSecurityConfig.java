@@ -57,9 +57,8 @@ public class WebSecurityConfig {
 
     public void init(BaseMicroServiceConfiguration mc, EndpointInterface endpoint) {
         mc.webSecurityConfig = this;
-        setJwtSecret(mc.getJwtSecret(), mc.getJwtExpiration());
+        setJwtSecret(mc.getJwtSecret(), mc.getJwtExpiration(),mc);
         this.endpoint= endpoint;
-        RestLoginService restLoginService = new RestLoginService(mc.getLoginServiceUri());
         /*userInfoService.loadUserList(mc.getUserGastPassword(), "gast",
                 mc.getUserUserPassword(), "gast,user",
                 mc.getUserAdminPassword(), "gast,user,admin"
@@ -67,8 +66,9 @@ public class WebSecurityConfig {
         userInfoService.loadUserList();
     }
 
-    public void setJwtSecret(String jwtSecret, long jwtExpiration) {
-        jwtAuthenticationProvider.init(jwtSecret, jwtExpiration);
+    public void setJwtSecret(String jwtSecret, long jwtExpiration,BaseMicroServiceConfiguration mc) {
+        RestLoginService restLoginService = new RestLoginService(mc.getLoginServiceUri());
+        jwtAuthenticationProvider.init(jwtSecret, jwtExpiration,restLoginService);
     }
 
     @Bean
