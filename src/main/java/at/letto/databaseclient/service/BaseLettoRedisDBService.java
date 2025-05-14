@@ -219,7 +219,7 @@ public class BaseLettoRedisDBService {
             }
             redisTemplate(database).opsForValue().set(key, json, minutes, TimeUnit.MINUTES);
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             this.setError();
         }
         return false;
