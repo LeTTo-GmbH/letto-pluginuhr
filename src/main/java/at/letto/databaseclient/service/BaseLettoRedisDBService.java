@@ -1,6 +1,7 @@
 package at.letto.databaseclient.service;
 
 import at.letto.databaseclient.config.DatabaseConfiguration;
+import at.letto.security.LettoToken;
 import at.letto.tools.Datum;
 import at.letto.tools.JSON;
 import at.letto.tools.dto.LeTToServiceInfoDto;
@@ -181,16 +182,24 @@ public class BaseLettoRedisDBService {
 
     //----------------------------------------------------------------------------------------
     /** speichert ein Objekt mit einem key in der Standard-Datebank */
-    public void put(String key, Object value) {
-        put(databaseConnectionService.getRedisDefaultDatabase(),key, value);
+    public boolean put(String key, Object value) {
+        return put(databaseConnectionService.getRedisDefaultDatabase(),key, value);
     }
-    /** speichert ein Objekt mit einem key in einer Datenbank */
-    public void put(int database, String key, Object value) {
+    /** speichert ein Objekt mit einem key als JSON in einer Datenbank */
+    public boolean put(int database, String key, Object value) {
         try {
-            redisTemplate(database).opsForValue().set(key, value);
+            String json;
+            if (value instanceof String) {
+                json = (String) value;
+            } else {
+                json = JSON.objToJson(value);
+            }
+            redisTemplate(database).opsForValue().set(key, json);
+            return true;
         } catch (Exception e) {
             this.setError();
         }
+        return false;
     }
 
     /**
@@ -200,12 +209,20 @@ public class BaseLettoRedisDBService {
      * @param value
      * @param minutes   Anzahl an Minuten bis der Eintrag gelöscht wird
      */
-    public void put(int database, String key, Object value, int minutes) {
+    public boolean put(int database, String key, Object value, int minutes) {
         try {
-            redisTemplate(database).opsForValue().set(key, value, minutes, TimeUnit.MINUTES);
+            String json;
+            if (value instanceof String) {
+                json = (String) value;
+            } else {
+                json = JSON.objToJson(value);
+            }
+            redisTemplate(database).opsForValue().set(key, json, minutes, TimeUnit.MINUTES);
+            return true;
         } catch (Exception e) {
             this.setError();
         }
+        return false;
     }
 
     /** Erhöht der Fehlerzähler und setzt redisOK auf false, wenn zu viele Fehler auftreten */
@@ -334,6 +351,25 @@ public class BaseLettoRedisDBService {
             data.put(keyString, get(database, keyString));
         }
         return data;
+    }
+
+    /**
+     * Lädt einen Token aus der Redis-DB
+     * @param token Tokenstring
+     * @return      LettoToken-Objekt
+     */
+    public LettoToken getToken(String token) {
+        LettoToken lettoToken = get(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,"login.token." + token, LettoToken.class);
+        return lettoToken;
+    }
+
+    /**
+     * Speichert einen Token in der Redis-DB für eine Zeit von maximal 2 Minuten
+     * @param lettoToken LettoToken-Objekt
+     */
+    public boolean putToken(LettoToken lettoToken) {
+        String token = lettoToken.getToken();
+        return put(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,"login.token." + token, lettoToken,2);
     }
 
 }

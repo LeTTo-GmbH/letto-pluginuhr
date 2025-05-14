@@ -1,23 +1,22 @@
 package at.letto.basespringboot.security;
 
-import at.letto.basespringboot.config.BaseMicroServiceConfiguration;
-import at.letto.basespringboot.service.BaseJwtTokenService;
 import at.letto.databaseclient.service.BaseLettoRedisDBService;
 import at.letto.login.restclient.RestLoginService;
 import at.letto.security.LettoToken;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * LeTTo Basis JWT-Token-Authentifikation
  */
 @Component
-public class JwtTokenService{
+public class JwtTokenService {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenService.class);
 
     /** Secret welches auch jedem weitern Service bekannt sein muss, welches den Token erhält */
     @Getter @Setter private String secret;
@@ -28,19 +27,53 @@ public class JwtTokenService{
     /** Verbindung zum Redis-Server */
     @Autowired      private BaseLettoRedisDBService baseLettoRedisDBService;
 
+    @Getter @Setter private boolean useRedis        = true;
+    @Getter @Setter private boolean useLoginService = true;
+    @Getter @Setter private boolean useSecret       = false;
+
     /** Macht aus einem Tokenstring einen LettoToken */
     public LettoToken toLettoToken(String token) {
-        //FIXME Werner Token aus Redis holen oder Token validieren am Login-Service
-        return new LettoToken(token,secret);
+        LettoToken lettoToken;
+        if (useRedis) {
+            try {
+                // Suche den Token im Redis-Server
+                lettoToken = baseLettoRedisDBService.getToken(token);
+                if (lettoToken != null) {
+                    // Token im Redis-Server gefunden
+                    return lettoToken;
+                }
+            } catch (Exception e) {
+                // Token nicht im Redis-Server
+            }
+        }
+        if (useLoginService) {
+            try {
+                // Suche den Token im Login-Service
+                lettoToken = restLoginService.lettoTokenFromTokenString(token);
+                if (lettoToken != null) {
+                    // Token im Login-Service gefunden
+                    baseLettoRedisDBService.putToken(lettoToken);
+                    return lettoToken;
+                }
+            } catch (Exception e) {
+                // Token nicht über das Login-Service validierbar
+            }
+        }
+        if (useSecret) {
+            lettoToken = new LettoToken(token, secret);
+            return lettoToken;
+        }
+        log.info("Token not valid: "+token);
+        return null;
     }
 
     /**
-     * Erzeugt einen neuen Token
+     * Erzeugt einen neuen Token - Darf nur vom Login-Service verwendet werden!!
      * @param username  Benutzername
      * @param idSchule  id der Schule am Lizenzserver
      * @param roles     erzeuge mit Arrays.asList("a","b")
      * @return neuer Token
-     */
+
     public LettoToken generateLettoToken(String username,
                                          String  vorname,
                                          String  nachname,
@@ -71,6 +104,8 @@ public class JwtTokenService{
                 fingerprint,
                 roles
         );
+        // Token im Redis-Server speichern
+        baseLettoRedisDBService.putToken(lettoToken);
         return lettoToken;
     }
 
@@ -98,6 +133,6 @@ public class JwtTokenService{
     public boolean tokenValidation(String token) {
         LettoToken lettoToken = new LettoToken(token, secret);
         return lettoToken.isValid();
-    }
+    } */
 
 }

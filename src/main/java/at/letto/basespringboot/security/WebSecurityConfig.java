@@ -66,10 +66,22 @@ public class WebSecurityConfig {
         );*/
         userInfoService.loadUserList();
     }
-
+    /** Setzt das JWT-Secret und die JWT-Expiration */
     public void setJwtSecret(String jwtSecret, long jwtExpiration,BaseMicroServiceConfiguration mc) {
         RestLoginService restLoginService = new RestLoginService(mc.getLoginServiceUri());
         jwtAuthenticationProvider.init(jwtSecret, jwtExpiration,restLoginService);
+    }
+    /** aktiviert den Zugriff auf den Login-Service */
+    public void setUseLoginService(boolean useLoginService) {
+        jwtAuthenticationProvider.getJwtService().setUseLoginService(useLoginService);
+    }
+    /** aktiviert den Zugriff auf den Redis-Server */
+    public void setUseRedis(boolean useRedis) {
+        jwtAuthenticationProvider.getJwtService().setUseRedis(useRedis);
+    }
+    /** aktiviert die direkte Verwendung des Secret um den Token zu entpacken */
+    public void setUseSecret(boolean useSecret) {
+        jwtAuthenticationProvider.getJwtService().setUseSecret(useSecret);
     }
 
     @Bean

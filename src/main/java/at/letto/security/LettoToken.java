@@ -70,26 +70,22 @@ public class LettoToken {
 
     // JWT-Token als String
     private  final String token;
-    // Secret welches für die Prüfung des Tokens verwendet wird
-    // private final String secret;
-    // private final Key keyJwt;
 
     // Gibt an ob ein Token angelegt (false) oder empfangen und geprüft wird (true)
     private final boolean created;
     // Claims
     private final DefaultClaims claims;
     // JWT
-    private final Jwt jwt;
+    //private final Jwt jwt;
 
     @JsonCreator
     public LettoToken(@JsonProperty("token") String token,
                       @JsonProperty("created") boolean created,
-                      @JsonProperty("claims") DefaultClaims claims,
-                      @JsonProperty("jwt") Jwt jwt) {
+                      @JsonProperty("claims") DefaultClaims claims) {
         this.token   = token;
         this.created = created;
         this.claims  = claims;
-        this.jwt     = jwt;
+        //this.jwt     = jwt;
     }
 
     private String checkSecret(String secret) {
@@ -106,7 +102,7 @@ public class LettoToken {
         this.token   = token;
         this.created = false;
         this.claims  = (DefaultClaims)calcAllClaimsFromToken(secret);
-        this.jwt     = calcJwt(secret);
+        //this.jwt     = calcJwt(secret);
     }
 
     public LettoToken(String  secret,
@@ -285,7 +281,7 @@ public class LettoToken {
                 .claim("fingerprint",fingerprint)
                 .compact();
         this.claims  = (DefaultClaims)calcAllClaimsFromToken(secret);
-        this.jwt     = calcJwt(secret);
+        //this.jwt     = calcJwt(secret);
     }
 
     /**
@@ -551,11 +547,10 @@ public class LettoToken {
         }
     }
 
-    @JsonIgnore
-    /** @return Liefert eine Java-Web-Token-Darstellung des LeTTo-Tokens */
+    /** @return Liefert eine Java-Web-Token-Darstellung des LeTTo-Tokens
     public Jwt getJwt() {
        return jwt;
-    }
+    }*/
 
     @JsonIgnore
     /** @return gibt an ob der Token noch gültig ist */

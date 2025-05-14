@@ -157,10 +157,10 @@ public class DatabaseConnectionService {
 
             // ✅ Timeout-Settings für Redis setzen
             LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                    .commandTimeout(Duration.ofSeconds(1)) // 1 Sekunden Timeout für Redis-Befehle
+                    .commandTimeout(Duration.ofSeconds(3)) // 1 Sekunden Timeout für Redis-Befehle
                     .clientOptions(ClientOptions.builder()
                             .socketOptions(SocketOptions.builder()
-                                    .connectTimeout(Duration.ofSeconds(1)) // 1 Sekunden Timeout für Verbindung
+                                    .connectTimeout(Duration.ofSeconds(3)) // 1 Sekunden Timeout für Verbindung
                                     .build())
                             .build())
                     .build();

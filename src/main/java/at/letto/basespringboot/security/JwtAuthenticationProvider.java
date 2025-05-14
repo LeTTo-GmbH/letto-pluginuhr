@@ -5,6 +5,7 @@ import at.letto.databaseclient.service.BaseLettoRedisDBService;
 import at.letto.login.restclient.RestLoginService;
 import at.letto.security.LettoToken;
 import io.jsonwebtoken.JwtException;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
-    @Autowired private JwtTokenService jwtService;
-    /*@Autowired public JwtAuthenticationProvider(JwtTokenService jwtService) {
+    @Getter private final JwtTokenService jwtService;
+
+    @Autowired
+    public JwtAuthenticationProvider(JwtTokenService jwtService) {
         this.jwtService = jwtService;
-    }*/
+    }
 
     /**
      * Initializes the JWT service with the secret and expiration time.     *
