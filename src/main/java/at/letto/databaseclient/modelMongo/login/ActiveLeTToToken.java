@@ -1,12 +1,19 @@
 package at.letto.databaseclient.modelMongo.login;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class ActiveLeTToToken {
 
     /** Token als String */
-    public final String token;
+    public String token;
 
     /** Lebensdauer des Tokens in Sekunden */
-    public final long   expiration;
+    public long   expiration;
 
     public ActiveLeTToToken(String token, long expiration) {
         this.token          = token;

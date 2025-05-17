@@ -28,16 +28,24 @@ public class LettoUserLoginService {
     public LeTToUserWithSessions addActiveSessionsToUser(LeTToUser user) {
         LeTToUserWithSessions userWithSessions = new LeTToUserWithSessions(user);
         // aktive Sessions des Benutzers
-        List<LeTToSession> sessions = lettoSessionRepository.findByUserIDAndActiveIsTrue(user.getId());
-        userWithSessions.setSessions(sessions);
+        try {
+            List<LeTToSession> sessions = lettoSessionRepository.findByUserIDAndActiveIsTrue(user.getId());
+            userWithSessions.setSessions(sessions);
+        } catch (Exception e) {
+            logger.error("Error getting active sessions for user "+user.getUsername()+"@"+user.getSchool()+" : "+e.getMessage());
+        }
         return userWithSessions;
     }
 
     public LeTToUserWithSessions addAllSessionsToUser(LeTToUser user) {
         LeTToUserWithSessions userWithSessions = new LeTToUserWithSessions(user);
         // aktive Sessions des Benutzers
-        List<LeTToSession> sessions = lettoSessionRepository.findByUserID(user.getId());
-        userWithSessions.setSessions(sessions);
+        try {
+            List<LeTToSession> sessions = lettoSessionRepository.findByUserID(user.getId());
+            userWithSessions.setSessions(sessions);
+        } catch (Exception e) {
+            logger.error("Error getting active sessions for user "+user.getUsername()+"@"+user.getSchool()+" : "+e.getMessage());
+        }
         return userWithSessions;
     }
 

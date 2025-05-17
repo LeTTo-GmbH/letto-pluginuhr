@@ -3,7 +3,6 @@ package at.letto.databaseclient.repository.mongo.letto;
 import at.letto.databaseclient.modelMongo.login.LeTToSession;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
