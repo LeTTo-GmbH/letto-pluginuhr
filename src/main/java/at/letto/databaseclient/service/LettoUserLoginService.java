@@ -1,9 +1,6 @@
 package at.letto.databaseclient.service;
 
-import at.letto.databaseclient.modelMongo.login.ActiveLeTToToken;
-import at.letto.databaseclient.modelMongo.login.AliasLogin;
-import at.letto.databaseclient.modelMongo.login.LeTToSession;
-import at.letto.databaseclient.modelMongo.login.LeTToUser;
+import at.letto.databaseclient.modelMongo.login.*;
 import at.letto.databaseclient.repository.mongo.letto.LeTToSessionRepository;
 import at.letto.databaseclient.repository.mongo.letto.LeTToUserRepository;
 import at.letto.security.LettoToken;
@@ -28,18 +25,55 @@ public class LettoUserLoginService {
 
     private Logger logger = LoggerFactory.getLogger(LettoUserLoginService.class);
 
+    public LeTToUserWithSessions addActiveSessionsToUser(LeTToUser user) {
+        LeTToUserWithSessions userWithSessions = new LeTToUserWithSessions(user);
+        // aktive Sessions des Benutzers
+        List<LeTToSession> sessions = lettoSessionRepository.findByUserIDAndActiveIsTrue(user.getId());
+        userWithSessions.setSessions(sessions);
+        return userWithSessions;
+    }
+
+    public LeTToUserWithSessions addAllSessionsToUser(LeTToUser user) {
+        LeTToUserWithSessions userWithSessions = new LeTToUserWithSessions(user);
+        // aktive Sessions des Benutzers
+        List<LeTToSession> sessions = lettoSessionRepository.findByUserID(user.getId());
+        userWithSessions.setSessions(sessions);
+        return userWithSessions;
+    }
+
     /** Liefert alle eingeloggten Benutzer an einem Serverknoten */
-    public List<LeTToUser> getLoggedInUsers() {
+    public List<LeTToUserWithSessions> getLoggedInUsers() {
         try {
-            return lettoUserRepository.findByCurrentlyLoggedInIsTrue();
+            List<LeTToUserWithSessions> result = new ArrayList<>();
+            for (LeTToUser u : lettoUserRepository.findByCurrentlyLoggedInIsTrue())
+                result.add(addActiveSessionsToUser(u));
+            return result;
         } catch (Exception e) { }
         return new ArrayList<>();
     }
 
     /** Liefert alle eingeloggten Benutzer einer Schule */
-    public List<LeTToUser> getLoggedInUsers(String school) {
+    public List<LeTToUserWithSessions> getLoggedInUsers(String school) {
         try {
-            return lettoUserRepository.findByCurrentlyLoggedInIsTrueAndSchool(school);
+            List<LeTToUserWithSessions> result = new ArrayList<>();
+            for (LeTToUser u : lettoUserRepository.findByCurrentlyLoggedInIsTrueAndSchool(school))
+                result.add(addActiveSessionsToUser(u));
+            return result;
+        } catch (Exception e) { }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Liefert alle Benutzer welche innerhalb der letzten "seconds" Sekunden ausgeloggt wurden
+     * @param seconds    Anzahl der Sekunden
+     * @return           Liste aller Benutzer die ausgeloggt wurden
+     */
+    public List<LeTToUserWithSessions> lastLoggedOutUsersSessionsLastSeconds(long seconds) {
+        try {
+            List<LeTToUserWithSessions> result = new ArrayList<>();
+            for (LeTToUser u : lettoUserRepository.findByLastUserActionTimeGreaterThanAndCurrentlyLoggedInIsFalse(Datum.nowDateInteger()-seconds))
+                result.add(addActiveSessionsToUser(u));
+            return result;
         } catch (Exception e) { }
         return new ArrayList<>();
     }

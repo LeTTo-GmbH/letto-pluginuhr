@@ -65,7 +65,13 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
     @Override
     public void remove(int id, LettoToken token) {
         Class<T> x = ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
-        remove(id, x, token);
+        remove(id, x, token.getSchool());
+    }
+
+    @Override
+    public void remove(int id, String school, String token) {
+        Class<T> x = ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        remove(id, x, school);
     }
 
 
@@ -123,12 +129,10 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
      * Ist Redis nicht funktionsfähig, dann Abbruch ohne Meldung
      * @param id    ID des DTOs (IdEntity)
      * @param type  class des DTOs
-     * @param token LeTTo-Token
+     * @param school Schulname (Kurzbezeichner)
      */
-    public void remove(int id, Class<T> type, LettoToken token) {
+    public void remove(int id, Class<T> type, String school) {
         if (!checkRedis()) return;
-
-        String school = token.getSchool();
         String key = key(id, type, school);
         baseLettoRedisDBService.redisTemplate().delete(key);
     }

@@ -19,6 +19,13 @@ public interface CacheInterface<T extends IdEntity> {
      * @param token LeTTo-Token zur Ermittlung der Schule
      */
     void remove(int id, LettoToken token);
+    /**
+     * Löschen eines DTOs mit ID aus einem Cache.<br>
+     * @param id    ID des DTOs
+     * @param school    Schul-Kurzbezeichner
+     * @param token Token in Stringform (Bearer-Token)
+     */
+    void remove(int id, String school, String token);
 
     /**
      * Speichern eines DTOs mit ID in einem Cache.<br>

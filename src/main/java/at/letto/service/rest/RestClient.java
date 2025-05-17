@@ -502,7 +502,7 @@ public abstract class RestClient implements MicroService {
                 MsgException ex = (MsgException)e;
                 throw ex;
             }
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         if (response!=null && response.getStatusInfo().getStatusCode()==401) {
             throw new TokenException("Token fehlerhaft");
