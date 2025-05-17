@@ -29,7 +29,8 @@ public class JwtTokenService {
 
     @Getter @Setter private boolean useRedis        = true;
     @Getter @Setter private boolean useLoginService = true;
-    @Getter @Setter private boolean useSecret       = false;
+    //FIXME Werner: Standardwert muss wieder auf false gesetzt werden wenn alles auf Stable umgestellt ist!!
+    @Getter @Setter private boolean useSecret       = true;
 
     /** Macht aus einem Tokenstring einen LettoToken */
     public LettoToken toLettoToken(String token) {
@@ -66,73 +67,5 @@ public class JwtTokenService {
         log.info("Token not valid: "+token);
         return null;
     }
-
-    /**
-     * Erzeugt einen neuen Token - Darf nur vom Login-Service verwendet werden!!
-     * @param username  Benutzername
-     * @param idSchule  id der Schule am Lizenzserver
-     * @param roles     erzeuge mit Arrays.asList("a","b")
-     * @return neuer Token
-
-    public LettoToken generateLettoToken(String username,
-                                         String  vorname,
-                                         String  nachname,
-                                         String  activDirectoryname,
-                                         String  email,
-                                         String  sprache,
-                                         Integer id,
-                                         Integer idSchule,
-                                         String  school,
-                                         String  lettoUri,
-                                         String  serverRestkey,
-                                         String  fingerprint,
-                                         List<String> roles) {
-        LettoToken lettoToken = new LettoToken(
-                secret,
-                expiration,
-                username,
-                vorname,
-                nachname,
-                activDirectoryname,
-                email,
-                sprache,
-                id,
-                idSchule,
-                school,
-                lettoUri,
-                serverRestkey,
-                fingerprint,
-                roles
-        );
-        // Token im Redis-Server speichern
-        baseLettoRedisDBService.putToken(lettoToken);
-        return lettoToken;
-    }
-
-    public LettoToken refreshToken(String token) {
-        LettoToken lettoToken = new LettoToken(token, secret);
-        if (!lettoToken.isValid() || !lettoToken.isTokenNotExpired()) return null;
-        LettoToken newToken = generateLettoToken(
-                lettoToken.getUsername(),
-                lettoToken.getVorname(),
-                lettoToken.getNachname(),
-                lettoToken.getActiveDirectoryName(),
-                lettoToken.getEmail(),
-                lettoToken.getSprache(),
-                lettoToken.getId(),
-                lettoToken.getIdSchule(),
-                lettoToken.getSchool(),
-                lettoToken.getLettoUri(),
-                lettoToken.getServerRestkey(),
-                lettoToken.getFingerprint(),
-                lettoToken.getRoles()
-        );
-        return newToken;
-    }
-
-    public boolean tokenValidation(String token) {
-        LettoToken lettoToken = new LettoToken(token, secret);
-        return lettoToken.isValid();
-    } */
 
 }

@@ -11,28 +11,15 @@ import java.util.HashMap;
 public interface LoginService {
 
     /**
-     * Prüft Benutzernamen und Passwort über das Loginservice und checkt den gelieferten Token mit dem Secret
-     * @param username  Benutzername
-     * @param password  Passwort unverschlüsselt
-     * @param school    Schulkennung welche auch in der URL verwendet wird (eindeutig am Server)
-     * @param jwtsecret gemeinsames Secret für den JWT-Token
-     * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
-     * @return          gültiger LeTTo-Token oder null
-     * @deprecated      nimm jwtLogin oder jwtLettoLogin
-     *
-    @Deprecated
-    LettoToken jwtLogin(String username, String password, String school, String jwtsecret, String fingerprint);
-    */
-
-    /**
      * Prüft Benutzernamen und Passwort über das Loginservice
      * @param username  Benutzername
      * @param password  Passwort unverschlüsselt
      * @param school    Schulkennung welche auch in der URL verwendet wird (eindeutig am Server)
      * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param ipaddress  IP-Adresse des Users
      * @return          gültiger token als String oder null
      */
-    String jwtLogin(String username, String password, String school, String fingerprint);
+    String jwtLogin(String username, String password, String school, String fingerprint, String ipaddress);
 
     /**
      * Prüft Benutzernamen und Passwort über das Loginservice und liefert einen LettoToken zurück
@@ -40,9 +27,10 @@ public interface LoginService {
      * @param password  Passwort unverschlüsselt
      * @param school    Schulkennung welche auch in der URL verwendet wird (eindeutig am Server)
      * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param ipaddress  IP-Adresse des Users
      * @return          gültiger LettoToken oder null
      */
-    LettoToken jwtLettoLogin(String username, String password, String school, String fingerprint);
+    LettoToken jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress);
 
     /**
      * Führt einen Logout des Tokens durch und vernichtet den Token im Token-Store - danach ist kein Token-Refresh dieses Tokens mehr möglich!
@@ -143,9 +131,10 @@ public interface LoginService {
      * @param tempPassword   temporäres Passwort
      * @param school         Schulkürzel
      * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param ipaddress  IP-Adresse des Users
      * @return               true, wenn das Passwort ok ist, ansonsten false
      */
-    boolean tempLogin(String username, String tempPassword, String school, String fingerprint);
+    boolean tempLogin(String username, String tempPassword, String school, String fingerprint, String ipaddress);
 
     /**
      * Setzt ein neues Benutzerpasswort eines Users an einer Schule und liefert ok wenn das Passwort gesetzt wurde
@@ -223,10 +212,11 @@ public interface LoginService {
      * @param language           Sprache welche verwendet werden soll
      * @param backlink           Link welcher zurück zum Fremdserver führt
      * @param tempToken          true wenn ein TempToken statt einem UserToken erzeugt werden soll
-     * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param fingerprint        Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param ipaddress          IP-Adresse des Users
      * @return                   UserToken oder Temptoken
      */
-    String getUserToken(String serverTokenString, String userTokenFremd, String language, String backlink, boolean tempToken, String fingerprint);
+    String getUserToken(String serverTokenString, String userTokenFremd, String language, String backlink, boolean tempToken, String fingerprint, String ipaddress);
 
     /**
      * Erzeugt einen neuen UserToken auf dem Remote-Server mit dem auf den Remotserver zugegriffen werden kann

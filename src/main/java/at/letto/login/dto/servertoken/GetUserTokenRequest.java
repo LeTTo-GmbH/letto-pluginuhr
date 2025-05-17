@@ -28,4 +28,7 @@ public class GetUserTokenRequest {
     /** Fingerprint des Browsers mit dem zugegriffen wird */
     private String fingerprint="";
 
+    /** IP-Adresse des Browsers mit dem zugegriffen wird */
+    private String ipaddress="";
+
 }

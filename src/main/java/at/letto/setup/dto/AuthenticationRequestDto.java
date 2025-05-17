@@ -11,6 +11,7 @@ public class AuthenticationRequestDto {
 
     private String  username;
     private String  password;
-    private String  fingerprint="";
+    private String  fingerprint = "";
+    private String  ipaddress   = "";
 
 }

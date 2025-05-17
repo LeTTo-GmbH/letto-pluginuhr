@@ -114,10 +114,6 @@ public class LeTToUser {
     /** Gibt an ob der Benutzer gerade eingeloggt ist */
     private boolean currentlyLoggedIn=false;
 
-    /** Anzahl der gerade aktiven Login-Tokens key..Token value..Ablaufzeit des Tokens */
-    //private HashMap<String,Long> activeTokens=new HashMap<>();
-    private String activeTokens = "";
-
     /** letzte durchgeführte Aktion mit dem Benutzer */
     private int lastUserAction = 0;
 
@@ -127,91 +123,9 @@ public class LeTToUser {
     /** Alias-Logins mit mit diesem Benutzer */
     private List<AliasLogin> aliasLoginList = new ArrayList<>();
 
-    @Transient @JsonIgnore
-    private List<ActiveLeTToToken> tokenList = null;
-
     public LeTToUser(LettoToken lettoToken) {
         this();
         userCredentials(lettoToken);
-    }
-
-    /** liefert die aktiven Tokens als Map */
-    /*public HashMap<String,Long> activeTokensMap(){
-        HashMap<String,Long> activeTokensMap = new HashMap<>();
-        for (String token : activeTokens.split(",")){
-            if (token.trim().length()>0) {
-                String[] parts = token.split(":");
-                if (parts.length == 2) {
-                    activeTokensMap.put(parts[0], Long.parseLong(parts[1]));
-                }
-            }
-        }
-        return activeTokensMap;
-    }*/
-
-    /** @return Liefert eine Liste aller Token mit ihre restlichen Lebensdauer in Sekunden */
-    public List<ActiveLeTToToken> getTokenList(){
-        if (tokenList==null){
-            tokenList = new ArrayList<>();
-            for (String token : activeTokens.split(",")){
-                try { if (token.trim().length()>0) {
-                    String[] parts = token.split(":");
-                    if (parts.length == 2) {
-                        tokenList.add(new ActiveLeTToToken(parts[0], Long.parseLong(parts[1]),""));
-                    } else  if (parts.length == 3) {
-                        tokenList.add(new ActiveLeTToToken(parts[0], Long.parseLong(parts[1]),parts[2]));
-                    }
-                }} catch (Exception e){ }
-            }
-        }
-        List<ActiveLeTToToken> result = new ArrayList<>();
-        for (ActiveLeTToToken token : tokenList)
-            result.add(token);
-        return result;
-    }
-
-    /** Wandelt eine Map aktiver Tokens wieder zurück in einen String */
-    private void setActiveTokens(HashMap<String,Long> activeTokensMap){
-        String result = "";
-        for (String token : activeTokensMap.keySet()){
-            if (result.length()>0) result += ",";
-            result += token+":"+activeTokensMap.get(token);
-        }
-        activeTokens = result;
-    }
-
-    /** Wandelt eine Map aktiver Tokens wieder zurück in einen String */
-    private void setActiveTokens(List<ActiveLeTToToken> activeLeTToTokenList){
-        String result = "";
-        tokenList = new ArrayList<>();
-        for (ActiveLeTToToken a : activeLeTToTokenList) {
-            if (result.length()>0) result += ",";
-            result += a.token+":"+a.expiration+":"+a.fingerprint;
-            tokenList.add(a);
-        }
-        activeTokens = result;
-    }
-
-    private void setActiveTokens(String activeTokens){
-        this.activeTokens = activeTokens;
-        this.tokenList = null;
-    }
-
-    private void activeTokensPut(String token, Long expiration, String fingerprint) {
-        boolean found = false;
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (int i=0; i<tokenList.size() && !found; i++) {
-            if (tokenList.get(i).token.equals(token)) {
-                found=true;
-                tokenList.set(i,new ActiveLeTToToken(token,expiration,fingerprint));
-            }
-        }
-        if (!found) tokenList.add(new ActiveLeTToToken(token,expiration,fingerprint));
-        setActiveTokens(tokenList);
-    }
-
-    private int activeTokensSize() {
-        return getTokenList().size();
     }
 
     /** setzt alle Benutzerdaten aus dem Token ohne den Token in die aktiven Tokens einzutragen */
@@ -239,132 +153,6 @@ public class LeTToUser {
         return this;
     }
 
-    public LeTToUser failedLogin() {
-        long now = Datum.nowDateInteger();
-        if (lastFailedLogin>0 && Datum.year(lastFailedLogin)==Datum.year(now) &&
-            Datum.month(lastFailedLogin)==Datum.month(now) &&
-            Datum.day(lastFailedLogin)==Datum.day(now)) {
-            failedLoginsAktualDay=0;
-        }
-        lastLoginAttempt = now;
-        lastFailedLogin  = now;
-        failedLogins    += 1;
-        failedLoginsAfterCorrectLogin += 1;
-        failedLoginsAktualDay         += 1;
-        correctLoginsAfterFailedLogin  = 0;
-        lastUserAction     = USER_ACTION_FAILED_LOGIN;
-        lastUserActionTime = now;
-        currentlyLoggedIn = activeTokensSize()>0;
-        return this;
-    }
-
-    public LeTToUser loginOk(LettoToken lettoToken) {
-        long now = Datum.nowDateInteger();
-        lastLoginAttempt               = now;
-        lastCorrectLogin               = now;
-        if (firstLogin==0) firstLogin  = now;
-        correctLoginsAfterFailedLogin += 1;
-        correctLogins                 += 1;
-        failedLoginsAfterCorrectLogin  = 0;
-        lastUserAction                 = USER_ACTION_LOGIN;
-        lastUserActionTime             = now;
-        userCredentials(lettoToken);
-        long expiration = Datum.toDateInteger(lettoToken.getExpirationDate());
-        activeTokensPut(lettoToken.getToken(),expiration,lettoToken.getFingerprint());
-        currentlyLoggedIn = activeTokensSize()>0;
-        return this;
-    }
-
-    /** Alias Login von einem berechtigten Benutzer aus */
-    public LeTToUser aliasLogin(LettoToken lettoToken, String originUserName) {
-        long now = Datum.nowDateInteger();
-        long expiration = Datum.toDateInteger(lettoToken.getExpirationDate());
-        AliasLogin aliasLogin = new AliasLogin(now,originUserName,expiration);
-        aliasLoginList.add(aliasLogin);
-        return this;
-    }
-
-    public boolean logout(String oldLettoToken) {
-        long now           = Datum.nowDateInteger();
-        lastLogout         = now;
-        correctLogouts    += 1;
-        lastUserAction     = USER_ACTION_LOGOUT;
-        lastUserActionTime = now;
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        boolean found = false;
-        for (int i=0; i<tokenList.size(); i++) {
-            if (tokenList.get(i).token.equals(oldLettoToken)) {
-                tokenList.remove(i);
-                found=true;
-                break;
-            }
-        }
-        setActiveTokens(tokenList);
-        currentlyLoggedIn  = activeTokensSize()>0;
-        return found;
-    }
-
-    public boolean logout() {
-        long now           = Datum.nowDateInteger();
-        lastLogout         = now;
-        correctLogouts    += 1;
-        lastUserAction     = USER_ACTION_LOGOUT;
-        lastUserActionTime = now;
-        List<ActiveLeTToToken> tokenList = new ArrayList<>();
-        setActiveTokens(tokenList);
-        currentlyLoggedIn  = activeTokensSize()>0;
-        return true;
-    }
-
-    public LeTToUser tokenUpdate(String oldLettoToken, LettoToken newLettoToken) {
-        long now           = Datum.nowDateInteger();
-        lastUpdate         = now;
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        userCredentials(newLettoToken);
-        long expiration = Datum.toDateInteger(newLettoToken.getExpirationDate());
-        ActiveLeTToToken na = new ActiveLeTToToken(newLettoToken.getToken(),expiration,newLettoToken.getFingerprint());
-        boolean found = false;
-        for (int i=0; i<tokenList.size(); i++) {
-            if (tokenList.get(i).token.equals(oldLettoToken)) {
-                tokenList.set(i,na);
-                found = true;
-                break;
-            }
-        }
-        setActiveTokens(tokenList);
-        currentlyLoggedIn  = activeTokensSize()>0;
-        return this;
-    }
-
-    /** Prüft ob token abgelaufen sind und löscht sie gegebenenfalls
-     * @param now            aktuelle Zeit als DateInteger
-     * @return               true bei Änderungen
-     */
-    public boolean tokenTimeout(long now) {
-        boolean changed = false;
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (int i=0; i<tokenList.size(); i++) {
-            ActiveLeTToToken a = tokenList.get(i);
-            if (a.expiration<now) {
-                tokenList.remove(i);
-                lastTimeoutLogout  = now;
-                timeoutLogouts    += 1;
-                lastUserAction     = USER_ACTION_TOKEN_TIMEOUT;
-                lastUserActionTime = now;
-                changed = true;
-                i--;
-            }
-        }
-        setActiveTokens(tokenList);
-        currentlyLoggedIn  = activeTokensSize()>0;
-        return changed;
-    }
-
-    /** gibt die aktuelle Anzahl von Logins dieses Benutzers an */
-    public int actualLogins(){
-        return activeTokensSize();
-    }
-
     public String loginTimeString(){          return lastCorrectLogin>0?Datum.formatDateTime(lastCorrectLogin):""; }
     public String firstLoginString(){         return firstLogin>0?Datum.formatDateTime(firstLogin):""; }
     public String lastLoginString(){          return lastLoginAttempt>0?Datum.formatDateTime(lastLoginAttempt):""; }
@@ -373,17 +161,13 @@ public class LeTToUser {
     public String lastLogoutString(){         return lastLogout>0?Datum.formatDateTime(lastLogout):""; }
     public String lastTimeoutLogoutString(){  return lastTimeoutLogout>0?Datum.formatDateTime(lastTimeoutLogout):""; }
     public String lastUserActionTimeString(){ return lastUserActionTime>0?Datum.formatDateTime(lastUserActionTime):""; }
-
-    public String tokensExpirationString() {
-        long now           = Datum.nowDateInteger();
-        StringBuilder sb = new StringBuilder();
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (int i=0; i<tokenList.size(); i++) {
-            ActiveLeTToToken a = tokenList.get(i);
-            sb.append(a.expiration-now).append("s ");
-        }
-        return sb.toString().trim();
-    }
+    public void   incCorrectLogins()       { correctLogins++; }
+    public void   incCorrectLogouts()      { correctLogouts++; }
+    public void   incTimeoutLogouts()      { timeoutLogouts++; }
+    public void   incFailedLogins()        { failedLogins++; }
+    public void   incFailedLoginsAktualDay() { failedLoginsAktualDay++; }
+    public void   incFailedLoginsAfterCorrectLogin() { failedLoginsAfterCorrectLogin++; }
+    public void   incCorrectLoginsAfterFailedLogin() { correctLoginsAfterFailedLogin++; }
 
     public String roleString(){
         StringBuilder sb = new StringBuilder();
@@ -403,19 +187,6 @@ public class LeTToUser {
         String result = student?"S":"T";
         result += getUsername();
         return result;
-    }
-
-    /**
-     * prüft ob der Token in der Liste als korrekter Token eingetragen ist
-     * @param token Token der geprüft werden soll
-     * @return      true wenn der Token in der Liste eingetragen ist, sonst false
-     */
-    public boolean validateToken(String token) {
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (ActiveLeTToToken a : tokenList) {
-            if (a.token.equals(token)) return true;
-        }
-        return false;
     }
 
 }

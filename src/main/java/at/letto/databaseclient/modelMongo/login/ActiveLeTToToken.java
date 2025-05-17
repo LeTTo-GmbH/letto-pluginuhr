@@ -8,18 +8,14 @@ public class ActiveLeTToToken {
     /** Lebensdauer des Tokens in Sekunden */
     public final long   expiration;
 
-    /** Hardware-Fingerabdruck des Browsers mit dem der Token erzeugt wurde. */
-    public final String fingerprint;
-
-    public ActiveLeTToToken(String token, long expiration, String fingerprint) {
-        this.token       = token;
-        this.expiration  = expiration;
-        this.fingerprint = fingerprint;
+    public ActiveLeTToToken(String token, long expiration) {
+        this.token          = token;
+        this.expiration     = expiration;
     }
 
     @Override
     public String toString() {
-        return "ActiveLeTToToken{" + "token=" + token + ", expiration=" + expiration + ", fingerprint=" + fingerprint + '}';
+        return "ActiveLeTToToken{" + "token=" + token + ", expiration=" + expiration + '}';
     }
 
 }

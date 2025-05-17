@@ -85,7 +85,6 @@ public class LettoToken {
         this.token   = token;
         this.created = created;
         this.claims  = claims;
-        //this.jwt     = jwt;
     }
 
     private String checkSecret(String secret) {
@@ -118,11 +117,11 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
-                      String  fingerprint,
+                      String  serversession,
                       List<String> roles) {
         this(  secret, SecurityConstants.TOKEN_ISSUER, SecurityConstants.TOKEN_AUDIENCE,
                 expiration,username,vorname,nachname,activDirectoryname,
-                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,fingerprint,roles
+                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,serversession,roles
         );
     }
 
@@ -139,12 +138,12 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
-                      String  fingerprint,
+                      String  serversession,
                       List<String> roles,
                       HashMap<String,String> payload) {
         this(  secret, SecurityConstants.TOKEN_ISSUER, SecurityConstants.TOKEN_AUDIENCE,
                 expiration,username,vorname,nachname,activDirectoryname,
-                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,fingerprint,roles,payload
+                email,sprache,idUser,idSchule,school,lettoUri,serverRestkey,serversession,roles,payload
         );
     }
 
@@ -163,32 +162,10 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
-                      String  fingerprint,
+                      String  serversession,
                       List<String> roles) {
         this(secret, issuer, audience, expiration, username, vorname, nachname, activDirectoryname, email,
-             sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, null);
-    }
-
-    public LettoToken(String secret, LettoTokenDto lettoTokenDto) {
-        this(   secret,
-                lettoTokenDto.getIssuer(),
-                lettoTokenDto.getAudience(),
-                lettoTokenDto.getIssuedAt(),
-                lettoTokenDto.getExpirationDate(),
-                lettoTokenDto.getUsername(),
-                lettoTokenDto.getVorname(),
-                lettoTokenDto.getNachname(),
-                lettoTokenDto.getActivDirectoryname(),
-                lettoTokenDto.getEmail(),
-                lettoTokenDto.getSprache(),
-                lettoTokenDto.getIdUser(),
-                lettoTokenDto.getIdSchule(),
-                lettoTokenDto.getSchool(),
-                lettoTokenDto.getLettoUri(),
-                lettoTokenDto.getServerRestkey(),
-                lettoTokenDto.getFingerprint(),
-                lettoTokenDto.getRoles(),
-                lettoTokenDto.getPayload());
+             sprache, idUser, idSchule, school, lettoUri, serverRestkey, serversession, roles, null);
     }
 
     public LettoToken(String  secret,
@@ -206,11 +183,11 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
-                      String  fingerprint,
+                      String  serversession,
                       List<String> roles,
                       HashMap<String,String> payload) {
         this(secret, issuer, audience, new Date(), expiration , username, vorname, nachname, activDirectoryname, email,
-             sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, payload);
+             sprache, idUser, idSchule, school, lettoUri, serverRestkey, serversession, roles, payload);
     }
 
     private LettoToken(String  secret,
@@ -229,12 +206,12 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
-                      String  fingerprint,
+                      String  serversession,
                       List<String> roles,
                       HashMap<String,String> payload) {
         this(secret, issuer, audience, createDate, calculateExpirationDate(createDate, expiration) ,
              username, vorname, nachname, activDirectoryname, email,
-             sprache, idUser, idSchule, school, lettoUri, serverRestkey, fingerprint, roles, payload);
+             sprache, idUser, idSchule, school, lettoUri, serverRestkey, serversession, roles, payload);
     }
 
     public LettoToken(String  secret,
@@ -253,7 +230,7 @@ public class LettoToken {
                       String  school,
                       String  lettoUri,
                       String  serverRestkey,
-                      String  fingerprint,
+                      String  serversession,
                       List<String> roles,
                       HashMap<String,String> payload) {
         this.created = true;
@@ -278,7 +255,7 @@ public class LettoToken {
                 .claim("lettoUri",lettoUri)
                 .claim("serverRestkey",serverRestkey)
                 .claim("payload",payload)
-                .claim("fingerprint",fingerprint)
+                .claim("serversession",serversession)
                 .compact();
         this.claims  = (DefaultClaims)calcAllClaimsFromToken(secret);
         //this.jwt     = calcJwt(secret);
@@ -305,7 +282,7 @@ public class LettoToken {
             getSchool(),
             getLettoUri(),
             getServerRestkey(),
-            getFingerprint(),
+            getServersession(),
             getRoles(),
             getPayload()
         );
@@ -456,10 +433,10 @@ public class LettoToken {
     }
 
     @JsonIgnore
-    /** @return Liefert den Restkey des Servers */
-    public String getFingerprint() {
+    /** @return Liefert die Session-ID der Verbindung am LeTTo-Server um einen Mehrfachlogin zu erkennen */
+    public String getServersession() {
         try {
-            return claims.get("fingerprint", String.class);
+            return claims.get("serversession", String.class);
         } catch (Exception ex) {}
         return null;
     }

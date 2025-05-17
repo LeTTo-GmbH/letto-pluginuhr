@@ -13,5 +13,6 @@ public class AuthenticationRequest {
     private String  password;
     private String  school;
     private String  fingerprint="";
+    private String  ipAddress="";
 
 }
