@@ -3,13 +3,11 @@ package at.letto.databaseclient.modelMongo.login;
 
 import at.letto.security.LettoToken;
 import at.letto.tools.Datum;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class LeTToSession {
 
     /** Status der Session */
@@ -27,43 +26,38 @@ public class LeTToSession {
     public static final int STATUS_LOGGED_UNDEF   = 0;
     public static final int STATUS_LOGGED_OUT     = 2;
     public static final int STATUS_LOGGED_TIMEOUT = 3;
-
+/*
     @PersistenceConstructor
-    public LeTToSession(String sessionID, String userID, int status, String username, String school, long dateIntegerLogin, long dateIntegerLogout, int tokenCount, String fingerprint, String ipAddress, boolean active, List<ActiveLeTToToken> tokenList) {
-        this.sessionID = sessionID;
-        this.userID = userID;
-        this.status = status;
+    public LeTToSession(String id, String userID, int status, String username, String school, long dateIntegerLogin,
+                        long dateIntegerLogout, int tokenCount, String fingerprint, String ipAddress, boolean active, List<ActiveLeTToToken> tokenList) {
+        this.id       = id;
+        this.userID   = userID;
+        this.status   = status;
         this.username = username;
-        this.school = school;
-        this.dateIntegerLogin = dateIntegerLogin;
+        this.school  = school;
+        this.dateIntegerLogin  = dateIntegerLogin;
         this.dateIntegerLogout = dateIntegerLogout;
-        this.tokenCount = tokenCount;
-        this.fingerprint = fingerprint;
-        this.ipAddress = ipAddress;
-        this.active = active;
-        this.tokenList = tokenList != null ? tokenList : new ArrayList<>();
-    }
-
-    /** Erzeugt eine neue LeTToSession für einen Login-Vorgang */
-    public LeTToSession(String sessionID, LeTToUser leTToUser, String fingerprint, String ipAddress, LettoToken lettoToken) {
-        this.sessionID         = sessionID;
-        this.userID            = leTToUser.getId();
-        this.status            = STATUS_LOGGED_IN;
-        this.username          = leTToUser.getUsername();
-        this.school            = leTToUser.getSchool();
-        this.dateIntegerLogin  = Datum.nowDateInteger();
-        this.dateIntegerLogout = 0;
-        this.tokenCount        = 1;
+        this.tokenCount        = tokenCount;
         this.fingerprint       = fingerprint;
         this.ipAddress         = ipAddress;
-        this.active            = true;
+        this.active            = active;
+        this.tokenList         = tokenList != null ? tokenList : new ArrayList<>();
+    }*/
+
+    /** Erzeugt eine neue LeTToSession für einen Login-Vorgang */
+    public static LeTToSession createFromToken(String id, LeTToUser leTToUser, String fingerprint, String ipAddress, LettoToken lettoToken) {
+        List<ActiveLeTToToken> tokenList = new ArrayList<>();
         long expiration        = Datum.toDateInteger(lettoToken.getExpirationDate());
-        this.tokenList.add(new ActiveLeTToToken(lettoToken.getToken(),expiration));
+        tokenList.add(new ActiveLeTToToken(lettoToken.getToken(),expiration));
+        LeTToSession leTToSession = new LeTToSession(
+                id, leTToUser.getId(), STATUS_LOGGED_IN, lettoToken.getUsername(), lettoToken.getSchool(),
+                Datum.nowDateInteger(), 0,1,fingerprint,ipAddress,true,tokenList);
+        return leTToSession;
     }
 
-    /** ID der Serssion als eindeutiger String */
+    /** ID der Session als eindeutiger String */
     @Id
-    private String sessionID;
+    private String id;
 
     /** ID des Benutzers als String kombiniert Schulkuerzel und User-ID aus der MySQL-DB,
      * bzw. email-Adresse bei LeTTo-Private */
@@ -103,7 +97,6 @@ public class LeTToSession {
     private boolean active = false;
 
     /** Liste der Tokens */
-    @JsonIgnore
     private List<ActiveLeTToToken> tokenList = new ArrayList<>();
 
     public void incTokenCount(){ tokenCount++; }
@@ -116,7 +109,7 @@ public class LeTToSession {
     public boolean validateToken(String token) {
         List<ActiveLeTToToken> tokenList = getTokenList();
         for (ActiveLeTToToken a : tokenList) {
-            if (a.token.equals(token)) return true;
+            if (a.getToken().equals(token)) return true;
         }
         return false;
     }

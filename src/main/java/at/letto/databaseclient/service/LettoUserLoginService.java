@@ -104,7 +104,7 @@ public class LettoUserLoginService {
                 }
                 for (int i=0; i<tokenList.size(); i++) {
                     ActiveLeTToToken a = tokenList.get(i);
-                    if (a.expiration<now) {
+                    if (a.getExpiration()<now) {
                         tokenList.remove(i);
                         changed = true;
                         i--;
@@ -121,7 +121,7 @@ public class LettoUserLoginService {
                         // Nun wird der Benutzer aktualisiert
                         LeTToUser leTToUser = lettoUserRepository.findById(session.getUserID()).orElse(null);
                         if (leTToUser != null) {
-                            List<LeTToSession> userSessions = lettoSessionRepository.findByUserID(session.getUserID());
+                            List<LeTToSession> userSessions = lettoSessionRepository.findByUserIDAndActiveIsTrue(session.getUserID());
                             if (userSessions.size() >0) {
                                 // Es gibt noch andere Sessions
                                 leTToUser.setCurrentlyLoggedIn(true);
@@ -219,7 +219,7 @@ public class LettoUserLoginService {
 
     /** Erzeugt eine neue LeTToSession für einen Login-Vorgang */
     public LeTToSession createLeTToSession(String sessionID, LeTToUser leTToUser, String fingerprint, String ipAddress, LettoToken lettoToken) {
-        LeTToSession leTToSession = new LeTToSession(sessionID, leTToUser, fingerprint, ipAddress, lettoToken);
+        LeTToSession leTToSession = LeTToSession.createFromToken(sessionID, leTToUser, fingerprint, ipAddress, lettoToken);
         loginOk(leTToUser, lettoToken);
         save(leTToSession);
         return leTToSession;
@@ -228,7 +228,7 @@ public class LettoUserLoginService {
     /** Liefert eine Session mit der angegebenen sessionID */
     public LeTToSession getSession(String sessionID) {
         try {
-            return lettoSessionRepository.findBySessionID(sessionID).orElse(null);
+            return lettoSessionRepository.findById(sessionID).orElse(null);
         } catch (Exception e) { }
         return null;
     }
@@ -244,7 +244,7 @@ public class LettoUserLoginService {
     /** Prüft ob eine Session mit der angegebenen sessionID existiert */
     public boolean sessionExists(String sessionID) {
         try {
-            return lettoSessionRepository.findBySessionID(sessionID).isPresent();
+            return lettoSessionRepository.findById(sessionID).isPresent();
         } catch (Exception e) { }
         return false;
     }
@@ -373,7 +373,7 @@ public class LettoUserLoginService {
         u.incCorrectLogouts();
         u.setLastUserAction(LeTToUser.USER_ACTION_LOGOUT);
         u.setLastUserActionTime(now);
-        u.setCurrentlyLoggedIn(currentlyLoggedIn(u));
+        u.setCurrentlyLoggedIn(false);
         save(u);
         // Zerstöre alle Sessions des Benutzers
         for (LeTToSession session : getSessions(u)) {

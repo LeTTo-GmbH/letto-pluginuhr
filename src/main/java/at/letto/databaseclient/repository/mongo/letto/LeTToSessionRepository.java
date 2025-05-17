@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface LeTToSessionRepository  extends MongoRepository<LeTToSession, String> {
 
     /** Sucht eine Session nach ihrer sessionID */
-    Optional<LeTToSession> findBySessionID(String sessionID);
+    Optional<LeTToSession> findById(String sessionID);
 
     /** Sucht alle Sessions einer Schule */
     List<LeTToSession> findBySchool(String school);
@@ -27,7 +27,7 @@ public interface LeTToSessionRepository  extends MongoRepository<LeTToSession, S
     void deleteByActiveIsFalseAndDateIntegerLogoutIsLessThan(long dateIntegerLogoutIsLessThan);
 
     /** Löscht die Session mit der angegebenen sessionID */
-    void deleteBySessionID(String sessionID);
+    void deleteById(String sessionID);
 
     /** Sucht alle Sessions die noch eingeloggt sind */
     List<LeTToSession> findByActiveIsTrue();

@@ -5,6 +5,7 @@ import at.letto.tools.Datum;
 import at.letto.tools.ServerStatus;
 import at.letto.tools.dto.LeTToServiceInfoDto;
 import at.letto.tools.enums.Betriebssystem;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.boot.system.ApplicationPid;
@@ -24,6 +25,7 @@ import java.lang.reflect.Modifier;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.http.HttpRequest;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -273,6 +275,19 @@ public class BaseSystemInfoService {
                 new HashMap<>()             // zusätzliche Infos über das Service
         );
         return dto;
+    }
+
+    public static String getIPaddress(HttpServletRequest request) {
+        String  ipaddress=null;
+        String  xfHeader=null;
+        String  realip=null;
+        try{ ipaddress   = request.getRemoteAddr(); } catch (Exception e) { }
+        try{ xfHeader    = request.getHeader("X-Forwarded-For").split(",")[0].trim(); } catch (Exception e) { }
+        try{ realip      = request.getHeader("x-real-ip").split(",")[0].trim(); } catch (Exception e) { }
+        if (realip!=null && realip.length()>0) return realip;
+        if (xfHeader!=null && xfHeader.length()>0) return xfHeader;
+        if (ipaddress!=null) return ipaddress;
+        return "";
     }
 
 }

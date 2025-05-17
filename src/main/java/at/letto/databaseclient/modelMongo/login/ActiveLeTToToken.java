@@ -3,6 +3,7 @@ package at.letto.databaseclient.modelMongo.login;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 @Getter
 @Setter
@@ -10,10 +11,10 @@ import lombok.Setter;
 public class ActiveLeTToToken {
 
     /** Token als String */
-    public String token;
+    private String token;
 
     /** Lebensdauer des Tokens in Sekunden */
-    public long   expiration;
+    private long   expiration;
 
     public ActiveLeTToToken(String token, long expiration) {
         this.token          = token;

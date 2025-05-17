@@ -1,6 +1,7 @@
 package at.letto.databaseclient.modelMongo.login;
 
 
+import at.letto.tools.Datum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,11 +27,28 @@ public class LeTToUserWithSessions {
     }
 
     public String actualLogins() {
-        return "AL";
+        int anz = sessions.size();
+        int tokenAnz = 0;
+        for (LeTToSession session : sessions) {
+            tokenAnz += session.getTokenList().size();
+        }
+        return anz+"/"+tokenAnz;
     }
 
     public String tokensExpirationString(){
-        return "TE";
+        StringBuilder sb = null;
+        for (LeTToSession session : sessions) {
+            if (sb == null) {
+                sb = new StringBuilder();
+            } else {
+                sb.append(", ");
+            }
+            sb.append(session.getIpAddress()).append(":");
+            for (ActiveLeTToToken lt : session.getTokenList()) {
+                sb.append(" ").append(lt.getExpiration()-Datum.nowDateInteger()).append("s");
+            }
+        }
+        return sb==null?"":sb.toString();
     }
 
     public long loggedInSortString(){
