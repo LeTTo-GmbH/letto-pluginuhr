@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class BaseLettoRedisDBService {
 
+    public static final String TOKEN_PREFIX  = "login:token:";
+
     public static final int REDIS_DATABASE_SETUP     = 0;
     public static final int REDIS_DATABASE_LOGIN     = 1;
     public static final int REDIS_DATABASE_QUESTION  = 2;
@@ -304,6 +306,20 @@ public class BaseLettoRedisDBService {
     }
 
     /**
+     * Löschen vom einem Key aus der REDIS-Datebank
+     * @param database  Ziel-Redis-Datenbank
+     * @param key       Key der gelöscht werden soll
+     */
+    public boolean deleteKey(int database,String key) {
+        RedisTemplate redisTemplate = redisTemplate(database);
+        try {
+            redisTemplate.delete(key);
+            return true;
+        } catch (Exception e) {}
+        return false;
+    }
+
+    /**
      * Laden von allen Redis-Einträgen des gleichen Datentyps mit einem Such-Pattern aus der Default-Redis-DB
      * @param typ       Class des Ziel-Typs
      * @param pattern   Suchmuster (zB: htlstp:tests:*)
@@ -359,7 +375,7 @@ public class BaseLettoRedisDBService {
      * @return      LettoToken-Objekt
      */
     public LettoToken getToken(String token) {
-        LettoToken lettoToken = get(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,"login.token." + token, LettoToken.class);
+        LettoToken lettoToken = get(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,TOKEN_PREFIX + token, LettoToken.class);
         return lettoToken;
     }
 
@@ -369,7 +385,16 @@ public class BaseLettoRedisDBService {
      */
     public boolean putToken(LettoToken lettoToken) {
         String token = lettoToken.getToken();
-        return put(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,"login.token." + token, lettoToken,2);
+        //FIXME Werner: Lebensdauer auf die Token-Lebensdauer setzen !!
+        return put(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,TOKEN_PREFIX + token, lettoToken,2);
+    }
+
+    /**
+     * Löscht einen Token aus der Redis-DB
+     * @param token Tokenstring
+     */
+    public boolean removeToken(String token) {
+        return deleteKey(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,TOKEN_PREFIX + token);
     }
 
 }

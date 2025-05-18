@@ -22,6 +22,7 @@ public class LettoUserLoginService {
     @Autowired LeTToUserRepository lettoUserRepository;
     /** Zugriff auf die Sessions in der Default-Datenbank */
     @Autowired LeTToSessionRepository lettoSessionRepository;
+    @Autowired BaseLettoRedisDBService lettoRedisDBService;
 
     private Logger logger = LoggerFactory.getLogger(LettoUserLoginService.class);
 
@@ -105,6 +106,7 @@ public class LettoUserLoginService {
                 for (int i=0; i<tokenList.size(); i++) {
                     ActiveLeTToToken a = tokenList.get(i);
                     if (a.getExpiration()<now) {
+                        //TODO Werner: Hier muss noch der Token aus dem Redis-Cache gelöscht werden - oder auch nicht, da er ja von selbst abläuft
                         tokenList.remove(i);
                         changed = true;
                         i--;
@@ -260,17 +262,17 @@ public class LettoUserLoginService {
         }
     }
 
-    public List<LeTToSession> getSessions(LeTToUser user) {
-        return getSessions(user.getId());
+    public List<LeTToSession> getActiveSessions(LeTToUser user) {
+        return getActiveSessions(user.getId());
     }
 
-    public List<LeTToSession> getSessions(String userID) {
-        List<LeTToSession> userSessions = lettoSessionRepository.findByUserID(userID);
+    public List<LeTToSession> getActiveSessions(String userID) {
+        List<LeTToSession> userSessions = lettoSessionRepository.findByUserIDAndActiveIsTrue(userID);
         return userSessions;
     }
 
     public boolean currentlyLoggedIn(LeTToUser user) {
-        return getSessions(user).size()>0;
+        return getActiveSessions(user).size()>0;
     }
 
     // --------------------------------------------------------------- USER -------------------------------------------------
@@ -330,7 +332,7 @@ public class LettoUserLoginService {
             leTToSession.setDateIntegerLogout(now);
             leTToSession.setStatus(LeTToSession.STATUS_LOGGED_OUT);
             leTToSession.setActive(false);
-            leTToSession.setTokenList(new ArrayList<>());
+            removeAllTokensFromSession(leTToSession);
             save(leTToSession);
         } else ok=false;
         if (leTToUser!=null) {
@@ -352,7 +354,7 @@ public class LettoUserLoginService {
             leTToSession.setDateIntegerLogout(now);
             leTToSession.setStatus(LeTToSession.STATUS_LOGGED_OUT);
             leTToSession.setActive(false);
-            leTToSession.setTokenList(new ArrayList<>());
+            removeAllTokensFromSession(leTToSession);
             save(leTToSession);
         } else ok=false;
         if (leTToUser!=null) {
@@ -376,13 +378,25 @@ public class LettoUserLoginService {
         u.setCurrentlyLoggedIn(false);
         save(u);
         // Zerstöre alle Sessions des Benutzers
-        for (LeTToSession session : getSessions(u)) {
+        for (LeTToSession session : getActiveSessions(u)) {
             session.setActive(false);
             session.setDateIntegerLogout(now);
             session.setStatus(LeTToSession.STATUS_LOGGED_OUT);
-            session.setTokenList(new ArrayList<>());
+            //session.setTokenList(new ArrayList<>());
+            removeAllTokensFromSession(session);
             save(session);
         }
+        return true;
+    }
+
+    public boolean removeAllTokensFromSession(LeTToSession leTToSession) {
+        if (leTToSession==null) return false;
+        //Lösche alle Tokens aus dem REDIS-Cache
+        for (ActiveLeTToToken token : leTToSession.getTokenList()) {
+            lettoRedisDBService.removeToken(token.getToken());
+        }
+        leTToSession.setTokenList(new ArrayList<>());
+        //save(leTToSession);
         return true;
     }
 

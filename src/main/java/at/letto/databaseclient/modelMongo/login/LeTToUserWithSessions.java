@@ -44,11 +44,29 @@ public class LeTToUserWithSessions {
                 sb.append(", ");
             }
             sb.append(session.getIpAddress()).append(":");
+            boolean first=true;
             for (ActiveLeTToToken lt : session.getTokenList()) {
-                sb.append(" ").append(lt.getExpiration()-Datum.nowDateInteger()).append("s");
+                if (first) first=false;
+                else       sb.append(",");
+                sb.append(lt.getExpiration()-Datum.nowDateInteger()).append("s");
             }
         }
         return sb==null?"":sb.toString();
+    }
+
+    public String fingerprints() {
+        StringBuilder sb = null;
+        for (LeTToSession session : sessions) {
+            if (sb == null) {
+                sb = new StringBuilder();
+            } else {
+                sb.append(",");
+            }
+            sb.append(session.getFingerprint());
+        }
+        String result = sb==null?"NO SESSION":sb.toString();
+        if(result.trim().length()==0) result = "EMPTY FINGERPRINT";
+        return result;
     }
 
     public long loggedInSortString(){
