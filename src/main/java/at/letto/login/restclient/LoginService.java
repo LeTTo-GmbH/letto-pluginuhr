@@ -1,6 +1,8 @@
 package at.letto.login.restclient;
 
 import at.letto.login.dto.TokenInfoResponseDto;
+import at.letto.login.dto.TokenLoginResult;
+import at.letto.login.dto.TokenValidationResult;
 import at.letto.login.dto.servertoken.*;
 import at.letto.security.LettoToken;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public interface LoginService {
      * @param ipaddress  IP-Adresse des Users
      * @return          gültiger LettoToken oder null
      */
-    LettoToken jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress);
+    TokenLoginResult jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress);
 
     /**
      * Führt einen Logout des Tokens durch und vernichtet den Token im Token-Store - danach ist kein Token-Refresh dieses Tokens mehr möglich!
@@ -49,42 +51,48 @@ public interface LoginService {
     boolean logout(String token, String username, String school);
 
     /**
-     * Aktualisiert einen gültigen Token
-     * @param lettoToken Token der aktualisiert werden muss
-     * @param jwtsecret  gemeinsames jwtsecret für den JWT-Token
-     * @return           gültiger LeTTo-Token oder null
-     *
-    @Deprecated
-    LettoToken jwtRefresh(LettoToken lettoToken, String jwtsecret);
-    */
-
-    /**
-     * Aktualisiert einen gültigen Token
-     * @param lettoToken Token der aktualisiert werden muss
-     * @return           gültiger LeTTo-Token oder null
-     */
-    LettoToken jwtRefresh(LettoToken lettoToken);
-
-    /**
      * Überprüft die Gültigkeit eines Tokens
      * @param token      Token der geprüft werden muss
      * @return           true wenn der Token gültig ist, sonst false
      */
-    boolean jwtValidate(String token);
+    TokenValidationResult jwtValidate(String token, String fingerprint);
 
     /**
      * Liefert einen kompletten LettoToken aus einem Tokenstring wenn der Token gültig ist
      * @param token     Token der geprüft werden muss
      * @return          gültiger LeTTo-Token oder null
      */
-    LettoToken lettoTokenFromTokenString(String token);
+    TokenLoginResult lettoTokenFromTokenString(String token);
+
+    /**
+     * Aktualisiert einen gültigen Token
+     * @param lettoToken Token der aktualisiert werden muss
+     * @return           gültiger LeTTo-Token oder null
+     */
+    @Deprecated
+    TokenLoginResult jwtRefresh(LettoToken lettoToken);
 
     /**
      * Aktualisiert einen gültigen Token
      * @param token      Token der aktualisiert werden muss
      * @return           gültiger JWT-Token oder null
      */
+    @Deprecated
     String jwtRefresh(String token);
+
+    /**
+     * Aktualisiert einen gültigen Token
+     * @param lettoToken Token der aktualisiert werden muss
+     * @return           gültiger LeTTo-Token oder null
+     */
+    TokenLoginResult jwtRefresh(LettoToken lettoToken, String fingerprint);
+
+    /**
+     * Aktualisiert einen gültigen Token
+     * @param token      Token der aktualisiert werden muss
+     * @return           gültiger JWT-Token oder null
+     */
+    String jwtRefresh(String token, String fingerprint);
 
     /**
      * Liefert einen gültigen JWT-Token aus einem gültigen TempToken

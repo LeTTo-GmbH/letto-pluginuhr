@@ -51,17 +51,6 @@ public class RestLoginService extends RestClient implements LoginService {
         return rev;
     }
 
-    /**
-    @Deprecated
-    @Override
-    public LettoToken jwtLogin(String username, String password, String school, String jwtsecret, String fingerprint) {
-        AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint);
-        JWTTokenResponse response = post(LoginEndpoint.jwtlogin,request,JWTTokenResponse.class);
-        if (response!=null && response.getToken()!=null)
-            return new LettoToken(response.getToken(), jwtsecret);
-        return null;
-    }*/
-
     @Override
     public String jwtLogin(String username, String password, String school, String fingerprint, String ipaddress) {
         AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint,ipaddress);
@@ -72,31 +61,35 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public LettoToken jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress) {
+    public TokenLoginResult jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress) {
         AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint, ipaddress);
-        LettoToken response = post(LoginEndpoint.jwtlettologin,request,LettoToken.class);
+        TokenLoginResult response = post(LoginEndpoint.jwtlettologin,request,TokenLoginResult.class);
         return response;
     }
 
-    /*
     @Deprecated
-    @Override
-    public LettoToken jwtRefresh(LettoToken token, String secret) {
-        JWTTokenResponse response = post(LoginEndpoint.jwtrefresh,token.getToken(),JWTTokenResponse.class, token);
-        if (response!=null && response.getToken()!=null)
-            return new LettoToken(response.getToken(), secret);
-        return null;
-    }*/
-
-    @Override
-    public LettoToken jwtRefresh(LettoToken lettoToken) {
-        LettoToken response = get(LoginEndpoint.lettotokenrefresh,LettoToken.class, lettoToken.getToken());
+    public TokenLoginResult jwtRefresh(LettoToken lettoToken) {
+        TokenLoginResult response = get(LoginEndpoint.lettotokenrefresh,TokenLoginResult.class, lettoToken.getToken());
         return response;
     }
 
-    @Override
+    @Deprecated
     public String jwtRefresh(String token) {
         JWTTokenResponse response = post(LoginEndpoint.jwtrefresh,token,JWTTokenResponse.class, token);
+        if (response!=null && response.getToken()!=null)
+            return response.getToken();
+        return null;
+    }
+
+    @Override
+    public TokenLoginResult jwtRefresh(LettoToken lettoToken, String fingerprint) {
+        TokenLoginResult response = post(LoginEndpoint.lettotokenrefresh, fingerprint, TokenLoginResult.class, lettoToken.getToken());
+        return response;
+    }
+
+    @Override
+    public String jwtRefresh(String token, String fingerprint) {
+        JWTTokenResponse response = post(LoginEndpoint.jwtrefresh, fingerprint, JWTTokenResponse.class, token);
         if (response!=null && response.getToken()!=null)
             return response.getToken();
         return null;
@@ -119,24 +112,15 @@ public class RestLoginService extends RestClient implements LoginService {
         return false;
     }
 
-    public String jwtRefreshGet(String token) {
-        JWTTokenResponse response = get(LoginEndpoint.jwtrefresh,JWTTokenResponse.class, token);
-        if (response!=null && response.getToken()!=null)
-            return response.getToken();
-        return null;
+    @Override
+    public TokenValidationResult jwtValidate(String token, String fingerprint) {
+        TokenValidationResult result = post(LoginEndpoint.jwtvalidate,fingerprint,TokenValidationResult.class, token);
+        return result;
     }
 
     @Override
-    public boolean jwtValidate(String token) {
-        String response = get(LoginEndpoint.jwtvalidate,String.class, token);
-        if (response!=null && response.equals("true"))
-            return true;
-        return false;
-    }
-
-    @Override
-    public LettoToken lettoTokenFromTokenString(String token) {
-        LettoToken response = get(LoginEndpoint.jwtgetlettotoken,LettoToken.class, token);
+    public TokenLoginResult lettoTokenFromTokenString(String token) {
+        TokenLoginResult response = get(LoginEndpoint.jwtgetlettotoken,TokenLoginResult.class, token);
         return response;
     }
 

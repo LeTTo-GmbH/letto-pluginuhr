@@ -1,6 +1,7 @@
 package at.letto.basespringboot.security;
 
 import at.letto.databaseclient.service.BaseLettoRedisDBService;
+import at.letto.login.dto.TokenLoginResult;
 import at.letto.login.restclient.RestLoginService;
 import at.letto.security.LettoToken;
 import lombok.Getter;
@@ -50,8 +51,9 @@ public class JwtTokenService {
         if (useLoginService) {
             try {
                 // Suche den Token im Login-Service
-                lettoToken = restLoginService.lettoTokenFromTokenString(token);
-                if (lettoToken != null) {
+                TokenLoginResult result = restLoginService.lettoTokenFromTokenString(token);
+                if (result!=null && result.getLettoToken() != null) {
+                    lettoToken = result.getLettoToken();
                     // Token im Login-Service gefunden
                     baseLettoRedisDBService.putToken(lettoToken);
                     return lettoToken;

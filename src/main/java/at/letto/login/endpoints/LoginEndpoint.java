@@ -28,7 +28,7 @@ public class LoginEndpoint {
     public static final String SERVER      = API+"/server";
     public static final String OPENAPI     = API+"/open";
     public static final String jwtrefresh  = API + "/jwtrefresh";   // JWT-Token-Refresh
-    public static final String lettotokenrefresh    = API + "/lettotokenrefresh";     // JWT-Token-Refresh
+    public static final String lettotokenrefresh    = API + "/lettotokenrefresh";     // JWT-Token-Refresh Get ohne und Post mit Fingerprint
     public static final String jwtvalidate = API + "/jwtvalidate";
     public static final String jwtgetlettotoken   = API + "/jwtgetlettotoken";
     public static final String jwtlogout   = API + "/jwtlogout";    // JWT-Token-Logout
