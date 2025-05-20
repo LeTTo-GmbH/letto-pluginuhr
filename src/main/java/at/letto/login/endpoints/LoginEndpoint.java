@@ -110,4 +110,10 @@ public class LoginEndpoint {
     public static final String SESSION_STUDENT     = servicepath+EndpointInterface.sessionstudent;
     public static final String SESSION_TEACHER     = servicepath+EndpointInterface.sessionteacher;
 
+    /* ----------------------------------------------------------------------------------------------------
+                        Message-Endpoints
+       ---------------------------------------------------------------------------------------------------- */
+    public static final String getMessage         = OPEN+"/getmessage"; // liefert eine Nachricht zu einer MessageID
+    public static final String createMessage      = OPEN+"/createMessage"; // speichert eine Nachricht in der REDIS-Datenbank und liefert eine MessageID
+
 }

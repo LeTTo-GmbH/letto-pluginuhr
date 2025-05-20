@@ -1,6 +1,8 @@
 package at.letto.login.restclient;
 
 import at.letto.login.dto.*;
+import at.letto.login.dto.message.MessageDto;
+import at.letto.login.dto.message.PutMessageDto;
 import at.letto.login.dto.servertoken.*;
 import at.letto.login.endpoints.LoginEndpoint;
 import at.letto.security.LettoToken;
@@ -177,17 +179,22 @@ public class RestLoginService extends RestClient implements LoginService {
         return null;
     }
 
-    public boolean pingStudent(LettoToken token) {
+    @Override
+    public boolean pingStudent(String token) {
         String pong = post(LoginEndpoint.pingstudent,"ping",String.class, token);
         if (pong!=null && pong.equals("pong")) return true;
         return false;
     }
-    public boolean pingTeacher(LettoToken token) {
+
+    @Override
+    public boolean pingTeacher(String token) {
         String pong = post(LoginEndpoint.pingteacher,"ping",String.class, token);
         if (pong!=null && pong.equals("pong")) return true;
         return false;
     }
-    public boolean pingAdmin(LettoToken token)   {
+
+    @Override
+    public boolean pingAdmin(String token)   {
         String pong = post(LoginEndpoint.pingadmin,"ping",String.class, token);
         if (pong!=null && pong.equals("pong")) return true;
         return false;
@@ -251,6 +258,41 @@ public class RestLoginService extends RestClient implements LoginService {
     @Override
     public String getUserTokenDirect(UserTokenRequestDto userTokenRequestDto) {
         String response = post(LoginEndpoint.getUserTokenDirect,userTokenRequestDto,String.class);
+        return response;
+    }
+
+    /**
+     * Generiert eine Nachricht an ein Service welche in der REDIS-Datenbank gespeichert wird<br>
+     * @param sender     Kennung des Senders
+     * @param receiver   Kennung des Empfängers
+     * @param topic      Thema der Nachricht
+     * @param message    Nachricht als Objekt welches als JSON gespeichert wird!!
+     * @param lifetimeSeconds   Lebensdauer der Nachricht in Sekunden bis sie gelöscht wird
+     * @param single     true wenn die Nachricht nur einmal abgeholt werden kann und dann sofort gelöscht wird
+     * @param messageSecret Secret damit nur Services eine Nachricht senden können welche das Secret kennen. - Sollte das ServerSecret sein!!
+     * @return           Kennung der Nachricht als String welcher auch als get-Parameter verwendet werden kann
+     */
+    @Override
+    public String createMessage(String sender, String receiver, String topic, Object message, long lifetimeSeconds, boolean single, String messageSecret) {
+        PutMessageDto putMessageDto = new PutMessageDto(
+                sender,
+                receiver,
+                topic,
+                message,
+                lifetimeSeconds,
+                single,
+                messageSecret
+        );
+        String response = post(LoginEndpoint.createMessage,putMessageDto,String.class);
+        return response;
+    }
+
+    /** Lädt eine Nachricht aus der REDIS-Datenbank und löscht falls sie single ist sofort <br>
+     * @param messageID   Kennung der Nachricht
+     * @return            Nachricht als Object oder null wenn die Nachricht nicht existiert
+     * */
+    public MessageDto getMessage(String messageID) {
+        MessageDto response = post(LoginEndpoint.getMessage,messageID,MessageDto.class);
         return response;
     }
 

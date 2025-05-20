@@ -3,7 +3,9 @@ package at.letto.login.restclient;
 import at.letto.login.dto.TokenInfoResponseDto;
 import at.letto.login.dto.TokenLoginResult;
 import at.letto.login.dto.TokenValidationResult;
+import at.letto.login.dto.message.MessageDto;
 import at.letto.login.dto.servertoken.*;
+import at.letto.login.endpoints.LoginEndpoint;
 import at.letto.security.LettoToken;
 import java.util.HashMap;
 
@@ -232,5 +234,30 @@ public interface LoginService {
      * @return UserToken auf dem Remote-Server
      */
     String getUserTokenDirect(UserTokenRequestDto userTokenRequestDto);
+
+    public boolean pingStudent(String token);
+
+    public boolean pingTeacher(String token);
+
+    public boolean pingAdmin(String token);
+
+    /**
+     * Generiert eine Nachricht an ein Service welche in der REDIS-Datenbank gespeichert wird<br>
+     * @param sender     Kennung des Senders
+     * @param receiver   Kennung des Empfängers
+     * @param topic      Thema der Nachricht
+     * @param message    Nachricht als Objekt welches als JSON gespeichert wird!!
+     * @param lifetimeSeconds   Lebensdauer der Nachricht in Sekunden bis sie gelöscht wird
+     * @param single     true wenn die Nachricht nur einmal abgeholt werden kann und dann sofort gelöscht wird
+     * @param messageSecret Secret damit nur Services eine Nachricht senden können welche das Secret kennen.
+     * @return           Kennung der Nachricht als String welcher auch als get-Parameter verwendet werden kann
+     */
+    String createMessage(String sender, String receiver, String topic, Object message, long lifetimeSeconds, boolean single, String messageSecret);
+
+    /** Lädt eine Nachricht aus der REDIS-Datenbank und löscht falls sie single ist sofort <br>
+     * @param messageID   Kennung der Nachricht
+     * @return            Nachricht als Object oder null wenn die Nachricht nicht existiert
+     * */
+    public MessageDto getMessage(String messageID);
 
 }

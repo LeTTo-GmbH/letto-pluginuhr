@@ -49,6 +49,8 @@ public class WebSecurityConfig {
     @Autowired
     private BaseLettoUserDetailsService userInfoService;
 
+    @Autowired private MessageService messageService;
+
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) {
         authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
@@ -60,6 +62,7 @@ public class WebSecurityConfig {
         mc.webSecurityConfig = this;
         setJwtSecret(mc.getJwtSecret(), mc.getJwtExpiration(),mc);
         this.endpoint= endpoint;
+        messageService.init(mc);
         /*userInfoService.loadUserList(mc.getUserGastPassword(), "gast",
                 mc.getUserUserPassword(), "gast,user",
                 mc.getUserAdminPassword(), "gast,user,admin"

@@ -227,6 +227,29 @@ public class BaseLettoRedisDBService {
         return false;
     }
 
+    /**
+     *  speichert ein Objekt mit einem key in einer Datenbank
+     * @param database
+     * @param key
+     * @param value
+     * @param seconds   Anzahl an Sekunden bis der Eintrag gelöscht wird
+     */
+    public boolean putSeconds(int database, String key, Object value, long seconds) {
+        try {
+            String json;
+            if (value instanceof String) {
+                json = (String) value;
+            } else {
+                json = JSON.objToJson(value);
+            }
+            redisTemplate(database).opsForValue().set(key, json, seconds, TimeUnit.SECONDS);
+            return true;
+        } catch (Throwable e) {
+            this.setError();
+        }
+        return false;
+    }
+
     /** Erhöht der Fehlerzähler und setzt redisOK auf false, wenn zu viele Fehler auftreten */
     private void setError() {
         errorCount++;
