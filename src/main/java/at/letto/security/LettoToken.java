@@ -4,6 +4,8 @@ import at.letto.tools.ENCRYPT;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 
@@ -75,8 +78,6 @@ public class LettoToken {
     private final boolean created;
     // Claims
     private final DefaultClaims claims;
-    // JWT
-    //private final Jwt jwt;
 
     @JsonCreator
     public LettoToken(@JsonProperty("token") String token,
@@ -101,7 +102,32 @@ public class LettoToken {
         this.token   = token;
         this.created = false;
         this.claims  = (DefaultClaims)calcAllClaimsFromToken(secret);
-        //this.jwt     = calcJwt(secret);
+    }
+
+    /**
+     * Konstruktor für den Token, ohne Überprüfung des Secrets!!
+     * @param token Token als String
+     */
+    public LettoToken(String token) {
+        this.token   = token;
+        this.created = false;
+        String[] parts = token.split("\\.");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Ungültiges JWT: Hat weniger als 2 Teile");
+        }
+
+        String payloadJson = new String(
+                Base64.getUrlDecoder().decode(parts[1]),
+                StandardCharsets.UTF_8
+        );
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            this.claims = mapper.readValue(payloadJson, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Ungültiges JWT: Payload kann nicht geparsed werden", e);
+        }
     }
 
     public LettoToken(String  secret,

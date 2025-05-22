@@ -250,6 +250,29 @@ public class BaseLettoRedisDBService {
         return false;
     }
 
+    /**
+     *  speichert ein Objekt mit einem key in einer Datenbank
+     * @param database
+     * @param key
+     * @param value
+     * @param milliseconds   Anzahl an MilliSekunden bis der Eintrag gelöscht wird
+     */
+    public boolean putMilliSeconds(int database, String key, Object value, long milliseconds) {
+        try {
+            String json;
+            if (value instanceof String) {
+                json = (String) value;
+            } else {
+                json = JSON.objToJson(value);
+            }
+            redisTemplate(database).opsForValue().set(key, json, milliseconds, TimeUnit.MILLISECONDS);
+            return true;
+        } catch (Throwable e) {
+            this.setError();
+        }
+        return false;
+    }
+
     /** Erhöht der Fehlerzähler und setzt redisOK auf false, wenn zu viele Fehler auftreten */
     private void setError() {
         errorCount++;
@@ -408,8 +431,8 @@ public class BaseLettoRedisDBService {
      */
     public boolean putToken(LettoToken lettoToken) {
         String token = lettoToken.getToken();
-        //FIXME Werner: Lebensdauer auf die Token-Lebensdauer setzen !!
-        return put(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,TOKEN_PREFIX + token, lettoToken,2);
+        long lifetimems = lettoToken.getValidMillis();
+        return putMilliSeconds(BaseLettoRedisDBService.REDIS_DATABASE_LOGIN,TOKEN_PREFIX + token, lettoToken,lifetimems);
     }
 
     /**
