@@ -45,9 +45,9 @@ public class LoginEndpoint {
     /* ----------------------------------------------------------------------------------------------------
                         LOGIN
        ---------------------------------------------------------------------------------------------------- */
-    public static final String login       = OPEN + "/login";        //Login
-    public static final String loginletto  = OPEN + "/loginletto";   // Login mit LeTTo-User
-    public static final String logout      = OPEN + "/logout";
+    public static final String login               = OPEN + "/login";        //Login
+    public static final String loginletto          = OPEN + "/loginletto";   // Login mit LeTTo-User
+    public static final String logout              = OPEN + "/logout";
     public static final String jwtlogin            = OPENAPI  + "/jwtlogin";     // JWT-Token-Login
     public static final String jwtlettologin       = OPENAPI  + "/jwtlettologin";//LettoToken-Login
     public static final String jwttemptoken        = OPENAPI  + "/jwttemptoken"; // JWT-Token aus einem TempToken erzeugen

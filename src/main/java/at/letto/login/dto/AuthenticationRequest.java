@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * DTO für die Authentifizierungsanfrage.
+ * Enthält die Anmeldedaten des Benutzers.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

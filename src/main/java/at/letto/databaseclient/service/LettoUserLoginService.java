@@ -148,6 +148,22 @@ public class LettoUserLoginService {
                 }
             }
         } catch (Exception e) { }
+        try {
+            List<LeTToUser> users = lettoUserRepository.findByCurrentlyLoggedInIsTrue();
+            for (LeTToUser u:users) {
+                // Prüfe ob der Benutzer noch aktuell eingeloggt ist
+                List<LeTToSession> userSessions = lettoSessionRepository.findByUserIDAndActiveIsTrue(u.getId());
+                if (userSessions.size() == 0) {
+                    // Wenn keine aktiven Sessions mehr vorhanden sind, dann wird der Benutzer aktualisiert
+                    u.setCurrentlyLoggedIn(false);
+                    u.setLastUserActionTime(now);
+                    u.setLastTimeoutLogout(now);
+                    u.setTimeoutLogouts(u.getTimeoutLogouts()+1);
+                    u.setLastUserAction(LeTToUser.USER_ACTION_TOKEN_TIMEOUT);
+                    lettoUserRepository.save(u);
+                }
+            }
+        } catch (Exception e) { }
     }
 
     public LeTToUser getUser(LettoToken lettoToken) {

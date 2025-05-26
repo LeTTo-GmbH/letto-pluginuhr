@@ -55,10 +55,18 @@ public class RestLoginService extends RestClient implements LoginService {
 
     @Override
     public String jwtLogin(String username, String password, String school, String fingerprint, String ipaddress) {
-        AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint,ipaddress);
-        JWTTokenResponse response = post(LoginEndpoint.jwtlogin,request,JWTTokenResponse.class);
-        if (response!=null && response.getToken()!=null)
-            return response.getToken();
+        AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint, ipaddress);
+        TokenLoginResult response = post(LoginEndpoint.jwtlettologin,request,TokenLoginResult.class);
+        if (response!=null) {
+            if (response.getLettoToken().getToken()!=null)
+                return response.getLettoToken().getToken();
+            return null;
+        }
+        // Fallback auf die alte JWT-Login-Methode ohne Fingerprint und IP-Adresse
+        AuthenticationRequestOld requestOld = new AuthenticationRequestOld(username, password, school);
+        JWTTokenResponse jwtresponse = post(LoginEndpoint.jwtlogin,request,JWTTokenResponse.class);
+        if (jwtresponse!=null && jwtresponse.getToken()!=null)
+            return jwtresponse.getToken();
         return null;
     }
 
@@ -66,7 +74,15 @@ public class RestLoginService extends RestClient implements LoginService {
     public TokenLoginResult jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress) {
         AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint, ipaddress);
         TokenLoginResult response = post(LoginEndpoint.jwtlettologin,request,TokenLoginResult.class);
-        return response;
+        if (response!=null)
+            return response;
+        // Fallback auf die alte JWT-Login-Methode ohne Fingerprint und IP-Adresse
+        AuthenticationRequestOld requestOld = new AuthenticationRequestOld(username, password, school);
+        JWTTokenResponse jwtresponse = post(LoginEndpoint.jwtlogin,request,JWTTokenResponse.class);
+        if (jwtresponse!=null && jwtresponse.getToken()!=null) {
+            return new TokenLoginResult(new LettoToken(jwtresponse.getToken()), "Login successful", LOGINSTATUS.SUCCESS);
+        }
+        return new TokenLoginResult(null, "Login failed", LOGINSTATUS.FAILURE);
     }
 
     @Deprecated
@@ -84,17 +100,29 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public TokenLoginResult jwtRefresh(LettoToken lettoToken, String fingerprint) {
-        TokenLoginResult response = post(LoginEndpoint.lettotokenrefresh, fingerprint, TokenLoginResult.class, lettoToken.getToken());
-        return response;
+    public String jwtRefresh(String token, String fingerprint) {
+        TokenLoginResult response = post(LoginEndpoint.lettotokenrefresh, fingerprint, TokenLoginResult.class, token);
+        if (response!=null) {
+            if (response.getLettoToken()!=null)
+                return response.getLettoToken().getToken();
+            return null;
+        }
+        JWTTokenResponse jwtresponse = post(LoginEndpoint.jwtrefresh, token, JWTTokenResponse.class, token);
+        if (jwtresponse!=null && jwtresponse.getToken()!=null)
+            return jwtresponse.getToken();
+        return null;
     }
 
     @Override
-    public String jwtRefresh(String token, String fingerprint) {
-        JWTTokenResponse response = post(LoginEndpoint.jwtrefresh, fingerprint, JWTTokenResponse.class, token);
-        if (response!=null && response.getToken()!=null)
-            return response.getToken();
-        return null;
+    public TokenLoginResult jwtRefresh(LettoToken lettoToken, String fingerprint) {
+        TokenLoginResult response = post(LoginEndpoint.lettotokenrefresh, fingerprint, TokenLoginResult.class, lettoToken.getToken());
+        if (response!=null) {
+            return response;
+        }
+        JWTTokenResponse jwtresponse = post(LoginEndpoint.jwtrefresh, lettoToken.getToken(), JWTTokenResponse.class, lettoToken.getToken());
+        if (jwtresponse!=null && jwtresponse.getToken()!=null)
+            return new TokenLoginResult(new LettoToken(jwtresponse.getToken()),"Login successful",LOGINSTATUS.SUCCESS);
+        return new TokenLoginResult(null,"Refresh failed",LOGINSTATUS.FAILURE);
     }
 
     @Override
