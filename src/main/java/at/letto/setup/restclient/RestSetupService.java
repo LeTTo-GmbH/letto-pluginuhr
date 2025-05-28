@@ -179,8 +179,8 @@ public class RestSetupService extends RestClient implements SetupService {
      * @param password Passwort
      * @return         Token-String oder Leerstring
      */
-    public String checkPassword(String username, String password, String fingerprint, String ipaddress) {
-        AuthenticationRequestDto request = new AuthenticationRequestDto(username, password, fingerprint,ipaddress);
+    public String checkPassword(String username, String password, String fingerprint, String ipaddress, String service, String infos, String userAgent) {
+        AuthenticationRequestDto request = new AuthenticationRequestDto(username, password, fingerprint,ipaddress, service, infos, userAgent);
         String response = post(SetupEndpoint.checkPassword,request,String.class);
         return response==null?"":response.trim();
     }

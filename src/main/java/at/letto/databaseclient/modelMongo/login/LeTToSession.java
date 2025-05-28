@@ -45,13 +45,13 @@ public class LeTToSession {
     }*/
 
     /** Erzeugt eine neue LeTToSession für einen Login-Vorgang */
-    public static LeTToSession createFromToken(String id, LeTToUser leTToUser, String fingerprint, String ipAddress, LettoToken lettoToken) {
+    public static LeTToSession createFromToken(String id, LeTToUser leTToUser, String fingerprint, String ipAddress, LettoToken lettoToken, String service, String infos, String userAgent) {
         List<ActiveLeTToToken> tokenList = new ArrayList<>();
         long expiration        = Datum.toDateInteger(lettoToken.getExpirationDate());
         tokenList.add(new ActiveLeTToToken(lettoToken.getToken(),expiration));
         LeTToSession leTToSession = new LeTToSession(
                 id, leTToUser.getId(), STATUS_LOGGED_IN, lettoToken.getUsername(), lettoToken.getSchool(),
-                Datum.nowDateInteger(), 0,1,fingerprint,ipAddress,true,tokenList);
+                Datum.nowDateInteger(), 0,1,fingerprint,ipAddress,service,infos,userAgent,true,tokenList);
         return leTToSession;
     }
 
@@ -90,8 +90,14 @@ public class LeTToSession {
     /** IP-Adresse des Clients */
     private String ipAddress = null;
 
-    /** aktive Tokens der Session als String token:expiration,token:.... */
-    //private String activeTokens = "";
+    /** Service welcher die Authentifizierung anfordert, z.B. "letto-login", "letto-edit", "letto-admin" etc. */
+    String service="";
+
+    /** zusätzliche Informationen über den Client, wer, was, wo, warum */
+    String infos="";
+
+    /** User-Agent des Clients, z.B. "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3" */
+    String userAgent="";
 
     /** Gibt an ob die Session noch aktiv ist */
     private boolean active = false;
