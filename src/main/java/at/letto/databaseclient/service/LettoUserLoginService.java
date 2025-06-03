@@ -50,6 +50,16 @@ public class LettoUserLoginService {
         return userWithSessions;
     }
 
+    public List<LeTToSession> getSessionsForUser(String userID) {
+        try {
+            List<LeTToSession> sessions = lettoSessionRepository.findByUserID(userID);
+            return sessions;
+        } catch (Exception e) {
+            logger.error("Error getting sessions for user "+userID+" : "+e.getMessage());
+        }
+        return new ArrayList<>();
+    }
+
     /** Liefert alle eingeloggten Benutzer an einem Serverknoten */
     public List<LeTToUserWithSessions> getLoggedInUsers() {
         try {
@@ -380,6 +390,16 @@ public class LettoUserLoginService {
             leTToUser.setLastLogout(now);
             leTToUser.incCorrectLogouts();
             save(leTToUser);
+        } else ok=false;
+        return ok;
+    }
+
+    public boolean delete(LeTToSession leTToSession) {
+        LeTToUser leTToUser       = lettoUserRepository.findById(leTToSession.getUserID()).orElse(null);
+        long now           = Datum.nowDateInteger();
+        boolean ok=true;
+        if (leTToSession!=null) {
+            lettoSessionRepository.delete(leTToSession);
         } else ok=false;
         return ok;
     }

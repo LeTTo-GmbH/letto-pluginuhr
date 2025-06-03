@@ -120,61 +120,17 @@ public class LeTToSession {
         return false;
     }
 
-    /*@Transient
-    @JsonIgnore
-    private List<ActiveLeTToToken> tokenList = null;
-
-    ///@return Liefert eine Liste aller Token mit ihrer Token-Ablaufzeit in Sekunden
-    @JsonIgnore
-    public List<ActiveLeTToToken> getTokenList(){
-        if (tokenList==null){
-            tokenList = new ArrayList<>();
-            for (String token : activeTokens.split(",")){
-                try { if (token.trim().length()>0) {
-                    String[] parts = token.split(":");
-                    if (parts.length == 2) {
-                        tokenList.add(new ActiveLeTToToken(parts[0], Long.parseLong(parts[1]), sessionID));
-                    }
-                }} catch (Exception e){ }
-            }
-        }
-        List<ActiveLeTToToken> result = new ArrayList<>();
-        for (ActiveLeTToToken token : tokenList)
-            result.add(token);
-        return result;
+    public String loginString() {
+        return Datum.formatDateTime(dateIntegerLogin);
     }
 
-    public void setActiveTokens(List<ActiveLeTToToken> activeLeTToTokenList){
-        String result = "";
-        tokenList = new ArrayList<>();
-        for (ActiveLeTToToken a : activeLeTToTokenList) {
-            if (result.length()>0) result += ",";
-            result += a.token+":"+a.expiration;
-            tokenList.add(a);
-        }
-        activeTokens = result;
+    public String logoutString() {
+        return Datum.formatDateTime(dateIntegerLogout);
     }
 
-    private void setActiveTokens(String activeTokens){
-        this.activeTokens = activeTokens;
-        this.tokenList = null;
+    public long sortTime() {
+        return -dateIntegerLogin;
     }
 
-    private void activeTokensPut(String token, Long expiration) {
-        boolean found = false;
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (int i=0; i<tokenList.size() && !found; i++) {
-            if (tokenList.get(i).token.equals(token)) {
-                found=true;
-                tokenList.set(i,new ActiveLeTToToken(token,expiration,sessionID));
-            }
-        }
-        if (!found) tokenList.add(new ActiveLeTToToken(token,expiration,sessionID));
-        setActiveTokens(tokenList);
-    }
-
-    private int activeTokensSize() {
-        return getTokenList().size();
-    }*/
 
 }

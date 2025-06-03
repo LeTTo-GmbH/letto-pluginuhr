@@ -69,6 +69,51 @@ public class LeTToUserWithSessions {
         return result;
     }
 
+    public String services() {
+        StringBuilder sb = null;
+        for (LeTToSession session : sessions) {
+            if (sb == null) {
+                sb = new StringBuilder();
+            } else {
+                sb.append(",");
+            }
+            sb.append(session.getService());
+        }
+        String result = sb==null?"NO SESSION":sb.toString();
+        if(result.trim().length()==0) result = "-";
+        return result;
+    }
+
+    public String infos() {
+        StringBuilder sb = null;
+        for (LeTToSession session : sessions) {
+            if (sb == null) {
+                sb = new StringBuilder();
+            } else {
+                sb.append(",");
+            }
+            sb.append(session.getInfos());
+        }
+        String result = sb==null?"NO SESSION":sb.toString();
+        if(result.trim().length()==0) result = "-";
+        return result;
+    }
+
+    public String userAgents() {
+        StringBuilder sb = null;
+        for (LeTToSession session : sessions) {
+            if (sb == null) {
+                sb = new StringBuilder();
+            } else {
+                sb.append(",");
+            }
+            sb.append(session.getUserAgent());
+        }
+        String result = sb==null?"NO SESSION":sb.toString();
+        if(result.trim().length()==0) result = "-";
+        return result;
+    }
+
     public long loggedInSortString(){
         return user.loggedInSortString();
     }
