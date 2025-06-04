@@ -132,5 +132,14 @@ public class LeTToSession {
         return -dateIntegerLogin;
     }
 
+    public boolean checkFingerprint(String fingerprint) {
+        if (fingerprint==null) fingerprint="";
+        fingerprint = fingerprint.trim();
+        String fp;
+        if (this.fingerprint==null || this.fingerprint.trim().isEmpty()) fp="";
+        else fp = this.fingerprint.trim();
+        if (fp.length()==0) return true;
+        return fp.equals(fingerprint);
+    }
 
 }
