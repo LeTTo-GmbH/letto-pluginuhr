@@ -98,16 +98,26 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
     }
 
     /**
-     * Speichern eines DTOs in der Datenbank.<br>
+     * Speichern eines DTOs in der Datenbank unter dessen ID.<br>
      * Ist Redis nicht funktionsfähig, dann Abbruch ohne Meldung.
      * @param data      Datenelement, muss IdEntity implementiert haben
      * @param token     LeTTo-Token zur Autentifizierung
      */
     @Override
     public void put(T data, LettoToken token) {
+        put(data, data.getId(), token);
+    }
+
+    /**
+     * Speichern eines DTOs in der Datenbankmit einer anderen ID.<br>
+     * Ist Redis nicht funktionsfähig, dann Abbruch ohne Meldung.
+     * @param data      Datenelement, muss IdEntity implementiert haben
+     * @param token     LeTTo-Token zur Autentifizierung
+     */
+    public void put(T data, int id, LettoToken token) {
         if (!checkRedis()) return;
 
-        String key = key(data.getId(), (Class<T>)data.getClass(), token.getSchool());
+        String key = key(id, (Class<T>)data.getClass(), token.getSchool());
         baseLettoRedisDBService.put(key, JSON.objToJson(data));
         baseLettoRedisDBService.redisTemplate().expire(key, timeout, timeUnit);
     }
