@@ -55,6 +55,8 @@ public abstract class BaseMicroServiceConfiguration implements MicroServiceConfi
     private String jwtSecret;
     @Value("${"+DEFjwtExpiration+"}")
     private long jwtExpiration;
+    @Value("${"+DEFjwtAppExpiration+"}")
+    private long jwtAppExpiration;
     @Value("${"+DEFjwtRefreshTime+"}")
     private long jwtRefreshTime;
     @Value("${"+DEFserverSecret+"}")

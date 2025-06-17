@@ -148,6 +148,38 @@ public class RestLoginService extends RestClient implements LoginService {
         return result;
     }
 
+    /**
+     * Liefert aus einem gültigen Token einen Token welcher für die App verwendet werden kann um sich
+     * damit bei LeTTo statt Benutzernamen und Passwort aber mit Fingerprint und IP-Adresse anzumelden.
+     * Dieser Token ist verschlüsselt und kann nur vom Login-Service entschlüsselt werden.
+     * @param token       gültiger Token
+     * @param fingerprint Fingerabdruck des Browsers
+     * @return            AppToken Authentifizierungstoken welcher statt Benutzernamen und Passwort verwendet werden kann
+     */
+    @Override
+    public String jwtGetAppToken(String token, String fingerprint) {
+        String response = post(LoginEndpoint.jwtgetapptoken,fingerprint,String.class, token);
+        return response;
+    }
+
+    /**
+     * Versucht sich mit einem App-Token anzumelden, welcher aus Benutzernamen und Passwort generiert wurde.
+     * @param apptoken  App-Token welcher aus Benutzernamen und Passwort generiert wurde
+     * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param ipaddress  IP-Adresse des Users
+     * @param service    Service welcher die Authentifizierung anfordert, z.B. "letto-login", "letto-edit", "letto-admin" etc.
+     * @param infos      zusätzliche Informationen über den Client, wer, was, wo, warum
+     * @param userAgent  User-Agent des Clients, z.B. "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+     * @return           gültiger LettoToken Information warum der Login nicht erfolgreich war
+     */
+    @Override
+    public TokenLoginResult jwtAppTokenLogin(String apptoken, String fingerprint, String ipaddress, String service, String infos, String userAgent) {
+        AppTokenRequest request   = new AppTokenRequest(apptoken, fingerprint, ipaddress, service, infos, userAgent);
+        TokenLoginResult response = post(LoginEndpoint.jwtapptokenlogin,request,TokenLoginResult.class);
+        return response;
+    }
+
+
     @Override
     public TokenLoginResult lettoTokenFromTokenString(String token) {
         TokenLoginResult response = get(LoginEndpoint.jwtgetlettotoken,TokenLoginResult.class, token);

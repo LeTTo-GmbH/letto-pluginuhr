@@ -46,6 +46,9 @@ public final class SecurityConstants {
     /* Standard Dauer in ms für die Gültigkeit eines Tokens */
     public static final long   EXPIRATION_TIME = 1000 * 60 * 60;
 
+    /* Standard Dauer in ms für die Gültigkeit eines App-Tokens */
+    public static final long   EXPIRATION_TIME_APP = 1000L*60L*60L*24L*14L; // 14 Tage
+
     /* Wenn übrige Gültigkeitsdauer eines Tokens unter die Refresh-Time kommt sollte der Token aktualisiert werden */
     public static final long   REFRESH_TIME    = 1000 * 60 * 2;
 

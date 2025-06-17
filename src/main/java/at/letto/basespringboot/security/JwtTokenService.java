@@ -30,8 +30,7 @@ public class JwtTokenService {
 
     @Getter @Setter private boolean useRedis        = true;
     @Getter @Setter private boolean useLoginService = true;
-    //FIXME Werner: Standardwert muss wieder auf false gesetzt werden wenn alles auf Stable umgestellt ist!!
-    @Getter @Setter private boolean useSecret       = true;
+    @Getter @Setter private boolean useSecret       = false;
 
     /** Macht aus einem Tokenstring einen LettoToken */
     public LettoToken toLettoToken(String token) {

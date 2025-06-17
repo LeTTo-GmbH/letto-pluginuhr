@@ -68,6 +68,9 @@ public class LettoToken {
     /** Rolle für die Authentifizierung eines Server-Tokens, der an Lehrer/Admins anderer Schulen weitergegeben wird */
     public static final String ROLE_SERVER              = "server";
 
+    /** Rolle für einen AppToken */
+    public static final String ROLE_APPTOKEN            = "apptoken";
+
     /** ein Externer Benutzer darf nur dann eine User-Category anlegen, wenn ROLE_CREATE_CATEGORY aktiv ist */
     public static final String ROLE_CREATE_CATEGORY     = "createcategory";
 

@@ -75,6 +75,10 @@ public interface MicroServiceConfigurationInterface {
     /* @return Standard Lebensdauer eines JWT-Tokens */
     long getJwtExpiration();
 
+    String DEFjwtAppExpiration = "jwt_app_expiration:"+SecurityConstants.EXPIRATION_TIME_APP;
+    /* @return Standard Lebensdauer eines JWT-Tokens */
+    long getJwtAppExpiration();
+
     String DEFjwtRefreshTime = "jwt_refresh_time:"+SecurityConstants.REFRESH_TIME;
     /* @return Ist die restliche Lebensdauer eines JWT-Tokens kleiner als RefreshTime sollte der Token aktualisiert werden */
     long getJwtRefreshTime();

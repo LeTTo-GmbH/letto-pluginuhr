@@ -30,6 +30,7 @@ public class LoginEndpoint {
     public static final String jwtrefresh  = API + "/jwtrefresh";   // JWT-Token-Refresh
     public static final String lettotokenrefresh    = API + "/lettotokenrefresh";     // JWT-Token-Refresh Get ohne und Post mit Fingerprint
     public static final String jwtvalidate = API + "/jwtvalidate";
+    public static final String jwtgetapptoken = API + "/jwtgetapptoken";
     public static final String jwtgetlettotoken   = API + "/jwtgetlettotoken";
     public static final String jwtlogout   = API + "/jwtlogout";    // JWT-Token-Logout
     public static final String tokeninfo   = API + "/tokeninfo";    // liefert die Info über einen Token
@@ -50,6 +51,7 @@ public class LoginEndpoint {
     public static final String logout              = OPEN + "/logout";
     public static final String jwtlogin            = OPENAPI  + "/jwtlogin";     // JWT-Token-Login
     public static final String jwtlettologin       = OPENAPI  + "/jwtlettologin";//LettoToken-Login
+    public static final String jwtapptokenlogin    = OPENAPI  + "/jwtapptokenlogin";
     public static final String jwttemptoken        = OPENAPI  + "/jwttemptoken"; // JWT-Token aus einem TempToken erzeugen
     public static final String jwtgettemptokenuri  = OPENAPI  + "/jwtgettemptokenuri"; // TempToken aus einem JWT Token erzeugen und eine URI damit liefern
     public static final String jwtgettemptoken     = API  + "/jwtgettemptoken"; // TempToken aus einem JWT Token erzeugen
