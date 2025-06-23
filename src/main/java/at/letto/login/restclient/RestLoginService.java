@@ -316,7 +316,7 @@ public class RestLoginService extends RestClient implements LoginService {
 
     @Override
     public String getUserToken(String serverTokenString, String userTokenFremd,String language, String backlink, boolean tempToken, String fingerprint, String ipaddress) {
-        GetUserTokenRequest request = new GetUserTokenRequest(serverTokenString, userTokenFremd, language, backlink, tempToken, fingerprint,ipaddress);
+        GetUserTokenRequest request = new GetUserTokenRequest(serverTokenString, userTokenFremd, language, backlink, tempToken, fingerprint, ipaddress);
         String response = post(LoginEndpoint.getUserToken,request,String.class);
         return response;
     }

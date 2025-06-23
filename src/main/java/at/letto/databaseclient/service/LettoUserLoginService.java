@@ -249,6 +249,7 @@ public class LettoUserLoginService {
     public LeTToSession createLeTToSession(String sessionID, LeTToUser leTToUser, String fingerprint, String ipAddress, LettoToken lettoToken, String service, String infos, String userAgent) {
         LeTToSession leTToSession = LeTToSession.createFromToken(sessionID, leTToUser, fingerprint, ipAddress, lettoToken, service, infos, userAgent);
         loginOk(leTToUser, lettoToken);
+        leTToSession.setUserID(leTToUser.getId());
         save(leTToSession);
         return leTToSession;
     }
