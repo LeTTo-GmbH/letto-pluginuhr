@@ -120,7 +120,7 @@ public class LeTToUser {
     /** Datum und Uhrzeit der letzten Benutzer-Action als DateInteger */
     private long lastUserActionTime = 0;
 
-    /** Alias-Logins mit mit diesem Benutzer */
+    /** Alias-Logins mit diesem Benutzer */
     private List<AliasLogin> aliasLoginList = new ArrayList<>();
 
     public LeTToUser(LettoToken lettoToken) {

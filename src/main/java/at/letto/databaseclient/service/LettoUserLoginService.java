@@ -347,6 +347,8 @@ public class LettoUserLoginService {
         AliasLogin aliasLogin = new AliasLogin(now,originUserName,expiration);
         u.getAliasLoginList().add(aliasLogin);
         save(u);
+        LeTToSession leTToSession = getSession(lettoToken.getServersession());
+        addToken(u, leTToSession, lettoToken);
         return u;
     }
 
