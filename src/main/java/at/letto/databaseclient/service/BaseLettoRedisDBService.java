@@ -144,7 +144,7 @@ public class BaseLettoRedisDBService {
             this.errorCount=0;
             return result;
         } catch (Exception e) {
-            this.setError();
+            this.setError(e);
         }
         return null;
     }
@@ -160,7 +160,7 @@ public class BaseLettoRedisDBService {
             this.errorCount=0;
             return result;
         } catch (Exception e) {
-            this.setError();
+            this.setError(e);
         }
         return null;
     }
@@ -173,11 +173,12 @@ public class BaseLettoRedisDBService {
     public <T> T get(int database, String key, Class<T> tClass) {
         try {
             String json = (String) redisTemplate(database).opsForValue().get(key);
+            if (json==null) return null;
             T result = JSON.jsonToObj(json,tClass);
             this.errorCount=0;
             return result;
         } catch (Exception e) {
-            this.setError();
+            this.setError(e);
         }
         return null;
     }
@@ -197,9 +198,10 @@ public class BaseLettoRedisDBService {
                 json = JSON.objToJson(value);
             }
             redisTemplate(database).opsForValue().set(key, json);
+            this.errorCount = 0;
             return true;
         } catch (Exception e) {
-            this.setError();
+            this.setError(e);
         }
         return false;
     }
@@ -220,9 +222,10 @@ public class BaseLettoRedisDBService {
                 json = JSON.objToJson(value);
             }
             redisTemplate(database).opsForValue().set(key, json, minutes, TimeUnit.MINUTES);
+            errorCount= 0;
             return true;
         } catch (Throwable e) {
-            this.setError();
+            this.setError(e);
         }
         return false;
     }
@@ -243,9 +246,10 @@ public class BaseLettoRedisDBService {
                 json = JSON.objToJson(value);
             }
             redisTemplate(database).opsForValue().set(key, json, seconds, TimeUnit.SECONDS);
+            errorCount = 0;
             return true;
         } catch (Throwable e) {
-            this.setError();
+            this.setError(e);
         }
         return false;
     }
@@ -266,16 +270,19 @@ public class BaseLettoRedisDBService {
                 json = JSON.objToJson(value);
             }
             redisTemplate(database).opsForValue().set(key, json, milliseconds, TimeUnit.MILLISECONDS);
+            errorCount = 0;
             return true;
         } catch (Throwable e) {
-            this.setError();
+            this.setError(e);
         }
         return false;
     }
 
     /** Erhöht der Fehlerzähler und setzt redisOK auf false, wenn zu viele Fehler auftreten */
-    private void setError() {
+    private void setError(Throwable e) {
         errorCount++;
+        if (System.getenv().get("logRedisError").startsWith("true"))
+            logger.error("Redis-Fehler " + this.errorCount + ": " + e.getMessage(), e);
         if (errorCount >= 5) {
             this.redisOk = false;
             logger.info("Redis FEHLERHAFT");
@@ -389,7 +396,8 @@ public class BaseLettoRedisDBService {
         Map<String, T> data = new HashMap<String, T>();
 
         for (String keys : jsonHash.keySet())
-            data.put(keys, JSON.jsonToObj(jsonHash.get(keys), typ));
+            if (jsonHash.get(keys)!=null)
+                data.put(keys, JSON.jsonToObj(jsonHash.get(keys), typ));
         return data;
     }
 

@@ -4,6 +4,7 @@ import at.letto.databaseclient.service.BaseLettoRedisDBService;
 import at.letto.globalinterfaces.IdEntity;
 import at.letto.security.LettoToken;
 import at.letto.tools.JSON;
+import at.letto.tools.rest.MsgException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -85,9 +86,11 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
      */
     protected T loadData(int id, Class<T> type, LettoToken token) {
 
-        if (!checkRedis()) return null;
         String school = token.getSchool();
         String key = key(id, type, school);
+        // FIXME: Weg wenn operativ
+        if (!checkRedis())
+            throw new MsgException("err.msg.redis-notAvailable", "Bitte im Logfile nachsehen, ob Redis läuft!");
         T data = null;
         try {
             String json = baseLettoRedisDBService.get(key);
