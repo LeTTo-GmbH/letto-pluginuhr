@@ -135,7 +135,7 @@ public class LeTToUser {
         userId    = lettoToken.getIdUser()!=null?lettoToken.getIdUser():userId;
         id        = userId>0?school+"_"+userId:
                     lettoToken.getUsername().matches(".+/.+/.+")?lettoToken.getUsername():
-                            lettoToken.getSchool()+" "+lettoToken.getUsername();
+                            lettoToken.getSchool()+"_"+lettoToken.getUsername();
         schoolId  = lettoToken.getIdSchule()!=null?lettoToken.getIdSchule():schoolId;
         username  = (lettoToken.getUsername()!=null && lettoToken.getUsername().length()>0)?
                 lettoToken.getUsername():username;
