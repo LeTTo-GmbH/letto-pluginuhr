@@ -40,4 +40,10 @@ public interface CacheInterface<T extends IdEntity> {
      */
     void clear(LettoToken token);
 
+    /**
+     * Löschen von allen Cache-Einträgen dieses Typs von DTOs
+     * @param school Schulidentifikation (Kurzbezeichnung)
+     */
+    void clear(String school);
+
 }

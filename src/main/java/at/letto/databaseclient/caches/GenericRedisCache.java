@@ -157,4 +157,11 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
         baseLettoRedisDBService.deleteKeysWithPrefix(key);
     }
 
+    @Override
+    public void clear(String school) {
+        Class<T> x = ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        String key = school + ":" + x.getSimpleName() + ":*" ;
+        baseLettoRedisDBService.deleteKeysWithPrefix(key);
+    }
+
 }
