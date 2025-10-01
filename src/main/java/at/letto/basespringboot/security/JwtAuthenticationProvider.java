@@ -42,6 +42,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         try {
             String token = (String) authentication.getCredentials();
             LettoToken lettoToken = jwtService.toLettoToken(token);
+            if (lettoToken == null) {
+                throw new JwtAuthenticationException("JWT Token outdated or not found");
+            }
             String username = lettoToken.getUsername();
 
             return lettoToken.validateToken()

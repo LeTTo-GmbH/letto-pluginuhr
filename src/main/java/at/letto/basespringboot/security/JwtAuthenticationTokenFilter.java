@@ -30,13 +30,16 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         final String requestHeader = request.getHeader(SecurityConstants.TOKEN_HEADER);
-        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
+        if (requestHeader != null && requestHeader.startsWith("Bearer ")) try {
             // Extract the token from the header
             String  authToken = requestHeader.substring(7);
             // Create a LettoToken object from the token
             LettoToken lettoToken = jwtService.toLettoToken(authToken);
             JwtAuthentication authentication = new JwtAuthentication(lettoToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception e) {
+            // Token abgelaufen - clear the security context
+            SecurityContextHolder.clearContext();
         }
         chain.doFilter(request, response);
     }
