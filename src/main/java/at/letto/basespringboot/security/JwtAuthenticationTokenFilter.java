@@ -35,8 +35,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             String  authToken = requestHeader.substring(7);
             // Create a LettoToken object from the token
             LettoToken lettoToken = jwtService.toLettoToken(authToken);
-            JwtAuthentication authentication = new JwtAuthentication(lettoToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (lettoToken==null)
+                SecurityContextHolder.clearContext();
+            else {
+                JwtAuthentication authentication = new JwtAuthentication(lettoToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         } catch (Exception e) {
             // Token abgelaufen - clear the security context
             SecurityContextHolder.clearContext();
