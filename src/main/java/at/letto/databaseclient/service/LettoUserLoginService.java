@@ -458,30 +458,4 @@ public class LettoUserLoginService {
         }
     }
 
-    /*public String tokensExpirationString(LeTToUser u) {
-        long now           = Datum.nowDateInteger();
-        StringBuilder sb = new StringBuilder();
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (int i=0; i<tokenList.size(); i++) {
-            ActiveLeTToToken a = tokenList.get(i);
-            sb.append(a.expiration-now).append("s ");
-        }
-        return sb.toString().trim();
-    }*/
-
-    /**
-     * prüft ob der Token in der Liste als korrekter Token eingetragen ist
-     * @param token Token der geprüft werden soll
-     * @return      true wenn der Token in der Liste eingetragen ist, sonst false
-     */
-    /*public boolean validateToken(String token) {
-        List<ActiveLeTToToken> tokenList = getTokenList();
-        for (ActiveLeTToToken a : tokenList) {
-            if (a.token.equals(token)) return true;
-        }
-        return false;
-    }*/
-
-
-
 }
