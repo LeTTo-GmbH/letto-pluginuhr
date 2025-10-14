@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TempTokenRequest {
 
-    /** Secret des Dienstes welches die Anforderung des Tokens stellt */
+    /** Secret des Dienstes welches die Anforderung des Tokens stellt oder Fingerprint wenn die Anforderung von der App kommt */
     private String  secret;
 
     /** Temporärer Token welcher für die Token-Anforderung verwendet werden kann */
