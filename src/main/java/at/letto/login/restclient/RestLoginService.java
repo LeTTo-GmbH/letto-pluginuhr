@@ -327,6 +327,13 @@ public class RestLoginService extends RestClient implements LoginService {
         return response;
     }
 
+    @Override
+    public String getHtmlRenderToken(String school, String lang, String infos, String userAgent, String fingerprint, String clientIpAddress) {
+        HtmlRenderTokenRequest request = new HtmlRenderTokenRequest(school, lang, infos, userAgent, fingerprint, clientIpAddress);
+        String response = post(LoginEndpoint.getHtmlRenderToken,request,String.class);
+        return response;
+    }
+
     /**
      * Generiert eine Nachricht an ein Service welche in der REDIS-Datenbank gespeichert wird<br>
      * @param sender     Kennung des Senders

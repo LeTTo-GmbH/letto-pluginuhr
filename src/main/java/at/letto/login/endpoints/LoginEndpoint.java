@@ -71,6 +71,8 @@ public class LoginEndpoint {
     public static final String getUserToken          = OPEN+"/getusertoken";
     public static final String getUserTokenDirect    = OPEN+"/getusertokendirect";
 
+    public static final String getHtmlRenderToken    = AUTH_ADMIN+"/gethtmlrendertoken";
+
     /* ----------------------------------------------------------------------------------------------------
                         Alle notwendigen Ping-Punkte für den Service-Test
        ---------------------------------------------------------------------------------------------------- */

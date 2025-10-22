@@ -281,7 +281,7 @@ public class BaseLettoRedisDBService {
     /** Erhöht der Fehlerzähler und setzt redisOK auf false, wenn zu viele Fehler auftreten */
     private void setError(Throwable e) {
         errorCount++;
-        if (System.getenv().get("logRedisError").startsWith("true"))
+        if (System.getenv().get("logRedisError")!=null && System.getenv().get("logRedisError").startsWith("true"))
             logger.error("Redis-Fehler " + this.errorCount + ": " + e.getMessage(), e);
         if (errorCount >= 5) {
             this.redisOk = false;
@@ -434,7 +434,7 @@ public class BaseLettoRedisDBService {
     }
 
     /**
-     * Speichert einen Token in der Redis-DB für eine Zeit von maximal 2 Minuten
+     * Speichert einen Token in der Redis-DB für seine Gültigkeitsdauer
      * @param lettoToken LettoToken-Objekt
      */
     public boolean putToken(LettoToken lettoToken) {

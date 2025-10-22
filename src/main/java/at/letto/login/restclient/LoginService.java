@@ -270,6 +270,20 @@ public interface LoginService {
      */
     String getUserTokenDirect(UserTokenRequestDto userTokenRequestDto);
 
+    /**
+     * Erzeugt einen neuen Token mit Lehrerrechnten welcher zum Rendern einer Vorschau der HTML-Darstellung verwendet werden kann<br>
+     * Der Token ist jeweils 24h gültig
+     *
+     * @param school           Schulekürzel
+     * @param lang             Sprache
+     * @param infos            Information über die Anfrage zB.: "Session HTML-Renderer"
+     * @param userAgent        Information über den Browser zB: "Login-Service HTML-Renderer"
+     * @param fingerprint      Fingerprint der Anfrage (kann pro Service immer gleich sein)
+     * @param clientIpAddress  IP-Adresse des Clients z.B.: "localhost"
+     * @return                 Token mit Lehrerrechten zum Rendern einer Frage!
+     */
+    String getHtmlRenderToken(String school, String lang, String infos, String userAgent, String fingerprint, String clientIpAddress);
+
     public boolean pingStudent(String token);
 
     public boolean pingTeacher(String token);

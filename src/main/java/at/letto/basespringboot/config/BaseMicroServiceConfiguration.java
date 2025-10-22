@@ -242,6 +242,10 @@ public abstract class BaseMicroServiceConfiguration implements MicroServiceConfi
     @Value("${"+DEFloginServiceUri+"}")
     private String loginServiceUri;
 
+    //HTML-Preview-Service
+    @Value("${"+DEFhtmlpreviewServiceUri+"}")
+    private String htmlpreviewServiceUri;
+
     // Setup-Service
     @Value("${"+DEFsetupHttpPort+"}")
     private int setupHttpPort;

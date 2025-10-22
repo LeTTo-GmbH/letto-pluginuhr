@@ -300,6 +300,10 @@ public interface MicroServiceConfigurationInterface {
     String DEFloginServiceUri = "letto_login_uri:http://localhost:8095";
     String getLoginServiceUri();
 
+    // HTML-Preview-Service
+    String DEFhtmlpreviewServiceUri = "letto_htmlpreview_uri:http://letto-htmlpreview.nw-letto:8000";
+    String getHtmlpreviewServiceUri();
+
     // Setup-Service
     String DEFsetupHttpPort = "service_setup_http_port:8096";
     int getSetupHttpPort();
@@ -418,7 +422,7 @@ public interface MicroServiceConfigurationInterface {
     int getLettoAppAjpPort();
     String DEFlettoAppHttpsPort = "service_app_https_port:9199";
     int getLettoAppHttpsPort();
-    String DEFlettoAppServiceUri = "letto_app_uri:http://localhost:8199";
+    String DEFlettoAppServiceUri = "letto_app_uri:https://build.letto.at/app";
     String getLettoAppServiceUri();
 
     String DEFlettoFrontendEditServiceUri = "frontend_edit_uri:http://localhost:8080";
