@@ -436,4 +436,77 @@ public class FileMethods {
         }
     }
 
+    /**
+     * Löscht rekursiv ein gesamtes Verzeichnis mit allen darin enthaltenen
+     * Dateien und Unterverzeichnissen.
+     * <p>
+     * Beispiel:
+     * <pre>
+     *   deleteDirectory(Paths.get("/tmp/testfolder"));
+     * </pre>
+     *
+     * <p>Die Methode verwendet {@link Files#walkFileTree(Path, java.nio.file.FileVisitor)}
+     * und löscht zuerst alle Dateien, dann die Unterverzeichnisse (Post-Order).</p>
+     *
+     * @param directory Der Pfad des zu löschenden Verzeichnisses.
+     * @throws IOException falls beim Löschen eine Datei nicht entfernt werden kann
+     *                     oder Zugriffsprobleme auftreten.
+     * @throws IllegalArgumentException falls der Pfad {@code null} ist oder kein Verzeichnis darstellt.
+     */
+    public static void deleteDirectory(Path directory) throws IOException {
+        if (directory == null) {
+            throw new IllegalArgumentException("Pfad darf nicht null sein.");
+        }
+        if (!Files.exists(directory)) {
+            return; // nichts zu löschen
+        }
+        if (!Files.isDirectory(directory)) {
+            throw new IllegalArgumentException("Pfad ist kein Verzeichnis: " + directory);
+        }
+
+        Files.walkFileTree(directory, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.deleteIfExists(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc != null) throw exc;
+                Files.deleteIfExists(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
+    /**
+     * Löscht alle Dateien und Unterverzeichnisse in einem gegebenen Ordner,
+     * lässt das Verzeichnis selbst aber bestehen.
+     *
+     * @param directory Pfad des zu leerenden Verzeichnisses.
+     * @throws IOException falls beim Löschen ein Fehler auftritt.
+     */
+    public static void clearDirectory(Path directory) throws IOException {
+        if (directory == null || !Files.isDirectory(directory)) {
+            throw new IllegalArgumentException("Pfad ist kein gültiges Verzeichnis: " + directory);
+        }
+
+        Files.walkFileTree(directory, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.deleteIfExists(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (!dir.equals(directory)) {
+                    Files.deleteIfExists(dir);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
 }
