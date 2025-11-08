@@ -292,6 +292,7 @@ public class Datum {
 
     public static LocalDate nowLocalDate() { return LocalDate.now(); }
     public static LocalDateTime nowLocalDateTime() { return LocalDateTime.now(); }
+
     public static String formatDateTime(LocalDateTime localDateTime) {
         if (localDateTime==null) return "";
         return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -305,17 +306,84 @@ public class Datum {
         if (localDate==null) return "";
         return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
+
+    public static String formatDateTime(LocalDateTime localDateTime, String format) {
+        if (localDateTime==null) return "";
+        String formatString = "yyyy-MM-dd HH:mm:ss";
+        if (format.matches("\\w\\w[\\-_]\\w\\w")) {
+            if (format.toLowerCase().startsWith("de")) formatString = "d.M.yyyy HH:mm:ss";
+        } else if (format.length()>0) formatString = format;
+        return localDateTime.format(DateTimeFormatter.ofPattern(formatString));
+    }
+    public static String formatTime(LocalDateTime localDateTime, String format) {
+        if (localDateTime==null) return "";
+        String formatString = "HH:mm:ss";
+        if (format.matches("\\w\\w[\\-_]\\w\\w")) {
+            if (format.toLowerCase().startsWith("de")) formatString = "HH:mm:ss";
+        } else if (format.length()>0) formatString = format;
+        return localDateTime.format(DateTimeFormatter.ofPattern(formatString));
+    }
+
+    public static String formatDateTime(LocalDate localDate, String format) {
+        if (localDate==null) return "";
+        String formatString = "yyyy-MM-dd";
+        if (format.matches("\\w\\w[\\-_]\\w\\w")) {
+            if (format.toLowerCase().startsWith("de")) formatString = "d.M.yyyy";
+        } else if (format.length()>0) formatString = format;
+        return localDate.format(DateTimeFormatter.ofPattern(formatString));
+    }
+
+    /** Formatieren eines Datum-Integers nach Locale
+     * @param d       Datum-Integer
+     * @return        formatierter Datum-String mit Zeit
+     */
     public static String formatDateTime(long d) {
         LocalDateTime localDateTime = dateIntegerToLocalDateTime(d);
         return formatDateTime(localDateTime);
     }
+    /** Formatieren eines Datum-Integers nach Locale
+     * @param d       Datum-Integer
+     * @return        formatierter Datum-String
+     */
     public static String formatDate(long d) {
         LocalDate localDate = dateIntegerToLocalDate(d);
         return formatDateTime(localDate);
     }
+    /** Formatieren eines Datum-Integers nach Locale
+     * @param d       Datum-Integer
+     * @return        formatierter Zeit-String
+     */
     public static String formatTime(long d) {
         LocalDateTime localDateTime = dateIntegerToLocalDateTime(d);
         return formatTime(localDateTime);
+    }
+
+    /** Formatieren eines Datum-Integers nach Locale
+     * @param d       Datum-Integer
+     * @param format  Formatstring z.B: "yyyy-MM-dd" oder Locale z.B. "de_AT","en_US"
+     * @return        formatierter Datum-String mit Zeit
+     */
+    public static String formatDateTime(long d, String format) {
+        LocalDateTime localDateTime = dateIntegerToLocalDateTime(d);
+        return formatDateTime(localDateTime,format);
+    }
+    /** Formatieren eines Datum-Integers nach Locale
+     * @param d       Datum-Integer
+     * @param format  Formatstring z.B: "yyyy-MM-dd" oder Locale z.B. "de_AT","en_US"
+     * @return        formatierter Datum-String
+     */
+    public static String formatDate(long d, String format) {
+        LocalDate localDate = dateIntegerToLocalDate(d);
+        return formatDateTime(localDate,format);
+    }
+    /** Formatieren eines Datum-Integers nach Locale
+     * @param d       Datum-Integer
+     * @param format  Formatstring z.B: "yyyy-MM-dd" oder Locale z.B. "de_AT","en_US"
+     * @return        formatierter Zeit-String
+     */
+    public static String formatTime(long d, String format) {
+        LocalDateTime localDateTime = dateIntegerToLocalDateTime(d);
+        return formatTime(localDateTime,format);
     }
 
     public static long nowDateInteger() { return toDateInteger(LocalDateTime.now()); }
