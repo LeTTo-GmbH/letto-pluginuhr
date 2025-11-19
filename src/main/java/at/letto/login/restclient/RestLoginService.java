@@ -187,8 +187,9 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public String jwtGetTempTokenUri(LettoToken lettoToken) {
-        String response = post(LoginEndpoint.jwtgettemptokenuri,lettoToken.getToken(),String.class, lettoToken);
+    public String jwtGetTempTokenUri(LettoToken lettoToken, String fingerprint) {
+        TempTokenUriRequest dto = new TempTokenUriRequest(lettoToken.getToken(),fingerprint);
+        String response = post(LoginEndpoint.jwtgettemptokenuri,dto,String.class, lettoToken);
         return response;
     }
 
@@ -205,8 +206,9 @@ public class RestLoginService extends RestClient implements LoginService {
     }
 
     @Override
-    public String jwtGetTempTokenUri(String token) {
-        String response = post(LoginEndpoint.jwtgettemptokenuri,token,String.class, token);
+    public String jwtGetTempTokenUri(String token, String fingerprint) {
+        TempTokenUriRequest dto = new TempTokenUriRequest(token,fingerprint);
+        String response = post(LoginEndpoint.jwtgettemptokenuri,dto,String.class, token);
         return response;
     }
 

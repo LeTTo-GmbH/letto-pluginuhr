@@ -112,9 +112,10 @@ public interface LoginService {
 
     /**
      * @param lettoToken gültiger Token
+     * @param fingerprint Fingerprint des Browsers
      * @return Liefert eine URI mit einem temporären Token zur Weiterleitung an LeTTo
      */
-    String jwtGetTempTokenUri(LettoToken lettoToken);
+    String jwtGetTempTokenUri(LettoToken lettoToken, String fingerprint);
 
     /**
      * Liefert aus einem gültigen Token einen Temptoken für einen neuen refreshten Token
@@ -154,9 +155,10 @@ public interface LoginService {
 
     /**
      * @param token gültiger Token
+     * @param fingerprint Fingerprint des Browsers
      * @return Liefert eine URI mit einem temporären Token zur Weiterleitung an LeTTo
      */
-    String jwtGetTempTokenUri(String token);
+    String jwtGetTempTokenUri(String token, String fingerprint);
 
     /** Liefert Information über den Token
      * @param token      aktueller Token
