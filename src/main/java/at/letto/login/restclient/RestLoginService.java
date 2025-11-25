@@ -85,6 +85,15 @@ public class RestLoginService extends RestClient implements LoginService {
         return new TokenLoginResult(null, "Login failed", LOGINSTATUS.FAILURE);
     }
 
+    @Override
+    public TokenLoginResult jwtPreviewLogin(String school, String fingerprint, String ipaddress, String service, String infos, String userAgent) {
+        AuthenticationRequest request = new AuthenticationRequest("","", school, fingerprint, ipaddress, service, infos, userAgent);
+        TokenLoginResult response = post(LoginEndpoint.jwtpreviewlogin,request,TokenLoginResult.class);
+        if (response!=null)
+            return response;
+        return new TokenLoginResult(null, "Login failed", LOGINSTATUS.FAILURE);
+    }
+
     @Deprecated
     public TokenLoginResult jwtRefresh(LettoToken lettoToken) {
         TokenLoginResult response = get(LoginEndpoint.lettotokenrefresh,TokenLoginResult.class, lettoToken.getToken());

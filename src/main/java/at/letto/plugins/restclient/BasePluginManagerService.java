@@ -55,7 +55,7 @@ public class BasePluginManagerService implements PluginManagerService {
     }
 
     /**
-     * Registriert eine PluginConnectionService im PluginManagerService
+     * Registriert ein PluginConnectionService im PluginManagerService
      * @param connection PluginConnection zu einem Plugin-Service
      */
     @Override

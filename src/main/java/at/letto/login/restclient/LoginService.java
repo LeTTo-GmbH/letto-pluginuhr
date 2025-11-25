@@ -43,6 +43,18 @@ public interface LoginService {
     TokenLoginResult jwtLettoLogin(String username, String password, String school, String fingerprint, String ipaddress, String service, String infos, String userAgent);
 
     /**
+     * Prüft Benutzernamen und Passwort über das Loginservice und liefert einen LettoToken zurück
+     * @param school    Schulkennung welche auch in der URL verwendet wird (eindeutig am Server)
+     * @param fingerprint  Fingerabdruck des Users (z.B. Fingerabdruck des Smartphones)
+     * @param ipaddress  IP-Adresse des Users
+     * @param service    Service welcher die Authentifizierung anfordert, z.B. "letto-login", "letto-edit", "letto-admin" etc.
+     * @param infos      zusätzliche Informationen über den Client, wer, was, wo, warum
+     * @param userAgent  User-Agent des Clients, z.B. "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+     * @return          gültiger LettoToken oder null
+     */
+    TokenLoginResult jwtPreviewLogin(String school, String fingerprint, String ipaddress, String service, String infos, String userAgent);
+
+    /**
      * Führt einen Logout des Tokens durch und vernichtet den Token im Token-Store - danach ist kein Token-Refresh dieses Tokens mehr möglich!
      * @param token      Token der ausgeloggt werden soll
      * @return           true wenn der logout erfolgreich war, sonst false
