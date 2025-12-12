@@ -107,12 +107,14 @@ public class LettoUserLoginService {
                 boolean changed = false;
                 List<ActiveLeTToToken> tokenList = session.getTokenList();
                 if (tokenList == null || tokenList.size() == 0) {
+                    // Wenn keine Tokens mehr vorhanden sind, dann wird die Session geschlossen
                     session.setActive(false);
                     session.setDateIntegerLogout(now);
                     session.setStatus(LeTToSession.STATUS_LOGGED_TIMEOUT);
                     lettoSessionRepository.save(session);
                     continue NEXTSESSION;
                 }
+                // Prüfe alle Tokens auf Ablauf
                 for (int i=0; i<tokenList.size(); i++) {
                     ActiveLeTToToken a = tokenList.get(i);
                     if (a.getExpiration()<now) {

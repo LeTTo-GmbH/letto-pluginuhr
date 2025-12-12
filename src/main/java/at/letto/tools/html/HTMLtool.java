@@ -42,6 +42,7 @@ public class HTMLtool {
      * @return    html-formatierter String
      */
     public static String toHTML(String s) {
+        if (s==null) return "";
         return HTMLreplaceUmlaute(StringToXML(s)).replaceAll("\\n", "<br />");
     }
 
