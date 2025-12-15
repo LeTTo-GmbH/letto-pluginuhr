@@ -46,6 +46,16 @@ public abstract class BaseMicroServiceConfiguration implements MicroServiceConfi
     @Value("${"+DEFlettoLogLevel+"}")
     private String lettoLogLevel;
 
+    // Debugging
+    @Value("${debug:false}")
+    private String debug;
+    public boolean isDebug(){
+        if (debug!=null && debug.length()>0){
+            if (debug.equalsIgnoreCase("true")) return true;
+        }
+        return false;
+    }
+
     // ----------------------------------------------------------------------------
     // Security
     // ----------------------------------------------------------------------------
