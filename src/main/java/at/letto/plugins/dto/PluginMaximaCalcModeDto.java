@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 public class PluginMaximaCalcModeDto {
 
     /** true bei Berechnung mit Maxima, false bei Berechnung mit Parser */
-    public boolean maxima;
+    public boolean maxima=false;
 
     /** true wenn die Datensätze vor Maxima eingesetzt werden */
-    public boolean preCalc;
+    public boolean preCalc=true;
 
 }
