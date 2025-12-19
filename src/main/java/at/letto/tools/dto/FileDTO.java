@@ -67,6 +67,19 @@ public class FileDTO {
         title    = imageBase64Dto.getImageInfoDto().getTitle();
     }
 
+    public FileDTO(ImageUrlDto imageUrlDto) {
+        filename = imageUrlDto.getImageInfoDto().getFilename();
+        webPath  = imageUrlDto.getImageInfoDto().getUrl();
+        unit     = imageUrlDto.getImageInfoDto().getUnit();
+        width    = imageUrlDto.getImageInfoDto().getImageWidth();
+        widthPx  = imageUrlDto.getImageInfoDto().getWidth();
+        heightPx = imageUrlDto.getImageInfoDto().getHeight();
+        alternate= imageUrlDto.getImageInfoDto().getAlternate();
+        style    = imageUrlDto.getImageInfoDto().getStyle();
+        title    = imageUrlDto.getImageInfoDto().getTitle();
+    }
+
+
     /**
      * Liefert die Attribute, welche im Image-Tag eines Bildes verwendet werden sollen.<br>
      * @return Attribute des Image-Tags eines Bildes
