@@ -9,6 +9,7 @@ import at.letto.plugins.dto.*;
 import at.letto.plugins.interfaces.PluginService;
 import at.letto.tools.Datum;
 import at.letto.tools.dto.ImageBase64Dto;
+import at.letto.tools.dto.ImageUrlDto;
 import at.letto.tools.enums.Score;
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -180,6 +181,23 @@ public class BasePluginConnectionService implements PluginConnectionService  {
         if (pluginService != null) return pluginService.getImageDto(params, q);
         return null;
     }
+
+    /**
+     * Liefert eine Url auf ein Bild mit den angegebenen Parametern
+     * @param   typ      Typ des Plugins
+     * @param   name     Name des Plugins in der Frage
+     * @param   config   Konfigurationsstring des Plugins
+     * @param   params   Parameter für die Bilderzeugung
+     * @param   q        Frage wo das Plugin eingebettet ist
+     * @return           Url auf das erstellte Bild
+     */
+    @Override
+    public ImageUrlDto getImageUrl(String typ, String name, String config, String params, PluginQuestionDto q){
+        PluginService pluginService = createPluginService(typ, name, config);
+        if (pluginService != null) return pluginService.getImageUrl(params, q);
+        return null;
+    }
+
 
     /**
      * Liefert eine Liste aller möglichen Varianten von Bildern

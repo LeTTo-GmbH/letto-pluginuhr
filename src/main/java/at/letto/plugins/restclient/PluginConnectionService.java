@@ -6,6 +6,8 @@ import at.letto.math.dto.ToleranzDto;
 import at.letto.math.dto.VarHashDto;
 import at.letto.plugins.dto.*;
 import at.letto.tools.dto.ImageBase64Dto;
+import at.letto.tools.dto.ImageUrlDto;
+
 import java.util.List;
 import java.util.Vector;
 
@@ -74,6 +76,17 @@ public interface PluginConnectionService {
      * @return           Base64 kodiertes Bild
      */
     ImageBase64Dto getImage(String typ, String name, String config, String params, PluginQuestionDto q);
+
+    /**
+     * Liefert eine Url auf ein Bild mit den angegebenen Parametern
+     * @param   typ      Typ des Plugins
+     * @param   name     Name des Plugins in der Frage
+     * @param   config   Konfigurationsstring des Plugins
+     * @param   params   Parameter für die Bilderzeugung
+     * @param   q        Frage wo das Plugin eingebettet ist
+     * @return           Url auf das erstellte Bild
+     */
+    ImageUrlDto getImageUrl(String typ, String name, String config, String params, PluginQuestionDto q);
 
     /**
      * Liefert eine Liste aller möglichen Varianten von Bildern

@@ -11,6 +11,7 @@ public class PluginConnectionEndpoint {
     public static final String generateDatasets            = "/generatedatasets";
     public static final String getMaxima                   = "/maxima";
     public static final String getImage                    = "/image";
+    public static final String getImageUrl                 = "/imageurl";
     public static final String getImageTemplates           = "/imagetemplates";
     public static final String parserPlugin                = "/parserplugin";
     public static final String parserPluginEinheit         = "/parserplugineinheit";

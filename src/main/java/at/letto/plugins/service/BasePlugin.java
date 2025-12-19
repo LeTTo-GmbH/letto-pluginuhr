@@ -1,5 +1,6 @@
 package at.letto.plugins.service;
 
+import at.letto.ServerConfiguration;
 import at.letto.globalinterfaces.ImageService;
 import at.letto.math.dto.CalcErgebnisDto;
 import at.letto.math.dto.CalcParamsDto;
@@ -14,6 +15,7 @@ import at.letto.tools.RegExp;
 import at.letto.tools.dto.IMAGEUNIT;
 import at.letto.tools.dto.ImageBase64Dto;
 import at.letto.tools.dto.ImageInfoDto;
+import at.letto.tools.dto.ImageUrlDto;
 import at.letto.tools.html.HTMLtool;
 import at.letto.tools.threads.CallAdapter;
 import at.letto.tools.threads.LettoTimer;
@@ -349,24 +351,22 @@ public abstract class BasePlugin implements PluginService {
      */
     @Override
     public String getPluginImageDescription(String imageParams, PluginQuestionDto q) {
-        String description = "typ:"+this.typ;
-        description += " version:"+this.getPluginVersion();
-        description += " name:"+this.getName();
-        description += " config:"+this.getConfig();
-        description += " params:"+imageParams;
-        description += " question:"+ JSON.objToJson(q);
-        int i=0;
-        /*for (Image image: ((Question)q).getImages()) {
-            description += (i==0?"":",")+image.getMd5();
-            i++;
+        StringBuilder sb = new StringBuilder();
+        sb.append("typ:");
+        sb.append(this.typ);
+        sb.append(" version:");
+        sb.append(this.getPluginVersion());
+        sb.append(" name:");
+        sb.append(this.getName());
+        sb.append(" config:");
+        sb.append(this.getConfig());
+        sb.append(" params:");
+        sb.append(imageParams);
+        if (q!=null) {
+            sb.append(" question:");
+            sb.append(JSON.objToJson(q));
         }
-        if (q instanceof Question) {
-            Question question = (Question)q;
-            description += " vars:" + question.getTestDataset();
-        } else {
-            description += " vars:" + q.getVars().toString();
-        }*/
-        return description;
+        return sb.toString();
     }
 
     private BufferedImage errorMessageImage(String msg) {
@@ -391,6 +391,62 @@ public abstract class BasePlugin implements PluginService {
         return bi;
     }
 
+    private static class PImage{
+        public BufferedImage image;
+        public String filename;
+        public String extension;
+        public String error="";
+        public PImage(BufferedImage image,String filename,String extension,String error) {
+            this.image = image;
+            this.filename = filename;
+            this.extension = extension;
+            this.error = error;
+        }
+    }
+
+    private PImage calcImage(String params, PluginQuestionDto q) {
+        String error="";
+        String extension = "png";
+        PluginImageResultDto pluginImageResultDto = new PluginImageResultDto();
+        if (params.startsWith("\"") && params.endsWith("\"")) params = params.substring(1,params.length()-1);
+        // Bestimmung des aktuellen Prüfstrings des Bildes aus Parametern, Pluginname, Pluginversion und Plugindefinition
+        String description = getPluginImageDescription(params,q);
+        String filename = ImageService.generateFilename(description,extension);
+        // Berechnung des Bildes und speichern mit dem imageService
+        BufferedImage image=null;
+        if (filename.length()>0) {
+            try {
+                String parseresult;
+                // ohne Timer
+                parseDrawParams(params, q, pluginImageResultDto);
+                image = getAWTImage(params, q, pluginImageResultDto);
+                if (!pluginImageResultDto.isOk())
+                    error = pluginImageResultDto.getMessages().toString();
+            } catch (Exception ignored) {
+                error = "Datei für das "+this.getTyp()+"-Plugin "+this.getName()+" kann nicht erzeugt werden!";
+            }
+        } else error = "Datei für das "+this.getTyp()+"-Plugin "+this.getName()+" kann nicht erzeugt werden!";
+        return new PImage(image,filename,extension,error);
+    }
+
+    private ImageInfoDto calcImageInfoDto(String filename, String url){
+        ImageInfoDto imageInfoDto = new ImageInfoDto(
+                getVersion(),
+                getTyp(),
+                filename,
+                url,
+                getWidth(),
+                getHeight(),
+                IMAGEUNIT.percent,
+                getImageWidthProzent(),
+                "",
+                "Plugin-Bild",
+                getTyp()+" "+getName(),
+                (new Date()).getTime()+365L*24L*3600L*1000L
+        );
+        return imageInfoDto;
+    }
+
     /**
      * Liefert ein Base64 codiertes Bild mit den angegebenen Parametern
      *
@@ -400,67 +456,52 @@ public abstract class BasePlugin implements PluginService {
      */
     @Override
     public ImageBase64Dto getImageDto(String params, PluginQuestionDto q) {
-        String error="";
-        String extension = "png";
-        PluginImageResultDto pluginImageResultDto = new PluginImageResultDto();
-        if (params.startsWith("\"") && params.endsWith("\"")) params = params.substring(1,params.length()-1);
-        // Bestimmung des aktuellen Prüfstrings des Bildes aus Parametern, Pluginname, Pluginversion und Plugindefinition
-        String description = getPluginImageDescription(params,q);
-        String filename = ImageService.generateFilename(description,extension);
         String base64image="";
-        // Berechnung des Bildes und speichern mit dem imageService
-        if (filename.length()>0) {
+        PImage pImage = calcImage(params, q);
+        if (pImage.image!=null) {
             try {
-                BufferedImage image=null;
-                String parseresult;
-                // ohne Timer
-                parseDrawParams(params, q, pluginImageResultDto);
-                image = getAWTImage(params, q, pluginImageResultDto);
-                if (!pluginImageResultDto.isOk())
-                    error = pluginImageResultDto.getMessages().toString();
-                // Mit Timer
-                /*parseresult = parseDrawParamsTimer(params, q, pluginImageResultDto);
-                if (parseresult.length() == 0) {
-                    image = getAWTImage(params, q, pluginImageResultDto);
-                    if (!pluginImageResultDto.isOk())
-                        error = pluginImageResultDto.getMessages().toString();
-                } else {
-                    image = errorMessageImage(parseresult);
-                    error = parseresult;
-                }*/
-
-                try
-                {   final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                    ImageIO.write(image, extension, os);
-                    base64image = Base64.getEncoder().encodeToString(os.toByteArray());
-                } catch (final Exception ioe) {
-                    error="cannot write image for "+getTyp()+"-Plugin "+getName();
-                }
-
-            } catch (Exception ignored) {
-                error = "Datei für das "+this.getTyp()+"-Plugin "+this.getName()+" kann nicht erzeugt werden!";
+                final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                ImageIO.write(pImage.image, pImage.extension, os);
+                base64image = Base64.getEncoder().encodeToString(os.toByteArray());
+            } catch (final Exception ioe) {
+                pImage.error = "cannot write image for " + getTyp() + "-Plugin " + getName();
             }
-        } else error = "Datei für das "+this.getTyp()+"-Plugin "+this.getName()+" kann nicht erzeugt werden!";
-
+        }
         ImageBase64Dto pluginImageDto = new ImageBase64Dto(
                 base64image,
-                new ImageInfoDto(
-                        getVersion(),
-                        getTyp(),
-                        filename,
-                        "",
-                        getWidth(),
-                        getHeight(),
-                        IMAGEUNIT.percent,
-                        getImageWidthProzent(),
-                        "",
-                        "Plugin-Bild",
-                        getTyp()+" "+getName(),
-                        (new Date()).getTime()+365L*24L*3600L*1000L
-                ),
-                error
+                calcImageInfoDto(pImage.filename,""),
+                pImage.error
         );
         return pluginImageDto;
+    }
+
+    /**
+     * Liefert ein Base64 codiertes Bild mit den angegebenen Parametern
+     *
+     * @param params Parameter für die Bilderzeugung
+     * @param q      Frage wo das Plugin eingebettet ist
+     * @return Base64 kodiertes Bild in einem PluginFileDto
+     */
+    @Override
+    public ImageUrlDto getImageUrl(String params, PluginQuestionDto q) {
+        String base64image="";
+        PImage pImage = calcImage(params, q);
+        String url="";
+        if (pImage.image!=null) {
+            try {
+                ImageService imageService = ServerConfiguration.service.getPluginImageService();
+                pImage.error += imageService.saveImage(pImage.image,pImage.filename);
+                url = imageService.getURL(pImage.filename);
+            } catch (final Exception ioe) {
+                pImage.error = "cannot write image for " + getTyp() + "-Plugin " + getName();
+            }
+        }
+        ImageUrlDto imageUrlDto = new ImageUrlDto(
+                url,
+                calcImageInfoDto(pImage.filename,url),
+                pImage.error
+        );
+        return imageUrlDto;
     }
 
     /**
@@ -476,50 +517,11 @@ public abstract class BasePlugin implements PluginService {
         for (MatchResult m: RegExp.findMatches("\\s*\"(.*)\"", params))
             params = m.group(1);
         try {
-            // ohne Timer starten
-            // plugin.parseDrawParams(params,q);
             BufferedImage bi = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = bi.createGraphics();
             paint(g, pluginImageResultDto);
             g.dispose();
             return bi;
-            // Mit Timer starten
-            /*TimerCall.CallResult ret = TimerCall.callMethode(new CallAdapter() {
-                @Override
-                public Object callMethode(Object ... objects) {
-                    BasePlugin plugin = (BasePlugin)objects[0];
-                    PluginImageResultDto pluginImageResultDto1 = (PluginImageResultDto)objects[1];
-                    // plugin.parseDrawParams((String)objects[1],(Question)objects[2]);
-                    BufferedImage bi = new BufferedImage(plugin.width,plugin.height, BufferedImage.TYPE_INT_ARGB);
-                    Graphics2D g = bi.createGraphics();
-                    paint(g, pluginImageResultDto1);
-                    g.dispose();
-                    return bi;
-                }}, LettoTimer.getPluginImageTimer(),this, pluginImageResultDto);
-            LettoTimer.checkInterrupt();
-            if (ret.status== TimerCall.RESULT.OK) {
-                if (ret.getResult() instanceof BufferedImage) return (BufferedImage)ret.getResult();
-                throw new RuntimeException("Ergebnis ist nicht berechenbar!");
-            } else if (ret.status== TimerCall.RESULT.TIMEOUT) {
-                throw new RuntimeException("Timeout bei der Ergebnisberechnung!");
-            } else if (ret.status== TimerCall.RESULT.TIMEOUTKILLED) {
-                throw new RuntimeException("Timeout bei der Ergebnisberechnung bei dem der Task gekillt wurde!");
-            } else if (ret.status== TimerCall.RESULT.RUNTIMEEXCEPTION) {
-                RuntimeException e = ret.getRuntimeException();
-                if (e==null) throw new RuntimeException("undefinierte Runtime-Exception bei der Berechnung!");
-                throw e;
-            } else if (ret.status== TimerCall.RESULT.EXCEPTION) {
-                Exception e = ret.getException();
-                if (e==null) throw new RuntimeException("undefinierte Exception bei der Berechnung!");
-                throw new RuntimeException("Exception bei der Berechnung!");
-            } else if (ret.status== TimerCall.RESULT.ERROR) {
-                Error e = ret.getError();
-                if (e==null) throw new RuntimeException("undefinierter Error bei der Berechnung!");
-                String msg = e.getClass().getTypeName() +" " + (e.getMessage()!=null?e.getMessage():"");
-                throw new RuntimeException(msg);
-            } else {
-                throw new RuntimeException("undefinierter Fehler bei der Berechnung!");
-            }*/
         } catch (Exception ex) {
             String s;
             StringWriter sw = new StringWriter();

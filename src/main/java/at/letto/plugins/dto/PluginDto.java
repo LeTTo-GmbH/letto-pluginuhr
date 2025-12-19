@@ -1,8 +1,11 @@
 package at.letto.plugins.dto;
 
+import at.letto.ServerConfiguration;
+import at.letto.globalinterfaces.ImageService;
 import at.letto.plugins.interfaces.PluginService;
 import at.letto.tools.JSON;
 import at.letto.tools.dto.ImageBase64Dto;
+import at.letto.tools.dto.ImageUrlDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
@@ -53,9 +56,18 @@ public class PluginDto {
     public PluginDto(String params, PluginService pi, PluginQuestionDto q, int nr) {
         setSize(params);
         tagName = q.getId() + "_" + pi.getName() + "_" + nr;
+        String src="";
         try {
-            ImageBase64Dto imageBase64Dto = pi.getImageDto(params,q);
-            String src="data:image/png;base64,"+imageBase64Dto.getBase64Image();
+            ImageUrlDto imageUrlDto = null;
+            try {
+                imageUrlDto = pi.getImageUrl(params, q);
+            } catch (Exception ignore) {}
+            if (imageUrlDto != null && imageUrlDto.getImageUrl() != null && imageUrlDto.getImageUrl().trim().length() > 0) {
+                src = imageUrlDto.getImageUrl();
+            } else {
+                ImageBase64Dto imageBase64Dto = pi.getImageDto(params, q);
+                src = "data:image/png;base64," + imageBase64Dto.getBase64Image();
+            }
             setImageUrl(src);
         } catch (Exception ex) {}
         this.width = pi.getWidth();

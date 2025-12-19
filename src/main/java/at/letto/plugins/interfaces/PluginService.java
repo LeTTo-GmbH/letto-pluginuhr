@@ -8,8 +8,7 @@ import at.letto.plugins.dto.*;
 import at.letto.plugins.enums.InputElement;
 import at.letto.tools.JavascriptLibrary;
 import at.letto.tools.dto.ImageBase64Dto;
-
-import java.util.HashMap;
+import at.letto.tools.dto.ImageUrlDto;
 import java.util.List;
 import java.util.Vector;
 
@@ -109,16 +108,24 @@ public interface PluginService {
      * Liefert ein Base64 codiertes Bild mit den angegebenen Parametern
      * @param   params   Parameter für die Bilderzeugung
      * @param   q        Frage wo das Plugin eingebettet ist
-     * @return           Base64 kodiertes Bild in einem MoodleFile
+     * @return           Base64 kodiertes Bild mit Bildinformationen
      */
     ImageBase64Dto getImageDto(String params, PluginQuestionDto q);
+
+    /**
+     * Liefert eine öffentliche Url auf das gerenderte Bild
+     * @param   params   Parameter für die Bilderzeugung
+     * @param   q        Frage wo das Plugin eingebettet ist
+     * @return
+     */
+    ImageUrlDto getImageUrl(String params, PluginQuestionDto q);
 
     /**
      * Liefert ein FileDTO mit dem Dateinamen des erzeugten Bildes, welches im Filesystem gespeichert wurde
      * @param   params   Parameter für die Bilderzeugung
      * @param   q        Frage wo das Plugin eingebettet ist
      * @param   imageService  ImageService zum Erzeugen der Bilder
-     * @return           FileDTO des Bildes welches gefunden oder erzeugt wurde.
+     * @return  FileDTO des Bildes welches gefunden oder erzeugt wurde.
      */
     //FileDTO getImage(String params, PluginQuestionDto q, ImageService imageService);
 

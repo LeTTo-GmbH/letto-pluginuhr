@@ -9,6 +9,7 @@ import at.letto.plugins.dto.*;
 import at.letto.plugins.endpoints.PluginConnectionEndpoint;
 import at.letto.service.rest.BaseRestClient;
 import at.letto.tools.dto.ImageBase64Dto;
+import at.letto.tools.dto.ImageUrlDto;
 import at.letto.tools.enums.Score;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,6 +167,22 @@ public class RestPluginConnectionService extends BaseRestClient implements Plugi
     public ImageBase64Dto getImage(String typ, String name, String config, String params, PluginQuestionDto q) {
         PluginRequestDto r = new PluginRequestDto(typ,name,config,params,q,null);
         ImageBase64Dto result = post(PluginConnectionEndpoint.getImage, r, ImageBase64Dto.class);
+        return result;
+    }
+
+    /**
+     * Liefert eine Url auf ein Bild mit den angegebenen Parametern
+     * @param   typ      Typ des Plugins
+     * @param   name     Name des Plugins in der Frage
+     * @param   config   Konfigurationsstring des Plugins
+     * @param   params   Parameter für die Bilderzeugung
+     * @param   q        Frage wo das Plugin eingebettet ist
+     * @return           Url auf das erstellte Bild
+     */
+    @Override
+    public ImageUrlDto getImageUrl(String typ, String name, String config, String params, PluginQuestionDto q){
+        PluginRequestDto r = new PluginRequestDto(typ,name,config,params,q,null);
+        ImageUrlDto result = post(PluginConnectionEndpoint.getImageUrl, r, ImageUrlDto.class);
         return result;
     }
 

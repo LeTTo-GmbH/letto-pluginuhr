@@ -7,10 +7,12 @@ import at.letto.math.dto.CalcParamsDto;
 import at.letto.math.dto.ToleranzDto;
 import at.letto.math.dto.VarHashDto;
 import at.letto.plugins.dto.*;
+import at.letto.plugins.interfaces.PluginService;
 import at.letto.tools.Cmd;
 import at.letto.tools.JSON;
 import at.letto.tools.JavascriptLibrary;
 import at.letto.tools.dto.ImageBase64Dto;
+import at.letto.tools.dto.ImageUrlDto;
 import lombok.Getter;
 import java.io.File;
 import java.util.ArrayList;
@@ -265,6 +267,22 @@ public class BasePluginManagerService implements PluginManagerService {
     public ImageBase64Dto getImage(String typ, String name, String config, String params, PluginQuestionDto q) {
         PluginConnectionService conn = getPluginConnectionService(typ);
         if (conn!=null) return conn.getImage(typ,name,config,params,q);
+        return null;
+    }
+
+    /**
+     * Liefert eine Url auf ein Bild mit den angegebenen Parametern
+     * @param   typ      Typ des Plugins
+     * @param   name     Name des Plugins in der Frage
+     * @param   config   Konfigurationsstring des Plugins
+     * @param   params   Parameter für die Bilderzeugung
+     * @param   q        Frage wo das Plugin eingebettet ist
+     * @return           Url auf das erstellte Bild
+     */
+    @Override
+    public ImageUrlDto getImageUrl(String typ, String name, String config, String params, PluginQuestionDto q){
+        PluginConnectionService conn = getPluginConnectionService(typ);
+        if (conn!=null) return conn.getImageUrl(typ,name,config,params,q);
         return null;
     }
 
