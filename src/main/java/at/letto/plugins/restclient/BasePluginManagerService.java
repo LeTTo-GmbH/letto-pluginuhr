@@ -14,6 +14,8 @@ import at.letto.tools.JavascriptLibrary;
 import at.letto.tools.dto.ImageBase64Dto;
 import at.letto.tools.dto.ImageUrlDto;
 import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +30,7 @@ public class BasePluginManagerService implements PluginManagerService {
     /** alle JavaScript-Libraries zum gemeinsamen Speichern */
     protected HashMap<String,String> jsLibs;
 
-    @Getter private String publicJs = null;
+    @Getter @Setter private String publicJs = null;
 
     private Vector<PluginConnectionService> pluginConnections;
 
@@ -463,51 +465,6 @@ public class BasePluginManagerService implements PluginManagerService {
         if (conn!=null) return conn.updatePluginstringJavascript(typ,name,config,pluginDef,jsResult);
         return "";
     }
-
-    /**
-     * Liefert eine Liste von Javascript-Libraries,
-     * die im Header der HTML-Seite eingebunden werden müssen.
-     * Es muss die vollständige URL angegeben werden!
-     * @return	für alle Plugin notwendige JS-Libraries
-    @Override
-    public List<JavascriptLibrary> getJavascriptLibraries() {
-        List<PluginGeneralInfo> infos = getPluginGeneralInfoList();
-        List<JavascriptLibrary> libs=new ArrayList<>();
-        for (PluginGeneralInfo info:infos)
-            for (JavascriptLibrary lib:info.getJavascriptLibraries()) {
-                boolean found=false;
-                for (JavascriptLibrary libx : libs)
-                    if (libx.equals(lib) || libx.toString().equals(lib.toString()))
-                        found=true;
-                if (!found)
-                    libs.add(lib);
-            }
-        return libs;
-    }*/
-
-    /**
-     * Liefert eine Liste von LOKALEN Javascript-Libraries,
-     * die im Header der HTML-Seite eingebunden werden müssen.
-     * Pfade werden relativ zum akt. Servernamen übergeben
-     * @return	für alle Plugin notwendige JS-Libraries
-
-    @Override
-    public List<JavascriptLibrary> getJavascriptLibrariesLocal() {
-        System.out.println("GetJSLibLocal-START:"+System.currentTimeMillis());
-        List<PluginGeneralInfo> infos = getPluginGeneralInfoList();
-        List<JavascriptLibrary> libs=new ArrayList<>();
-        for (PluginGeneralInfo info:infos)
-            for (JavascriptLibrary lib:info.getJavascriptLibrariesLocal()) {
-                boolean found=false;
-                for (JavascriptLibrary libx:libs)
-                    if (libx.equals(lib))
-                        found=true;
-                if (!found)
-                    libs.add(lib);
-            }
-        System.out.println("GetJSLibLocal-STOP:"+System.currentTimeMillis());
-        return libs;
-    }*/
 
     /**
      * Rendern des Plugin-Images, Aufbau eines DTOs zur späteren Javascript - Bearbeitung
