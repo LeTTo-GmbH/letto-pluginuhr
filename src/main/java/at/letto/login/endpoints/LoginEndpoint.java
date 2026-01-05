@@ -74,6 +74,10 @@ public class LoginEndpoint {
 
     public static final String getHtmlRenderToken    = AUTH_ADMIN+"/gethtmlrendertoken";
 
+    public static final String checkUserPassword     = OPEN+"/checkuserpassword";  // Prüft ob Benutzername und Passwort stimmen
+    public static final String checkUserPasswordAD   = OPEN+"/checkuserpasswordAD";  // Prüft ob Benutzername und Passwort am Active-Directory stimmen
+
+
     /* ----------------------------------------------------------------------------------------------------
                         Alle notwendigen Ping-Punkte für den Service-Test
        ---------------------------------------------------------------------------------------------------- */

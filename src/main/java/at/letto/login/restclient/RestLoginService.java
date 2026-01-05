@@ -380,4 +380,48 @@ public class RestLoginService extends RestClient implements LoginService {
         return response;
     }
 
+    /**
+     * Prüft ob die Kombination von Benutzername und Passwort ok ist und sich der Benutzer einloggen könnte
+     * @param username   Benutzername
+     * @param password   Passwort
+     * @param school     Schule oder leer wenn die Schule automatisch gesetzt werden soll
+     * @return           true wenn ok und dann auch die Schule auf der der Login erfolgreich war
+     */
+    public CheckLoginResponseDto checkUserPassword(String username, String password, String school) {
+        CheckLoginResponseDto response = new CheckLoginResponseDto();
+        CheckLoginRequestDto checkLoginRequestDto = new CheckLoginRequestDto(username, password, school);
+        response = post(LoginEndpoint.checkUserPassword,checkLoginRequestDto,CheckLoginResponseDto.class);
+        return response;
+    }
+
+    /**
+     * Prüft ob die Kombination von Benutzername und Passwort am AD-Server korrekt einloggen können
+     * @param username   Benutzername
+     * @param password   Passwort
+     * @return           true wenn ok und dann auch die Schule auf der diese Benutzer vorhanden ist sowie eine Information wie der Loginvorgang korrekt erfolgt ist
+     */
+    public CheckLoginADResponseDto checkUserPasswordAD(String username, String password) {
+        CheckLoginADResponseDto response = new CheckLoginADResponseDto();
+        CheckLoginADRequestDto checkLoginADRequestDto = new CheckLoginADRequestDto(username, password,"","","","");
+        response = post(LoginEndpoint.checkUserPasswordAD,checkLoginADRequestDto,CheckLoginADResponseDto.class);
+        return response;
+    }
+
+    /**
+     * Prüft ob die Kombination von Benutzername und Passwort am AD-Server korrekt einloggen können
+     * @param username   Benutzername
+     * @param password   Passwort
+     * @param serverAD   AD-Server
+     * @param serverLDAP LDAP-Server
+     * @param domain     Domain des Servers
+     * @param params     LDAP Parameter als String
+     * @return           true wenn ok und dann auch die Schule auf der diese Benutzer vorhanden ist sowie eine Information wie der Loginvorgang korrekt erfolgt ist
+     */
+    public CheckLoginADResponseDto checkUserPasswordAD(String username, String password, String serverAD, String serverLDAP, String domain, String params) {
+        CheckLoginADResponseDto response = new CheckLoginADResponseDto();
+        CheckLoginADRequestDto checkLoginADRequestDto = new CheckLoginADRequestDto(username, password,serverAD,serverLDAP,domain,params);
+        response = post(LoginEndpoint.checkUserPasswordAD,checkLoginADRequestDto,CheckLoginADResponseDto.class);
+        return response;
+    }
+
 }

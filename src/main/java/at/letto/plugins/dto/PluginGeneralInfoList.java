@@ -1,11 +1,7 @@
 package at.letto.plugins.dto;
 
-import at.letto.plugins.enums.InputElement;
-import at.letto.tools.JavascriptLibrary;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
+//@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public class PluginGeneralInfoList {
 
     private List<PluginGeneralInfo> pluginInfos;
