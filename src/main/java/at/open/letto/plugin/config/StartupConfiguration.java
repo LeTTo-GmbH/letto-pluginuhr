@@ -31,7 +31,7 @@ public class StartupConfiguration {
         RestLoginService loginService = lettoService.getLoginService();
         // Plugin intern verbinden
 
-        // Nun wird das Service am Setup registriert
-        connectionService.registerPlugin();
+        // Das Plugin wird im Component PluginRegistrationOnRead am Setup registriert
+        // hier bitte nicht: connectionService.registerPlugin();
     }
 }
