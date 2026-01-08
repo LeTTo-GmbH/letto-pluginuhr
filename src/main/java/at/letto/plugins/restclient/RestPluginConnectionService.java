@@ -26,7 +26,7 @@ public class RestPluginConnectionService extends BaseRestClient implements Plugi
     private List<PluginGeneralInfo> plugins=new ArrayList<>();
 
     private long lastcheck=0;
-    private final long CHECK_INTERVAL_MS = 3600000L;
+    private final long CHECK_INTERVAL_MS = 2000L;
 
     public RestPluginConnectionService(String baseURI) {
         super(baseURI);

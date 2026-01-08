@@ -398,11 +398,12 @@ public class RestLoginService extends RestClient implements LoginService {
      * Prüft ob die Kombination von Benutzername und Passwort am AD-Server korrekt einloggen können
      * @param username   Benutzername
      * @param password   Passwort
+     * @param ldapMode   Mode der Authentifikation
      * @return           true wenn ok und dann auch die Schule auf der diese Benutzer vorhanden ist sowie eine Information wie der Loginvorgang korrekt erfolgt ist
      */
-    public CheckLoginADResponseDto checkUserPasswordAD(String username, String password) {
+    public CheckLoginADResponseDto checkUserPasswordAD(String username, String password, Integer ldapMode) {
         CheckLoginADResponseDto response = new CheckLoginADResponseDto();
-        CheckLoginADRequestDto checkLoginADRequestDto = new CheckLoginADRequestDto(username, password,"","","","");
+        CheckLoginADRequestDto checkLoginADRequestDto = new CheckLoginADRequestDto(username, password,"","","",ldapMode);
         response = post(LoginEndpoint.checkUserPasswordAD,checkLoginADRequestDto,CheckLoginADResponseDto.class);
         return response;
     }
@@ -414,12 +415,12 @@ public class RestLoginService extends RestClient implements LoginService {
      * @param serverAD   AD-Server
      * @param serverLDAP LDAP-Server
      * @param domain     Domain des Servers
-     * @param params     LDAP Parameter als String
+     * @param ldapMode   Mode der Authentifikation
      * @return           true wenn ok und dann auch die Schule auf der diese Benutzer vorhanden ist sowie eine Information wie der Loginvorgang korrekt erfolgt ist
      */
-    public CheckLoginADResponseDto checkUserPasswordAD(String username, String password, String serverAD, String serverLDAP, String domain, String params) {
+    public CheckLoginADResponseDto checkUserPasswordAD(String username, String password, String serverAD, String serverLDAP, String domain, Integer ldapMode) {
         CheckLoginADResponseDto response = new CheckLoginADResponseDto();
-        CheckLoginADRequestDto checkLoginADRequestDto = new CheckLoginADRequestDto(username, password,serverAD,serverLDAP,domain,params);
+        CheckLoginADRequestDto checkLoginADRequestDto = new CheckLoginADRequestDto(username, password,serverAD,serverLDAP,domain,ldapMode);
         response = post(LoginEndpoint.checkUserPasswordAD,checkLoginADRequestDto,CheckLoginADResponseDto.class);
         return response;
     }

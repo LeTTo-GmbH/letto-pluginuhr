@@ -24,7 +24,7 @@ public class CheckLoginADRequestDto {
     /** Domain */
     private String  domain="";
 
-    /** LDAP-Parameter */
-    private String  params="";
+    /** LDAP Mode 0 automatisch 1 AD 2,3,4 LDAP */
+    private Integer ldapMode;
 
 }
