@@ -1,18 +1,14 @@
 package at.letto.plugins.dto;
 
-import at.letto.ServerConfiguration;
-import at.letto.globalinterfaces.ImageService;
 import at.letto.plugins.interfaces.PluginService;
 import at.letto.tools.JSON;
 import at.letto.tools.dto.ImageBase64Dto;
 import at.letto.tools.dto.ImageUrlDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +20,6 @@ import java.util.regex.Pattern;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public class PluginDto {
 
     /** Url eines eingebetteten Bildes - meist base64 codiert */
@@ -47,9 +42,9 @@ public class PluginDto {
 
     /** Parameter welche vom Plugin an Javascript weitergegeben werden sollen,
      *  wird von LeTTo nicht verwendet */
-    private HashMap<String,String> params = new HashMap<>();
+    private HashMap<String,Object> params = new HashMap<>();
 
-    /** JSON-String welcher vom Plugin an Javascript weitergegeben werden soll,
+    /** Base64-codierter JSON-String welcher vom Plugin an Javascript weitergegeben werden soll,
      *  wird von LeTTo nicht verwendet */
     private String jsonData;
 
