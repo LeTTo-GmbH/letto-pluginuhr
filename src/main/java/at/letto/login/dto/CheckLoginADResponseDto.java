@@ -19,4 +19,7 @@ public class CheckLoginADResponseDto {
     /** Information über die LDAP-Verbindung */
     private String connectionInfo="";
 
+    /** Detailierte HTML-Information über den Loginvorgang */
+    private String htmlInfo="";
+
 }

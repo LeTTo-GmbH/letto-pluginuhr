@@ -152,9 +152,8 @@ public class BasePluginManagerService implements PluginManagerService {
     @Override
     public PluginConnectionService getPluginConnectionService(String typ) {
         for (PluginConnectionService conn:pluginConnections)
-            for (String plugin:conn.getPluginList())
+            if (conn!=null) for (String plugin:conn.getPluginList())
                 if (typ.equals(plugin)) {
-                    //TODO Werner : Prüfe ggf. ob das Service erreichbar ist
                     return conn;
                 }
         return null;
@@ -249,7 +248,9 @@ public class BasePluginManagerService implements PluginManagerService {
     @Override
     public String getPluginImageDescription(String typ, String name, String config, String params, PluginQuestionDto q) {
         try {
-            String description = "pluginversion:" + getPluginGeneralInfo(typ).getVersion() + "typ:" + typ + ", name:" + name + ", config:" + config + ", params:" + params + ", question:" + JSON.objToJson(q);
+            String version = "null";
+            try { version = getPluginGeneralInfo(typ).getVersion(); } catch (Exception e) {}
+            String description = "pluginversion:" + version + "typ:" + typ + ", name:" + name + ", config:" + config + ", params:" + params + ", question:" + JSON.objToJson(q);
             return description;
         } catch (Exception ex) { }
         return null;
