@@ -198,6 +198,18 @@ public class LettoUserLoginService {
         return null;
     }
 
+    /** Sucht nach einem Benutzereintrag eines Users mit der userID einer Schule */
+    public LeTToUser getUser(String school, Long userId) {
+        try {
+            List<LeTToUser> users = lettoUserRepository.findBySchoolAndUserId(school, userId);
+            if (users.size() > 0) {
+                LeTToUser user = users.get(0);
+                return user;
+            }
+        } catch (Exception e) { }
+        return null;
+    }
+
     /** Speichert einen Benutzereintrag true wenn erfolgreich false wenn nicht erfolgreich */
     public boolean save(LeTToUser user) {
         try {

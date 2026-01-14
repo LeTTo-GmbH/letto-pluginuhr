@@ -27,6 +27,9 @@ public interface LeTToUserRepository  extends MongoRepository<LeTToUser, String>
     /** Sucht einen Benutzer einer Schule */
     List<LeTToUser> findBySchoolAndUsername(String school, String username);
 
+    /** Sucht einen Benutzer einer Schule */
+    List<LeTToUser> findBySchoolAndUserId(String school, long userId);
+
     /** Sucht alle Benutzer nach der Email-Adresse */
     List<LeTToUser> findByEmail(String email);
 

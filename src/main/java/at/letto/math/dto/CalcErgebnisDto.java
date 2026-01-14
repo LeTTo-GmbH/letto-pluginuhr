@@ -23,7 +23,6 @@ public class CalcErgebnisDto implements Cloneable {
     /** Typ, wenn nicht über json übertragen werden kann */
     private CALCERGEBNISTYPE type;
 
-
     @Override
     public String toString() {
         switch (type) {

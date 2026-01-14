@@ -36,7 +36,7 @@ public class LoginEndpoint {
     public static final String tokeninfo   = API + "/tokeninfo";    // liefert die Info über einen Token
     public static final String userlogout  = API + "/userlogout";
     public static final String getaliastoken = TEACHER + "/getaliastoken"; // liefert einen Alias-Token eines anderen Benutzers
-
+    public static final String userlogoutextern = OPEN+ "/userlogoutextern";
     /* ----------------------------------------------------------------------------------------------------
                         OPEN - STATIC
        ---------------------------------------------------------------------------------------------------- */
