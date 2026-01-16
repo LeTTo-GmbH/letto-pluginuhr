@@ -8,7 +8,9 @@ import at.letto.image.dto.ImageStringVectorDto;
 import at.letto.image.endpoints.ImageEndpoint;
 import at.letto.service.microservice.AdminInfoDto;
 import at.letto.service.rest.RestClient;
+import at.letto.tools.Cmd;
 import at.letto.tools.ENCRYPT;
+import at.letto.tools.dto.FileDTO;
 import at.letto.tools.dto.ImageBase64Dto;
 
 import java.awt.image.BufferedImage;
@@ -198,6 +200,11 @@ public class RestImageService extends RestClient implements ImageService {
     }
 
     @Override
+    public String loadImageBase64(FileDTO fileDTO) {
+        return loadImageBase64(fileDTO.getFilename());
+    }
+
+    @Override
     public Vector<String> getImages() {
         return post(ImageEndpoint.getimages,new ImageServiceDto(servicemode), ImageStringVectorDto.class).getStrings();
     }
@@ -228,6 +235,8 @@ public class RestImageService extends RestClient implements ImageService {
         } catch (Exception ignored) {}
         return null;
     }
+
+
 
     @Override
     public void adaptUrlToRelative(String serverpath) {

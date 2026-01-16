@@ -168,6 +168,13 @@ public interface ImageService {
     ImageBase64Dto loadImageBase64Dto(String filename);
 
     /**
+     * Lädt eine Datei als Base64 codierte Datei aus dem Filesystem in eine Base64-codierten String
+     * @param fileDTO      Dateiname/URL der Datei die geladen werden soll
+     * @return             Base64-codierter String des Dateiinhaltes
+     */
+    String loadImageBase64(FileDTO fileDTO);
+
+    /**
      * Liefert eine Liste aller Dateien, die im Image Cache gespeichert sind
      * @return Liste aller Dateinamen
      */
