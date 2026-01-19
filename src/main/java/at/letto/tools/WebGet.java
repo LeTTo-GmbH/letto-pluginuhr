@@ -133,6 +133,7 @@ public class WebGet {
 		try {
 			//System.out.println("WebGet from:"+webPath);
 			// Lade die URL in ein Byte-Array
+			//BufferedInputStream in = HttpFetch.openStreamInsecure(webPath);
 			BufferedInputStream in = getBufferedInputStreamFromURL(webPath);
 					// new BufferedInputStream(new URL(webPath).openStream());
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();

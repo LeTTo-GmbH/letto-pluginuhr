@@ -266,32 +266,25 @@ public class BaseImageService implements ImageService {
      * @return          Filehandle auf die Datei oder null w
      */
     public File getImageFile(FileDTO fileDTO) {
-        String imageSubPath = getImageSubPath(fileDTO.getWebPath());
-        File f;
-        if (imageSubPath!=null) {
+        try {
+            String imageSubPath = getImageSubPath(fileDTO.getWebPath());
+            File f;
+            if (imageSubPath != null) {
+                f = new File(this.localPath + imageSubPath);
+                if (f.exists() && f.isFile()) return f;
+            }
             if (subdirs) {
                 Pattern p = Pattern.compile("^(.+)\\.([^\\.]+)$");
                 Matcher m = p.matcher(filename);
                 if (m.find() && m.group(1).length() > 2) {
-                    String path = this.localPath + imageSubPath + "/" + m.group(1).toLowerCase().substring(0, 2) + "/" + filename;
+                    String path = this.localPath + m.group(1).toLowerCase().substring(0, 2) + "/" + filename;
                     f = new File(path);
                     if (f.exists() && f.isFile()) return f;
                 }
             }
-            f = new File(this.localPath + imageSubPath + "/" + filename);
+            f = new File(this.localPath + filename);
             if (f.exists() && f.isFile()) return f;
-        }
-        if (subdirs) {
-            Pattern p = Pattern.compile("^(.+)\\.([^\\.]+)$");
-            Matcher m = p.matcher(filename);
-            if (m.find() && m.group(1).length()>2) {
-                String path = this.localPath + m.group(1).toLowerCase().substring(0,2) + "/" + filename;
-                f = new File(path);
-                if (f.exists() && f.isFile()) return f;
-            }
-        }
-        f = new File( this.localPath + filename);
-        if (f.exists() && f.isFile()) return f;
+        } catch (Exception ex) {}
         return null;
     }
 

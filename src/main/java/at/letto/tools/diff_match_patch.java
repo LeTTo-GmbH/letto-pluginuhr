@@ -2459,7 +2459,7 @@ public class diff_match_patch {
    * @param str The string to escape.
    * @return The escaped string.
    */
-  private static String unescapeForEncodeUriCompatability(String str) {
+  public static String unescapeForEncodeUriCompatability(String str) {
     return str.replace("%21", "!").replace("%7E", "~")
         .replace("%27", "'").replace("%28", "(").replace("%29", ")")
         .replace("%3B", ";").replace("%2F", "/").replace("%3F", "?")

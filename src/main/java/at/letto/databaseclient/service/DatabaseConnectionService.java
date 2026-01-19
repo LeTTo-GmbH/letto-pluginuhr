@@ -2,6 +2,8 @@ package at.letto.databaseclient.service;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import io.lettuce.core.ClientOptions;
@@ -23,6 +25,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service @Getter @Setter
@@ -122,24 +125,40 @@ public class DatabaseConnectionService {
     public MongoClient createMongoClient(String password, String host) {
         logger.info("instantiate MongoClient ");
 
-        String url = "mongodb://root:"+password+"@"+host+":"+mongoPort;
+        //String url = "mongodb://root:"+password+"@"+host+":"+mongoPort;
         try {
+            MongoCredential cred = MongoCredential.createCredential(
+                    "root",
+                    "admin",
+                    mongoPassword.toCharArray()
+            );
+
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyToClusterSettings(b -> b.hosts(List.of(new ServerAddress(host, mongoPort)))
+                            .serverSelectionTimeout(1000, TimeUnit.MILLISECONDS))
+                    .applyToSocketSettings(b -> b.connectTimeout(1000, TimeUnit.MILLISECONDS))
+                    .credential(cred)
+                    .build();
+
+            /*
             ConnectionString connectionString = new ConnectionString(url);
             MongoClientSettings settings = MongoClientSettings.builder()
                     .applyConnectionString(connectionString)
+
                     .applyToClusterSettings(builder ->
                             builder.serverSelectionTimeout(1000, TimeUnit.MILLISECONDS) // 2 Sekunden Timeout für Verbindungsaufbau
                     )
                     .applyToSocketSettings(builder ->
                             builder.connectTimeout(1000, TimeUnit.MILLISECONDS) // 2 Sekunden Timeout für Socket-Verbindung
                     )
-                    .build();
+                    .build(); */
             MongoClient mongoClient = MongoClients.create(settings);
             if (mongoClient != null) {
                 return mongoClient;
-            }
-        } catch (Throwable e) { }
-        logger.error("no Connection to Mongo Server root@"+host+":"+mongoPort);
+            } else logger.error("no Connection to Mongo Server root@"+host+":"+mongoPort);
+        } catch (Throwable e) {
+            logger.error("Mongo connect failed to {}:{} - {}", host, mongoPort, e.toString());
+        }
         return null;
     }
 
