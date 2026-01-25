@@ -157,6 +157,7 @@ public class SetupEndpoint {
     public static final String DOCKER_update       = SESSION_ADMIN + "/update";
     public static final String DOCKER_serverToken  = SESSION_ADMIN + "/servertoken";
     public static final String DOCKER_plugins      = SESSION_ADMIN + "/plugins";
+    public static final String DOCKER_pluginedit   = SESSION_ADMIN + "/pluginedit";
     public static final String DOCKER_users        = SESSION_ADMIN + "/users";
     public static final String DOCKER_user         = SESSION_ADMIN + "/user";
     public static final String DOCKER_ldap         = SESSION_ADMIN + "/ldap";
