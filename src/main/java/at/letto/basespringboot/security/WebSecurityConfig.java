@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -106,6 +107,7 @@ public class WebSecurityConfig {
 
     /** Root-Pfad und Service-Path für alle frei geben, nicht rekursiv */
     @Bean
+    @Order(100)
     public SecurityFilterChain filterChain1(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -120,6 +122,7 @@ public class WebSecurityConfig {
 
     /** Service-Pfad für alle frei, nicht rekursiv */
     @Bean
+    @Order(110)
     public SecurityFilterChain filterChain2(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -135,6 +138,7 @@ public class WebSecurityConfig {
 
     /** OPEN rekursiv*/
     @Bean
+    @Order(120)
     public SecurityFilterChain filterChain3(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -150,6 +154,7 @@ public class WebSecurityConfig {
 
     /** API rekursiv mit JWT-Token-Authentifikation */
     @Bean
+    @Order(130)
     public SecurityFilterChain filterChain4(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -186,6 +191,7 @@ public class WebSecurityConfig {
 
     /** AUTH rekursiv mit User-Authentifikation */
     @Bean
+    @Order(140)
     public SecurityFilterChain filterChain5(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -232,6 +238,7 @@ public class WebSecurityConfig {
 
     /**SESSION rekursiv mit Login-Seite und Authentifkations-Controller */
     @Bean
+    @Order(150)
     public SecurityFilterChain filterChain6(HttpSecurity http) throws Exception {
         http.cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
