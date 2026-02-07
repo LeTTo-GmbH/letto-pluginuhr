@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public class RestDTO {
 
-    @Getter
+    @Setter @Getter
     /** Ergebnis der Abfrage wenn das DTO als Rückgabeverwendet wird */
     protected RestStatusDTO reststatus = new RestStatusDTO(RestStatus.UNDEFINED,"",0);;
 
