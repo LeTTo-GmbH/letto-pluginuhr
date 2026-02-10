@@ -67,6 +67,7 @@ public class LoginEndpoint {
     public static final String activateServerToken   = AUTH_ADMIN+"/activateservertoken";
     public static final String deactivateServerToken = AUTH_ADMIN+"/deactivateservertoken";
     public static final String loadServerToken       = AUTH_ADMIN+"/loadservertoken";
+    public static final String ltitemplogin          = AUTH_ADMIN+"/ltitemplogin";
     public static final String refreshServerToken    = OPEN+"/getservertokenuri";
     public static final String ServerTokenInfo       = OPEN+"/servertokeninfo";
     public static final String getUserToken          = OPEN+"/getusertoken";

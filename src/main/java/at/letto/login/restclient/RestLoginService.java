@@ -53,6 +53,17 @@ public class RestLoginService extends RestClient implements LoginService {
         return rev;
     }
 
+    /** Erzeugt eine Session mit Token für einen Benutzer welcher mit einem LTI-Tool verbunden ist. <br>
+     *  Weiters wird ein TempToken mit mittlerer zeitlicher Gültigkeit erzeugt welcher dann an den LeTTo-Server oder die LeTTo-App für den <br>
+     *  Login gesendet werden kann. */
+    public String ltiTempTokenLogin(String username, String school, String fingerprint, String ipaddress, String service, String infos, String userAgent) {
+        AuthenticationRequest request = new AuthenticationRequest(username,"", school, fingerprint, ipaddress, service, infos, userAgent);
+        JWTTokenResponse response = post(LoginEndpoint.ltitemplogin,request,JWTTokenResponse.class);
+        if (response!=null && response.getToken()!=null)
+            return response.getToken();
+        return null;
+    }
+
     @Override
     public String jwtLogin(String username, String password, String school, String fingerprint, String ipaddress, String service, String infos, String userAgent) {
         AuthenticationRequest request = new AuthenticationRequest(username, password, school, fingerprint, ipaddress, service, infos, userAgent);
