@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 public abstract class GenericRedisCache<T extends IdEntity> implements CacheInterface<T> {
 
     @Autowired
-    BaseLettoRedisDBService baseLettoRedisDBService;
+    protected BaseLettoRedisDBService baseLettoRedisDBService;
 
-    @Setter private TimeUnit timeUnit = TimeUnit.HOURS;
-    @Setter private int timeout = 1;
+    @Setter protected TimeUnit timeUnit = TimeUnit.HOURS;
+    @Setter protected int timeout = 1;
 
     /** Check, ob Redis-Datenbank verfügbar ist */
     public boolean checkRedis() {
@@ -133,7 +133,7 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
      * @param school    Schulname
      * @return  Redis-Key
      */
-    private String key(int id, Class<T> type, String school) {
+    protected String key(int id, Class<T> type, String school) {
         return school + ":" + type.getSimpleName() + ":" +id;
     }
 
