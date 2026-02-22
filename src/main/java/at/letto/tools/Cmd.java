@@ -1372,15 +1372,25 @@ public class Cmd {
 	public static String removeSonderzeichen(String Variable) {
 		if (Variable == null) return "";
 		Variable = Variable.replaceAll("á", "a");
+		Variable = Variable.replaceAll("ǎ", "a");
+		Variable = Variable.replaceAll("À", "A");
 		Variable = Variable.replaceAll("ć", "c");
 		Variable = Variable.replaceAll("č", "c");
 		Variable = Variable.replaceAll("ċ", "c");
+		Variable = Variable.replaceAll("ç", "c");
 		Variable = Variable.replaceAll("Ç", "C");
+		Variable = Variable.replaceAll("Ć", "C");
 		Variable = Variable.replaceAll("é", "e");
 		Variable = Variable.replaceAll("è", "e");
+		Variable = Variable.replaceAll("ǧ", "g");
+		Variable = Variable.replaceAll("Ł", "L");
+		Variable = Variable.replaceAll("ó", "o");
 		Variable = Variable.replaceAll("š", "s");
+		Variable = Variable.replaceAll("ş", "s");
 		Variable = Variable.replaceAll("Š", "S");
+		Variable = Variable.replaceAll("Ş", "S");
 		Variable = Variable.replaceAll("ž", "z");
+		Variable = Variable.replaceAll("ı", "1");
 
 		return Variable;
 	}
