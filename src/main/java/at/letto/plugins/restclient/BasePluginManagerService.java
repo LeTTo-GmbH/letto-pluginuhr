@@ -152,10 +152,11 @@ public class BasePluginManagerService implements PluginManagerService {
     @Override
     public PluginConnectionService getPluginConnectionService(String typ) {
         for (PluginConnectionService conn:pluginConnections)
-            if (conn!=null) for (String plugin:conn.getPluginList())
-                if (typ.equals(plugin)) {
-                    return conn;
-                }
+            if (conn!=null && conn.getPluginList()!=null && conn.getPluginList().size()>0)
+                for (String plugin:conn.getPluginList())
+                    if (typ.equals(plugin)) {
+                        return conn;
+                    }
         return null;
     }
 
