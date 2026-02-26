@@ -201,28 +201,29 @@ public class RestPluginConnectionService extends BaseRestClient implements Plugi
     public Vector<String[]> getImageTemplates(String typ, String name, String config) {
         PluginRequestDto r = new PluginRequestDto(typ,name,config,null,null,null);
         Vector<String[]> result = new Vector<>();
-        for (Object o:post(PluginConnectionEndpoint.getImageTemplates, r, Vector.class)) {
-            if (o instanceof ArrayList) {
-                ArrayList a = (ArrayList) o;
-                String[] entry = new String[a.size()];
-                for (int i=0;i<a.size();i++) {
-                    entry[i] = a.get(i).toString();
+        try {
+            for (Object o : post(PluginConnectionEndpoint.getImageTemplates, r, Vector.class)) {
+                if (o instanceof ArrayList) {
+                    ArrayList a = (ArrayList) o;
+                    String[] entry = new String[a.size()];
+                    for (int i = 0; i < a.size(); i++) {
+                        entry[i] = a.get(i).toString();
+                    }
+                    result.add(entry);
+                } else if (o instanceof HashMap) {
+                    HashMap m = (HashMap) o;
+                    String[] entry = new String[m.size()];
+                    int i = 0;
+                    for (Object key : m.keySet()) {
+                        entry[i] = m.get(key).toString();
+                        i++;
+                    }
+                    result.add(entry);
+                } else if (o instanceof String[]) {
+                    result.add((String[]) o);
                 }
-                result.add(entry);
-            } else if (o instanceof HashMap) {
-                HashMap m = (HashMap) o;
-                String[] entry = new String[m.size()];
-                int i = 0;
-                for (Object key : m.keySet()) {
-                    entry[i] = m.get(key).toString();
-                    i++;
-                }
-                result.add(entry);
-            } else if (o instanceof String[]) {
-                result.add((String[]) o);
             }
-        }
-
+        } catch (Exception e) {}
         if (result==null) return new Vector<>();
         return result;
     }

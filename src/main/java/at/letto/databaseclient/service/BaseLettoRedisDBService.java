@@ -56,7 +56,7 @@ public class BaseLettoRedisDBService {
     /** Test der Funktionsfähigkeit der Redis-Datenbank, startet erstmals nach 10 Sek. und dann alle 5 Minuten */
     @Scheduled(initialDelay = 10000, fixedRate = 300000)
     public void checkRedisService(){
-        logger.info("checkRedisService");
+        //logger.info("checkRedisService");
         if (redisOk) return;
         try {
             redisTemplate(databaseConnectionService.getRedisDefaultDatabase())
