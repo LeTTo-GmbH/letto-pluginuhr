@@ -74,6 +74,9 @@ public class LettoToken {
     /** ein Externer Benutzer darf nur dann eine User-Category anlegen, wenn ROLE_CREATE_CATEGORY aktiv ist */
     public static final String ROLE_CREATE_CATEGORY     = "createcategory";
 
+    /** Benutzerkennnug eines HTML-Render-Tokens */
+    public static final String ROLE_HTML_RENDER         = "htmlrender";
+
     // JWT-Token als String
     private  final String token;
 
