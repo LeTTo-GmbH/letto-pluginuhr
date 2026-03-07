@@ -115,6 +115,71 @@ public abstract class Tex {
 	public static final String FormatAddress = "{\\itshape ";
 	public static final String FormatPre     = "\\texttt{";
 
+	/** Eine horizontaler Schieberegler mit definierbarer Position und Beschriftung */
+	public static final String defTextPercentSlider = "\\usepackage{tikz}\n" +
+			"\n" +
+			"% \\TextPercentSlider[width]{leftText}{rightText}{posText}{percent}\n" +
+			"% width default = 0.5\\textwidth\n" +
+			"% percent < 0 => leerer Slider (kein Knopf, kein blau, kein posText)\n" +
+			"\\newcommand{\\TextPercentSlider}[5][0.5\\textwidth]{%\n" +
+			"\\begin{tikzpicture}[baseline]\n" +
+			"  % --- Geometrie (als Längen) ---\n" +
+			"  \\def\\W{#1}        % Trackbreite (LaTeX-Länge!)\n" +
+			"  \\def\\H{2.2mm}     % Trackhöhe\n" +
+			"  \\def\\R{1.6mm}     % Knopfradius\n" +
+			"  \\def\\PadX{1.0mm}  % seitlicher Abstand Text zum Knopf\n" +
+			"  \\def\\PadY{0.8mm}  % zusätzlicher Abstand nach oben\n" +
+			"\n" +
+			"  % Flag: leer?\n" +
+			"  \\pgfmathtruncatemacro{\\isEmpty}{(#5<0) ? 1 : 0}\n" +
+			"\n" +
+			"  % Prozent + Position (x als Länge)\n" +
+			"  \\ifnum\\isEmpty=1\n" +
+			"    \\pgfmathsetmacro{\\pc}{0}%\n" +
+			"    \\pgfmathsetlengthmacro{\\x}{0pt}%\n" +
+			"  \\else\n" +
+			"    \\pgfmathsetmacro{\\pc}{max(0, min(#5, 100))}%\n" +
+			"    \\pgfmathsetlengthmacro{\\x}{(\\pc/100)*\\W}%\n" +
+			"  \\fi\n" +
+			"\n" +
+			"  % Labels links/rechts\n" +
+			"  \\node[anchor=east] at (0,0) {#2};\n" +
+			"  \\node[anchor=west] at (\\W,0) {#3};\n" +
+			"\n" +
+			"  % Track (immer)\n" +
+			"  \\fill[gray!30, rounded corners=1pt] (0,-\\H/2) rectangle (\\W,\\H/2);\n" +
+			"\n" +
+			"  % Nur wenn nicht leer: aktive Strecke + Knopf + Text\n" +
+			"  \\ifnum\\isEmpty=0\n" +
+			"    \\fill[blue!60, rounded corners=1pt] (0,-\\H/2) rectangle (\\x,\\H/2);\n" +
+			"\n" +
+			"    % Knopf\n" +
+			"    \\fill[white] (\\x,0) circle (\\R);\n" +
+			"    \\draw[gray!70, line width=0.4pt] (\\x,0) circle (\\R);\n" +
+			"\n" +
+			"    % Text-Höhe: über Knopf + über Track\n" +
+			"    \\pgfmathsetlengthmacro{\\ty}{\\R + \\H/2 + \\PadY}\n" +
+			"\n" +
+			"    % Text-Anchor gegen Abschneiden\n" +
+			"    \\pgfmathtruncatemacro{\\isLeftEdge}{(\\pc<=0.5) ? 1 : 0}%\n" +
+			"    \\pgfmathtruncatemacro{\\isRightEdge}{(\\pc>=99.5) ? 1 : 0}%\n" +
+			"\n" +
+			"    \\ifnum\\isLeftEdge=1\n" +
+			"      \\node[font=\\small, anchor=west] at ($(\\x,\\ty)+(\\R+\\PadX,0)$) {#4};\n" +
+			"    \\else\\ifnum\\isRightEdge=1\n" +
+			"      \\node[font=\\small, anchor=east] at ($(\\x,\\ty)-(\\R+\\PadX,0)$) {#4};\n" +
+			"    \\else\n" +
+			"      \\node[font=\\small, anchor=south] at (\\x,\\ty) {#4};\n" +
+			"    \\fi\\fi\n" +
+			"  \\fi\n" +
+			"\\end{tikzpicture}%\n" +
+			"}\n" +
+			"\n" +
+			"% \\TextPercentSliderEmpty[width]{leftText}{rightText}\n" +
+			"\\newcommand{\\TextPercentSliderEmpty}[3][0.5\\textwidth]{%\n" +
+			"  \\TextPercentSlider[#1]{#2}{#3}{}{ -1 }%\n" +
+			"}";
+
 	private static HashMap<String,String> FUNCTIONS = null;
 	
 	/**
@@ -125,7 +190,7 @@ public abstract class Tex {
 	 * Functions wo der Texname durch voranstellen eines Backslash erfolgt
 	 */
 	private static final String[]   BFUNC = {"sin","cos","tan","cot","arccos","arcsin","arctan","sinh","cosh","tanh","coth"};
-	
+
 	/**
 	 * MODUS wie der Tex-Ausdruck erfolgen soll:<br>
 	 * PRINTFRAGE     : Ausgabe des reinen Fragetextes<br>
@@ -749,6 +814,37 @@ public abstract class Tex {
 	
 	public static String generateBspKopf(int nr, String name, String pointscolor, String pointsSoll, String pointsIst, boolean line) {
 		return generateBspKopf(""+nr,name,pointscolor,pointsSoll,pointsIst,line);
+	}
+
+	/** Erzeugt einen horizontalen Schieberegler mit definierbarer Position und Beschriftung */
+	public static String percentSlider(String leftText,String rightText, String posText, double percent) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\\TextPercentSlider{");
+		sb.append(leftText);
+		sb.append("}{");
+		sb.append(rightText);
+		sb.append("}{");
+		sb.append(posText);
+		sb.append("}{");
+		sb.append(percent);
+		sb.append("}\n");
+		return sb.toString();
+	}
+	/** Erzeugt einen horizontalen Schieberegler mit definierbarer Position und Beschriftung */
+	public static String percentSlider(String leftText,String rightText, String posText, double percent, String width) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\\TextPercentSlider[");
+		sb.append(width);
+		sb.append("]{");
+		sb.append(leftText);
+		sb.append("}{");
+		sb.append(rightText);
+		sb.append("}{");
+		sb.append(posText);
+		sb.append("}{");
+		sb.append(percent);
+		sb.append("}\n");
+		return sb.toString();
 	}
 		
 }
