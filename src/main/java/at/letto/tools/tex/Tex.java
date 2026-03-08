@@ -115,6 +115,130 @@ public abstract class Tex {
 	public static final String FormatAddress = "{\\itshape ";
 	public static final String FormatPre     = "\\texttt{";
 
+	public static final String defTikzHackerl ="\\usepackage{tikz}\n" +
+			"\\usetikzlibrary{shadings}\n" +
+			"\n" +
+			"\\newcommand{\\symRichtig}{%\n" +
+			"\\tikz[\n" +
+			"x=2.4ex, y=2.4ex,\n" +
+			"line cap=round, line join=round,\n" +
+			"baseline={(current bounding box.south)+(0,0.20ex)}\n" +
+			"]{\n" +
+			"\\path[use as bounding box] (0.00,-0.10) rectangle (1.00,1.00);\n" +
+			"\n" +
+			"```\n" +
+			"% blauer Schatten\n" +
+			"\\draw[draw=blue!70!black, line width=0.38ex]\n" +
+			"  (0.16,0.34)\n" +
+			"    .. controls (0.21,0.15) and (0.27,0.00) ..\n" +
+			"  (0.32,0.00)\n" +
+			"    .. controls (0.38,0.00) and (0.50,0.20) ..\n" +
+			"  (0.90,0.87);\n" +
+			"\n" +
+			"% grüner Haken\n" +
+			"\\draw[draw=green!60!black, line width=0.38ex]\n" +
+			"  (0.10,0.40)\n" +
+			"    .. controls (0.15,0.21) and (0.21,0.06) ..\n" +
+			"  (0.26,0.06)\n" +
+			"    .. controls (0.32,0.06) and (0.44,0.26) ..\n" +
+			"  (0.84,0.93);\n" +
+			"```\n" +
+			"\n" +
+			"}%\n" +
+			"}\n" +
+			"\n" +
+			"\\newcommand{\\symFalsch}{%\n" +
+			"\\tikz[\n" +
+			"x=2.4ex, y=2.4ex,\n" +
+			"line cap=round, line join=round,\n" +
+			"baseline={(current bounding box.south)+(0,0.20ex)}\n" +
+			"]{\n" +
+			"\\path[use as bounding box] (0.00,-0.10) rectangle (1.00,1.00);\n" +
+			"\n" +
+			"```\n" +
+			"% violetter Schatten\n" +
+			"\\draw[draw=violet!70!black, line width=0.38ex]\n" +
+			"  (0.22,0.88)\n" +
+			"    .. controls (0.21,0.68) and (0.34,0.48) ..\n" +
+			"  (0.47,0.36)\n" +
+			"    .. controls (0.63,0.20) and (0.80,0.09) ..\n" +
+			"  (0.94,0.01);\n" +
+			"\n" +
+			"\\draw[draw=violet!70!black, line width=0.38ex]\n" +
+			"  (0.87,0.86)\n" +
+			"    .. controls (0.77,0.72) and (0.62,0.53) ..\n" +
+			"  (0.47,0.37)\n" +
+			"    .. controls (0.33,0.21) and (0.21,0.08) ..\n" +
+			"  (0.14,-0.06);\n" +
+			"\n" +
+			"% rotes Kreuz\n" +
+			"\\draw[draw=red!80!black, line width=0.38ex]\n" +
+			"  (0.18,0.92)\n" +
+			"    .. controls (0.17,0.72) and (0.30,0.52) ..\n" +
+			"  (0.43,0.40)\n" +
+			"    .. controls (0.59,0.24) and (0.76,0.13) ..\n" +
+			"  (0.90,0.05);\n" +
+			"\n" +
+			"\\draw[draw=red!80!black, line width=0.38ex]\n" +
+			"  (0.83,0.90)\n" +
+			"    .. controls (0.73,0.76) and (0.58,0.57) ..\n" +
+			"  (0.43,0.41)\n" +
+			"    .. controls (0.29,0.25) and (0.17,0.12) ..\n" +
+			"  (0.10,-0.02);\n" +
+			"```\n" +
+			"\n" +
+			"}%\n" +
+			"}\n" +
+			"\n" +
+			"\\newcommand{\\symTeilrichtig}{%\n" +
+			"\\tikz[\n" +
+			"x=2.4ex, y=2.4ex,\n" +
+			"line cap=round, line join=round,\n" +
+			"baseline={(current bounding box.south)+(0,0.20ex)}\n" +
+			"]{\n" +
+			"\\path[use as bounding box] (0.00,-0.10) rectangle (1.05,1.00);\n" +
+			"\n" +
+			"```\n" +
+			"% violetter Schatten\n" +
+			"\\draw[draw=violet!70!black, line width=0.38ex]\n" +
+			"  (0.22,0.88)\n" +
+			"    .. controls (0.21,0.68) and (0.34,0.48) ..\n" +
+			"  (0.47,0.36)\n" +
+			"    .. controls (0.63,0.20) and (0.80,0.09) ..\n" +
+			"  (0.94,0.01);\n" +
+			"\n" +
+			"\\draw[draw=violet!70!black, line width=0.38ex]\n" +
+			"  (0.87,0.86)\n" +
+			"    .. controls (0.77,0.72) and (0.62,0.53) ..\n" +
+			"  (0.47,0.37)\n" +
+			"    .. controls (0.33,0.21) and (0.21,0.08) ..\n" +
+			"  (0.14,-0.06);\n" +
+			"\n" +
+			"% rotes Kreuz\n" +
+			"\\draw[draw=red!80!black, line width=0.38ex]\n" +
+			"  (0.18,0.92)\n" +
+			"    .. controls (0.17,0.72) and (0.30,0.52) ..\n" +
+			"  (0.43,0.40)\n" +
+			"    .. controls (0.59,0.24) and (0.76,0.13) ..\n" +
+			"  (0.90,0.05);\n" +
+			"\n" +
+			"\\draw[draw=red!80!black, line width=0.38ex]\n" +
+			"  (0.83,0.90)\n" +
+			"    .. controls (0.73,0.76) and (0.58,0.57) ..\n" +
+			"  (0.43,0.41)\n" +
+			"    .. controls (0.29,0.25) and (0.17,0.12) ..\n" +
+			"  (0.10,-0.02);\n" +
+			"\n" +
+			"% Schatten der Kugel\n" +
+			"\\fill[brown!70!black, opacity=0.75] (0.66,0.30) circle[radius=0.25];\n" +
+			"\n" +
+			"% gelbe Kugel\n" +
+			"\\shade[ball color=yellow!80] (0.62,0.34) circle[radius=0.25];\n" +
+			"```\n" +
+			"\n" +
+			"}%\n" +
+			"}\n";
+
 	/** Eine horizontaler Schieberegler mit definierbarer Position und Beschriftung */
 	public static final String defTextPercentSlider = "\\usepackage{tikz}\n" +
 			"\n" +
@@ -224,8 +348,10 @@ public abstract class Tex {
 		public boolean antwort() {
 			switch (this) {
 				case PRINTANTWORT:
+				case PRINTANTWORTERGEBNIS  :
 				case PRINTEINSICHTNAHME:
-				case PRINTANTWORTERGEBNIS  : return true;
+				case PRINTFORMEL   :
+				case PRINTINFO     : return true;
 				default:
 					break;
 			}
@@ -238,6 +364,30 @@ public abstract class Tex {
 			switch (this) {
 			case PRINTANTWORTERGEBNIS  :
 			case PRINTERGEBNIS : 
+			case PRINTFORMEL   :
+			// case PRINTEINSICHTNAHME:  // Bei der Einsichtname wird kein korrektes Ergebnis  angezeigt!
+			case PRINTINFO     : return true;
+			default:
+				break;
+			}
+			return false;
+		}
+		public boolean antwortUndErgebnis() {
+			switch (this) {
+			case PRINTANTWORTERGEBNIS  :
+			case PRINTFORMEL :
+			case PRINTINFO   :	return true;
+			default:
+				break;
+			}
+			return false;
+		}
+
+		/**
+		 * @return true wenn die Formel gedruckt wird
+		 */
+		public boolean formel() {
+			switch (this) {
 			case PRINTFORMEL   : 
 			case PRINTINFO     : return true;
 			default:
@@ -248,12 +398,11 @@ public abstract class Tex {
 		/**
 		 * @return true wenn die Formel gedruckt wird
 		 */
-		public boolean formel() {
+		public boolean info() {
 			switch (this) {
-			case PRINTFORMEL   : 
-			case PRINTINFO     : return true;
-			default:
-				break;
+				case PRINTINFO     : return true;
+				default:
+					break;
 			}
 			return false;
 		}
@@ -845,6 +994,18 @@ public abstract class Tex {
 		sb.append(percent);
 		sb.append("}\n");
 		return sb.toString();
+	}
+
+	public static String symbolRichtig(){
+		return "\\symRichtig\\ ";
+	}
+
+	public static String symbolFalsch(){
+		return "\\symFalsch\\ ";
+	}
+
+	public static String symbolTeilrichtig(){
+		return "\\symTeilrichtig\\ ";
 	}
 		
 }

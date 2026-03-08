@@ -1421,6 +1421,13 @@ public class Cmd {
 		return removeSonderzeichen(Variable);
 	}
 
+	public static String toFilename(String name) {
+		name = name.replaceAll(" +","_");
+		name = removeUmlaute(name,false);
+		name = name.replaceAll("[^a-zA-Z0-9\\-_\\.]", "");
+		return name;
+	}
+
 	public static String loadFileAsBase64(File file) {
 		if (file!=null && file.exists()) {
 			String ImgString = "";

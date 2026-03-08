@@ -32,9 +32,9 @@ public enum SQMODE implements Selectable {
 	FREITEXT("Textfeld"),
 	ZUORDNUNG("Zurordnung"),
 	IMAGE("Bildabgabe"),
-	SCHIEBER("Schieber"),
-	MULTIPLECALC("Mehrfach-Berechnung"),
-	MULTIPLETEXT("Mehrfach-Antwort");
+	SCHIEBER("Schieber");
+//	MULTIPLECALC("Mehrfach-Berechnung"),
+//	MULTIPLETEXT("Mehrfach-Antwort");
 
 	private String text;
 
