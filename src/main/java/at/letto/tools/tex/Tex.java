@@ -271,7 +271,11 @@ public abstract class Tex {
 			"  \\node[anchor=west] at (\\W,0) {#3};\n" +
 			"\n" +
 			"  % Track (immer)\n" +
+			"\\ifnum\\isEmpty=1\n" +
+			"  \\fill[yellow!20, rounded corners=1pt] (0,-\\H/2) rectangle (\\W,\\H/2);\n" +
+			"\\else\n" +
 			"  \\fill[gray!30, rounded corners=1pt] (0,-\\H/2) rectangle (\\W,\\H/2);\n" +
+			"\\fi"+
 			"\n" +
 			"  % Nur wenn nicht leer: aktive Strecke + Knopf + Text\n" +
 			"  \\ifnum\\isEmpty=0\n" +
