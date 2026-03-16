@@ -124,7 +124,7 @@ public abstract class Tex {
 			"line cap=round, line join=round,\n" +
 			"baseline={(current bounding box.south)+(0,0.20ex)}\n" +
 			"]{\n" +
-			"\\path[use as bounding box] (0.00,-0.10) rectangle (1.00,1.00);\n" +
+			"\\path[use as bounding box] (0.00,0.10) rectangle (1.00,1.00);\n" +
 			"\n" +
 			"```\n" +
 			"% blauer Schatten\n" +
@@ -153,7 +153,7 @@ public abstract class Tex {
 			"line cap=round, line join=round,\n" +
 			"baseline={(current bounding box.south)+(0,0.20ex)}\n" +
 			"]{\n" +
-			"\\path[use as bounding box] (0.00,-0.10) rectangle (1.00,1.00);\n" +
+			"\\path[use as bounding box] (0.00,0.10) rectangle (1.00,1.00);\n" +
 			"\n" +
 			"```\n" +
 			"% violetter Schatten\n" +
@@ -196,7 +196,7 @@ public abstract class Tex {
 			"line cap=round, line join=round,\n" +
 			"baseline={(current bounding box.south)+(0,0.20ex)}\n" +
 			"]{\n" +
-			"\\path[use as bounding box] (0.00,-0.10) rectangle (1.05,1.00);\n" +
+			"\\path[use as bounding box] (0.00,0.10) rectangle (1.05,1.00);\n" +
 			"\n" +
 			"```\n" +
 			"% violetter Schatten\n" +

@@ -15,7 +15,7 @@ import java.util.Vector;
 
 public class EasyLeTToLogger {
 
-    private static String    logNameStandard = "EasyLeTToLogger";
+    private static String   logNameStandard = "EasyLeTToLogger";
 
     @Getter @Setter private File      logfile  = null;
     @Getter @Setter private LogLevel  logLevel = LogLevel.OFF;
@@ -114,6 +114,22 @@ public class EasyLeTToLogger {
     public void clearLogfile() throws IOException {
         logfile.delete();
         logfile.createNewFile();
+    }
+
+    public void debug(String msg) {
+        this.logMessage(msg, LogLevel.ALL);
+    }
+
+    public void info(String msg) {
+        this.logMessage(msg, LogLevel.STANDARD);
+    }
+
+    public void warn(String msg) {
+        this.logMessage(msg, LogLevel.WARNING);
+    }
+
+    public void error(String msg) {
+        this.logMessage(msg, LogLevel.CRITICAL);
     }
 
 }

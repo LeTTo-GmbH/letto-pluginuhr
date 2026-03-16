@@ -11,6 +11,8 @@ public enum LogLevel {
     OFF,
     /** Nur kritische Fehler werden geloggt */
     CRITICAL,
+    /** unkritische Fehler und Warnungen */
+    WARNING,
     /** Normales Logging für den Betrieb */
     NORMAL,
     /** Debug-Logging für die Fehlersuche */
