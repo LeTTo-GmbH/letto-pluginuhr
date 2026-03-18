@@ -222,6 +222,7 @@ public class DataParser {
 		for (int i=0;i<4;i++) ipn[i] = Long.parseLong(ip[i]);
 		return ((ipn[0]&0xFF)<<24)|((ipn[1]&0xFF)<<16)|((ipn[2]&0xFF)<<8)|(ipn[3]&0xFF);
 	}
+
 	/**
 	 * Wandelt eine 32-Bit IP-Adresse in einen String mit der IP-Adresse
 	 * @param ip  32-Bit Adresse
