@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 
 public class HTMLtool {
 
+    public static final Pattern INVISIBLE_PATTERN =
+            Pattern.compile("[\\u00A0\\u200B\\u200C\\u200D\\u200E\\u200F\\u202F\\u2060\\uFEFF]");
+
+
     private static final Pattern P_URLtoString = Pattern.compile("^(.*)\\%([a-fA-F0-9][a-fA-F0-9])(.*)$");
 
     /**
