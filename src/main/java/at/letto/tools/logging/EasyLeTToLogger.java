@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -13,14 +15,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-public class EasyLeTToLogger {
+/**
+ * Einfacher Logger für Letto in ein beliebiges Logfile mit LettoLoggerInterface<br>
+ * siehe auch Log4LettoLogger und JavaUtilLettoLogger
+ */
+public class EasyLeTToLogger implements LettoLoggerInterface {
 
     private static String   logNameStandard = "EasyLeTToLogger";
 
     @Getter @Setter private File      logfile  = null;
     @Getter @Setter private LogLevel  logLevel = LogLevel.OFF;
     @Getter @Setter private String    logName          = logNameStandard;
-    @Getter @Setter private LogLevel standardMessageLogLevel = LogLevel.MESSAGE_STANDARD;
+    @Getter @Setter private LogLevel  standardMessageLogLevel = LogLevel.MESSAGE_STANDARD;
 
     /** Erzeugt einen Logger welcher mit LogLevel=OFF abgeschaltet und auf die stdout gesetzt ist */
     public EasyLeTToLogger() { }
@@ -106,6 +112,25 @@ public class EasyLeTToLogger {
         System.out.println(logName + " : "+logMsg);
     }
 
+    public void logMessage(String msg, LogLevel msgLogLevel, Throwable throwable) {
+        if (msgLogLevel.ordinal()>logLevel.ordinal()) return;
+        String logMsg = logDate() + " : "+msg;
+        try {
+            if (logfile!=null) {
+                List<String> log = new Vector<>();
+                log.add(logMsg);
+                Files.write(logfile.toPath(), log, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+                if (throwable!=null) {
+                    try (PrintWriter pw = new PrintWriter(new FileWriter(logfile, true))) {
+                        throwable.printStackTrace(pw);
+                    }
+                }
+                return;
+            }
+        } catch (Exception e) { }
+        System.out.println(logName + " : "+logMsg);
+    }
+
     public static String logDate() {
         return Datum.simpleDateFormatMillis.format(new Date());
     }
@@ -116,20 +141,37 @@ public class EasyLeTToLogger {
         logfile.createNewFile();
     }
 
+    @Override
+    public void trace(String msg) {
+        this.logMessage(msg, LogLevel.TRACE);
+    }
+
+    @Override
     public void debug(String msg) {
-        this.logMessage(msg, LogLevel.ALL);
+        this.logMessage(msg, LogLevel.DEBUG);
     }
 
+    @Override
     public void info(String msg) {
-        this.logMessage(msg, LogLevel.STANDARD);
+        this.logMessage(msg, LogLevel.INFO);
     }
 
+    @Override
     public void warn(String msg) {
         this.logMessage(msg, LogLevel.WARNING);
     }
 
+    @Override
     public void error(String msg) {
         this.logMessage(msg, LogLevel.CRITICAL);
     }
+
+    @Override
+    public void error(String msg, Throwable throwable) {
+        this.logMessage(msg, LogLevel.CRITICAL,throwable);
+    }
+
+    // ---------------------------------- Logger Interface ------------
+    @Override public String getName() { return logName; }
 
 }

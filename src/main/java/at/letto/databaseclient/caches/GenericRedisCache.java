@@ -112,7 +112,7 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
     }
 
     /**
-     * Speichern eines DTOs in der Datenbankmit einer anderen ID.<br>
+     * Speichern eines DTOs in der Datenbank mit einer anderen ID.<br>
      * Ist Redis nicht funktionsfähig, dann Abbruch ohne Meldung.
      * @param data      Datenelement, muss IdEntity implementiert haben
      * @param token     LeTTo-Token zur Autentifizierung
