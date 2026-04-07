@@ -63,19 +63,22 @@ public class EasyLeTToLogger implements LettoLoggerInterface {
         this.logLevel = logLevel;
         this.logName = logNameStandard;
         this.logfile = logfile;
+    }
+
+    /** Prüft ob das Logfile vorhanden ist und legt es erforderlichenfalls neu an */
+    private boolean checkLogfile() {
         try {
-            if (!this.logfile.exists()) {
+            if (this.logfile.exists()) return true;
+            else {
                 File parent = new File(this.logfile.getParent());
                 if (!parent.exists())
                     parent.mkdirs();
                 if (!this.logfile.exists())
                     this.logfile.createNewFile();
             }
-        } catch (Exception ex) {
-            this.logfile = null;
-        }
-        if (this.logfile==null)
-            System.out.println(logName+" : Logfile "+this.logfile.getAbsolutePath()+" konnte nicht angelegt werden! Logging erfolgt über stdout!");
+        } catch (Exception ex) { }
+        if (this.logfile.exists()) return true;
+        return false;
     }
 
     public void logMessage(String msg) {
@@ -99,17 +102,20 @@ public class EasyLeTToLogger implements LettoLoggerInterface {
     }
 
     public void logMessage(String msg, LogLevel msgLogLevel) {
-        if (msgLogLevel.ordinal()>logLevel.ordinal()) return;
-        String logMsg = logDate() + " : "+msg;
-        try {
-            if (logfile!=null) {
-                List<String> log = new Vector<>();
-                log.add(logMsg);
-                Files.write(logfile.toPath(), log, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-                return;
+        if (msgLogLevel.ordinal() > logLevel.ordinal()) return;
+        String logMsg = logDate() + " : " + msg;
+        if (checkLogfile()) {
+            try {
+                if (logfile != null) {
+                    List<String> log = new Vector<>();
+                    log.add(logMsg);
+                    Files.write(logfile.toPath(), log, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+                    return;
+                }
+            } catch (Exception e) {
             }
-        } catch (Exception e) { }
-        System.out.println(logName + " : "+logMsg);
+        }
+        System.out.println("LOG-"+logName + " : "+logMsg);
     }
 
     public void logMessage(String msg, LogLevel msgLogLevel, Throwable throwable) {

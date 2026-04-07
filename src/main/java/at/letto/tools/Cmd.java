@@ -13,11 +13,13 @@ import org.apache.batik.transcoder.image.*;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 import at.letto.ServerConfiguration;
 import at.letto.globalinterfaces.LettoFile;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.xmlgraphics.image.loader.impl.imageio.ImageIOUtil;
@@ -1106,7 +1108,8 @@ public class Cmd {
 	 */
 	public static String pdftojpg(int pagenr, String src, String dst) {
 		try {
-			PDDocument document = PDDocument.load(new File(src));
+			PDDocument document = Loader.loadPDF(new File(src));
+					//PDDocument.load(new File(src));
 			PDFRenderer pdfRenderer = new PDFRenderer(document);
 			int pageCounter = 0;
 			for (PDPage page : document.getPages())
@@ -1204,7 +1207,7 @@ public class Cmd {
 			// Base64 kodierten String in einem InputStream umwandeln
 			InputStream is = new ByteArrayInputStream(bild.getBytes());
 			// PDF Dokument aus dem InputStream laden
-			PDDocument document = PDDocument.load(is);
+			PDDocument document = Loader.loadPDF(new RandomAccessReadBuffer(is)); //PDDocument.load(is);
 			if (pagenr > document.getNumberOfPages()) pagenr = document.getNumberOfPages();
 
 			PDFRenderer pdfRenderer = new PDFRenderer(document);
@@ -1226,31 +1229,6 @@ public class Cmd {
 			e.printStackTrace();
 		}
 		return "";
-
-//		PDPage page;
-//		if (pagenr<0) pagenr=0;
-//		try {
-//			// Base64 kodierten String in einem InputStream umwandeln
-//			InputStream is = new ByteArrayInputStream(bild.getBytes());
-//			// PDF Dokument aus dem InputStream laden
-//			PDDocument document = PDDocument.load(is);
-//			// Seite des Dokuments laden
-//			if (pagenr > document.getNumberOfPages()) pagenr = document.getNumberOfPages();
-//			page = (PDPage) document.getDocumentCatalog().getAllPages().get(pagenr-1);
-//			// PDF Dokument schließen
-//			document.close();
-//			// Seite in BufferedImage konvertieren
-//			BufferedImage buffImage = page.convertToImage();
-//			// BufferedImage in jpg konvertieren
-//			OutputStream os = new ByteArrayOutputStream();
-//			ImageIO.write(buffImage, "jpg", os);
-//			// jpg Base64 encodieren
-//			byte[] ret = Base64.getEncoder().encode(os.toString().getBytes());
-//			// Bytearray als String zurückgeben
-//			return new String(ret);
-//		} catch (Exception|Error e) {
-//		}
-//		return "";
 	}
 	/**
 	 * Wandelt ein base64-kodiertes svg in eine jpg-Datei um
