@@ -1112,9 +1112,10 @@ public class Cmd {
 					//PDDocument.load(new File(src));
 			PDFRenderer pdfRenderer = new PDFRenderer(document);
 			int pageCounter = 0;
+			int pages = document.getNumberOfPages();
 			for (PDPage page : document.getPages())
 			{
-				if (pageCounter == pagenr) {
+				if (pageCounter == pagenr || pages==1) {
 					BufferedImage bim = pdfRenderer.renderImageWithDPI(pageCounter, 300, ImageType.RGB);
 					// suffix in filename will be used as the file format
 					ImageIO.write(bim, "jpg", new File(dst));
