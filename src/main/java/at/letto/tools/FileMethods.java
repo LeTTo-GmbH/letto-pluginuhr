@@ -57,6 +57,23 @@ public class FileMethods {
         return ret;
     }
 
+    public static List<String> getEncodingFirstLine(InputStream inputStream) throws IOException {
+        Vector<String> ret = new Vector<>();
+        ret.add("UTF-8");
+        int nRead;
+        byte[] data = new byte[1024];
+        inputStream.read(data, 0, data.length);
+        String enc = guessEncoding(data);
+        if (enc.startsWith("WINDOWS"))
+            enc = "ISO-8859-1";
+
+        if (!ret.contains(enc))
+            ret.add(0, enc);
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+        }
+        return ret;
+    }
+
     /**
      * Einlesen eines Datei mit Encoding-Abschätzung
      * @param file         File-Objekt mit Pfad zur Datei
@@ -120,6 +137,40 @@ public class FileMethods {
                 // Entfernen von Leerzeilen
                 //if (s!=null && !s.isEmpty())
                     file.add(s);
+            }
+            datei.close();
+            return file;
+        } catch (IOException e) {
+            throw new RuntimeException("IO-Fehler beim lesen der Daten");
+        }
+    }
+
+    public static Vector<String> readFileInListEncodingFirstLine(InputStream inputStream, long size)  {
+        byte[] inp = null;
+        Vector<String> file = new Vector<>();
+
+        try {
+            inp = ByteStreams.toByteArray(inputStream);
+            InputStream stream =  ByteSource.wrap(inp).openStream();
+            List<String> enc = getEncodingFirstLine(stream);
+            String encoding = "UTF-8";
+            encoding = enc.get(0);
+            if (encoding.startsWith("WINDOWS"))
+                encoding = "ISO-8859-1";
+            stream.close();
+
+            stream =  ByteSource.wrap(inp).openStream();
+            Charset charset = Charset.forName(encoding);
+            // Bufferer - Reader mit entsprechendem Zeichensatz erzeugen
+            BufferedReader datei = new BufferedReader(new InputStreamReader(stream, charset));
+            String s;
+            int lineNr = 0;
+            while ((s = datei.readLine()) != null) {
+                if (lineNr++ ==0)
+                    s = removeUnknownStartingChars(s);
+                // Entfernen von Leerzeilen
+                //if (s!=null && !s.isEmpty())
+                file.add(s);
             }
             datei.close();
             return file;
@@ -223,6 +274,36 @@ public class FileMethods {
         });
         return ret;
     }
+
+
+    public static List<List<String>> readFileInTableEncodingFirstLine(InputStream inputStream, long size, String trennzeichen)  {
+        List<List<String>> ret = new Vector<>();
+        List<String> content = readFileInListEncodingFirstLine(inputStream, size);
+        // Leerzeilen entfernen
+        content = content.stream()
+                .filter(l->l!=null && !l.isEmpty())
+                .collect(Collectors.toList());
+
+        // Suche ob Trennzeichen in allen Zeilen vorkommt
+        String finalTrennzeichen = trennzeichen;
+        if (!content.stream().allMatch(l->l.contains(finalTrennzeichen)||l.trim().isEmpty())) {
+            switch (trennzeichen) {
+                case ";": trennzeichen=",";break;
+                case ",": trennzeichen=";";break;
+                default:  trennzeichen=";";break;
+            }
+        }
+        String finalTrennzeichen1 = trennzeichen;
+        content.forEach(l->{
+            ret.add( Arrays.stream(l.split(finalTrennzeichen1)).map(x ->
+                            x.trim()
+                                    .replaceAll("^\"", "")
+                                    .replaceAll("\"$", ""))
+                    .collect(Collectors.toList()));
+        });
+        return ret;
+    }
+
 
     /**
      * Entfernt aus einem String alle nicht Standardzeichen vom Zeilenbeginn
