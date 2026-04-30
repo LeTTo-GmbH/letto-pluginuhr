@@ -17,10 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Implementierung welche lokale Plugins und auch externe Plugin-Services verwalten kann
@@ -149,12 +146,17 @@ public class BasePluginManagerService implements PluginManagerService {
         return pluginList;
     }
 
+
+    Map<String, PluginConnectionService> connectionHash = new HashMap<>();
+
     @Override
     public PluginConnectionService getPluginConnectionService(String typ) {
+        if (connectionHash.containsKey(typ)) return connectionHash.get(typ);
         for (PluginConnectionService conn:pluginConnections)
             if (conn!=null && conn.getPluginList()!=null && conn.getPluginList().size()>0)
                 for (String plugin:conn.getPluginList())
                     if (typ.equals(plugin)) {
+                        connectionHash.put(typ, conn);
                         return conn;
                     }
         return null;

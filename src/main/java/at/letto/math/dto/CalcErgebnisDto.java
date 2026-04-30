@@ -26,6 +26,11 @@ public class CalcErgebnisDto implements Cloneable {
     @Override
     public String toString() {
         switch (type) {
+            default-> {
+                if (string != null && string.length() > 0)
+                    return string;
+                if (json != null && json.length() > 0) return json;
+            }
             case CALCULATE -> {
                return json;
             }
