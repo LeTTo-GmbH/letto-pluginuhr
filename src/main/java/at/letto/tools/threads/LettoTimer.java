@@ -150,7 +150,9 @@ public class LettoTimer {
 	public static void delay_ms(int ms) {
 		try{
 			Thread.sleep(ms);
-		} catch (Exception ex) {}
+		} catch (Exception ex) {
+			Thread.currentThread().interrupt();
+		}
 	}
 	
 }
