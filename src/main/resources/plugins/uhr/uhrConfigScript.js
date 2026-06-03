@@ -34,8 +34,8 @@ function configPluginUhr(dtoString) {
 
     // Parameter für die Vorschau des Plugins
     let pluginDto = dto.pluginDto;
-    plugin.answerFieldClass = pluginDto.tagName + "_inp";
-    plugin.divName          = pluginDto.tagName + "_div";
+    plugin.answerFieldClass = pluginDto.tagName + "_config_inp";
+    plugin.divName          = pluginDto.tagName + "_config_div";
 
     // Eingabeformular definieren
     drawForm();
@@ -205,6 +205,7 @@ function configPluginUhr(dtoString) {
                     try {
                         if (data.tagName != null) {
                             let pluginDto = data;
+                            pluginDto.tagName=pluginDto.tagName+"_config";
                             initPluginUhr(JSON.stringify(pluginDto),true);
                         }
                     } catch (error) {
