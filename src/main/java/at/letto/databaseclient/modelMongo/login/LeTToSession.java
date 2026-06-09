@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "sessions") // Name der Collection in MongoDB
+@CompoundIndex(
+        name = "idx_sessions_userID_active",
+        def = "{'userID': 1, 'active': 1}"
+)
 @Getter
 @Setter
 @NoArgsConstructor
