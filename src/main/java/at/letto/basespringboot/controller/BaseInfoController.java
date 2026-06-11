@@ -170,7 +170,8 @@ public class BaseInfoController {
         ServiceInfoDTO serviceInfoDTO = new ServiceInfoDTO(
                 applicationContext.getId(), // Name des Services
                 ServerStatus.getRevision(), // Version des Services
-                "LeTTo GmbH",               // Information über den Autor des Service"(c) LeTTo GmbH" ,          // Information über die Lizenz des Services
+                "LeTTo GmbH",               // Information über den Autor des Services
+                "(c) LeTTo GmbH" ,          // Information über die Lizenz des Services
                 "",                         // Information über die Endpoints des Services
                 getJarFileName(),
                 Datum.formatDateTime(new Date(applicationContext.getStartupDate())),
