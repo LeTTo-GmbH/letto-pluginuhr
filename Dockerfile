@@ -1,4 +1,6 @@
-FROM eclipse-temurin:21-jdk-jammy
+# noble -> Ubuntu 24.04
+# resolute -> Ubuntu 26.04 - noch nicht ohne Vulnerabilities verfügbar
+FROM eclipse-temurin:25-jdk-noble
 LABEL maintainer="letto.at"
 LABEL description="Demo-Plugin Uhr based on ubuntu"
 
