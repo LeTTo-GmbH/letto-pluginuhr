@@ -3,7 +3,6 @@ package at.letto.databaseclient.modelMongo.login;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.PersistenceConstructor;
 
 @Getter
 @Setter

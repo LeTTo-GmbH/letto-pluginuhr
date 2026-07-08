@@ -1,7 +1,6 @@
 package at.letto.basespringboot.security;
 
 import at.letto.basespringboot.config.BaseMicroServiceConfiguration;
-import at.letto.databaseclient.service.BaseLettoRedisDBService;
 import at.letto.login.restclient.RestLoginService;
 import at.letto.restclient.endpoint.BaseEndpoints;
 import at.letto.restclient.endpoint.EndpointInterface;
@@ -25,9 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.session.SessionInformationExpiredEvent;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import java.util.Base64;
 import static at.letto.basespringboot.security.BaseLettoUserDetailsService.*;
 import static at.letto.security.LettoToken.ROLE_STUDENT;
@@ -70,6 +67,11 @@ public class WebSecurityConfig {
         );*/
         userInfoService.loadUserList();
     }
+
+    private static PathPatternRequestMatcher ppm(String pattern) {
+        return PathPatternRequestMatcher.withDefaults().matcher(pattern);
+    }
+
     /** Setzt das JWT-Secret und die JWT-Expiration */
     public void setJwtSecret(String jwtSecret, long jwtExpiration,BaseMicroServiceConfiguration mc) {
         RestLoginService restLoginService = new RestLoginService(mc.getLoginServiceUri());
@@ -96,9 +98,8 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider();
+                new DaoAuthenticationProvider(userInfoService);
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userInfoService);
         return provider;
     }
 
@@ -164,24 +165,24 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
-                                new AntPathRequestMatcher(endpoint.API()+"/"),
-                                new AntPathRequestMatcher(endpoint.OPENAPI()),
-                                new AntPathRequestMatcher(endpoint.OPENAPI()+"/"),
-                                new AntPathRequestMatcher(endpoint.OPENAPI()+"/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.STUDENT() + "/**")).hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.TEACHER() + "/**")).hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.ADMIN() + "/**")).hasAnyAuthority(ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.GLOBAL() + "/**")).hasAnyAuthority(ROLE_GLOBAL)
+                                ppm(endpoint.API()+"/"),
+                                ppm(endpoint.OPENAPI()),
+                                ppm(endpoint.OPENAPI()+"/"),
+                                ppm(endpoint.OPENAPI()+"/**")).permitAll()
+                        .requestMatchers(ppm(endpoint.STUDENT() + "/**")).hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
+                        .requestMatchers(ppm(endpoint.TEACHER() + "/**")).hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                        .requestMatchers(ppm(endpoint.ADMIN() + "/**")).hasAnyAuthority(ROLE_ADMIN)
+                        .requestMatchers(ppm(endpoint.GLOBAL() + "/**")).hasAnyAuthority(ROLE_GLOBAL)
 
                         .requestMatchers(
-                                new AntPathRequestMatcher(BaseEndpoints.API+"/"),
-                                new AntPathRequestMatcher(BaseEndpoints.API_OPEN),
-                                new AntPathRequestMatcher(BaseEndpoints.API_OPEN+"/"),
-                                new AntPathRequestMatcher(BaseEndpoints.API_OPEN+"/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher(BaseEndpoints.API_STUDENT + "/**")).hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(BaseEndpoints.API_TEACHER + "/**")).hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(BaseEndpoints.API_ADMIN + "/**")).hasAnyAuthority(ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(BaseEndpoints.API_GLOBAL + "/**")).hasAnyAuthority(ROLE_GLOBAL)
+                                ppm(BaseEndpoints.API+"/"),
+                                ppm(BaseEndpoints.API_OPEN),
+                                ppm(BaseEndpoints.API_OPEN+"/"),
+                                ppm(BaseEndpoints.API_OPEN+"/**")).permitAll()
+                        .requestMatchers(ppm(BaseEndpoints.API_STUDENT + "/**")).hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
+                        .requestMatchers(ppm(BaseEndpoints.API_TEACHER + "/**")).hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                        .requestMatchers(ppm(BaseEndpoints.API_ADMIN + "/**")).hasAnyAuthority(ROLE_ADMIN)
+                        .requestMatchers(ppm(BaseEndpoints.API_GLOBAL + "/**")).hasAnyAuthority(ROLE_GLOBAL)
 
                         .anyRequest().authenticated()
                 );
@@ -199,35 +200,35 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityMatcher(endpoint.AUTH()+"/**",BaseEndpoints.AUTH+"/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(new AntPathRequestMatcher( endpoint.AUTH_GAST() + "/**"))
+                        .requestMatchers(ppm( endpoint.AUTH_GAST() + "/**"))
                             .access((authentication, context) ->
                                     new AuthorizationDecision(check(authentication, context.getRequest(),"ROLE_"+ROLE_GAST)))
 
-                        .requestMatchers(new AntPathRequestMatcher( endpoint.AUTH_USER() + "/**"))
+                        .requestMatchers(ppm( endpoint.AUTH_USER() + "/**"))
                             .access((authentication, context) ->
                                     new AuthorizationDecision(check(authentication, context.getRequest(), "ROLE_"+ROLE_USER)))
 
-                        .requestMatchers(new AntPathRequestMatcher( endpoint.AUTH_LETTO() + "/**"))
+                        .requestMatchers(ppm( endpoint.AUTH_LETTO() + "/**"))
                             .access((authentication, context) ->
                                     new AuthorizationDecision(check(authentication, context.getRequest(), "ROLE_"+ROLE_LETTO)))
 
-                        .requestMatchers(new AntPathRequestMatcher( endpoint.AUTH_ADMIN() + "/**"))
+                        .requestMatchers(ppm( endpoint.AUTH_ADMIN() + "/**"))
                             .access((authentication, context) ->
                                     new AuthorizationDecision(check(authentication, context.getRequest(),"ROLE_"+ROLE_ADMIN)))
 
-                        .requestMatchers(new AntPathRequestMatcher( BaseEndpoints.AUTH_GAST + "/**"))
+                        .requestMatchers(ppm( BaseEndpoints.AUTH_GAST + "/**"))
                         .access((authentication, context) ->
                                 new AuthorizationDecision(check(authentication, context.getRequest(),"ROLE_"+ROLE_GAST)))
 
-                        .requestMatchers(new AntPathRequestMatcher( BaseEndpoints.AUTH_USER + "/**"))
+                        .requestMatchers(ppm( BaseEndpoints.AUTH_USER + "/**"))
                         .access((authentication, context) ->
                                 new AuthorizationDecision(check(authentication, context.getRequest(), "ROLE_"+ROLE_USER)))
 
-                        .requestMatchers(new AntPathRequestMatcher( BaseEndpoints.AUTH_LETTO + "/**"))
+                        .requestMatchers(ppm( BaseEndpoints.AUTH_LETTO + "/**"))
                         .access((authentication, context) ->
                                 new AuthorizationDecision(check(authentication, context.getRequest(), "ROLE_"+ROLE_LETTO)))
 
-                        .requestMatchers(new AntPathRequestMatcher( BaseEndpoints.AUTH_ADMIN + "/**"))
+                        .requestMatchers(ppm( BaseEndpoints.AUTH_ADMIN + "/**"))
                         .access((authentication, context) ->
                                 new AuthorizationDecision(check(authentication, context.getRequest(),"ROLE_"+ROLE_ADMIN)))
 
@@ -249,12 +250,12 @@ public class WebSecurityConfig {
                 .securityMatcher(endpoint.SESSION() + "/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                new AntPathRequestMatcher(endpoint.SESSION() + "/"),
-                                new AntPathRequestMatcher(endpoint.SESSION() + "/*")).authenticated()
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.SESSION_STUDENT() + "/**")).hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.SESSION_TEACHER() + "/**")).hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.SESSION_ADMIN() + "/**")).hasAnyAuthority(ROLE_ADMIN)
-                        .requestMatchers(new AntPathRequestMatcher(endpoint.SESSION_GLOBAL() + "/**")).hasAnyAuthority(ROLE_GLOBAL)
+                                ppm(endpoint.SESSION() + "/"),
+                                ppm(endpoint.SESSION() + "/*")).authenticated()
+                        .requestMatchers(ppm(endpoint.SESSION_STUDENT() + "/**")).hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
+                        .requestMatchers(ppm(endpoint.SESSION_TEACHER() + "/**")).hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                        .requestMatchers(ppm(endpoint.SESSION_ADMIN() + "/**")).hasAnyAuthority(ROLE_ADMIN)
+                        .requestMatchers(ppm(endpoint.SESSION_GLOBAL() + "/**")).hasAnyAuthority(ROLE_GLOBAL)
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.loginPage(endpoint.LOGIN()).permitAll())

@@ -7,9 +7,6 @@ import at.letto.tools.JSON;
 import at.letto.tools.rest.MsgException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.ParameterizedType;
