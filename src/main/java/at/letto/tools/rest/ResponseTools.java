@@ -10,8 +10,6 @@ import java.util.function.Function;
 
 public class ResponseTools {
 
-
-
         /**
          * Aufruf einer Service-Funktion ohne Parameter, try-catch-Stacktrace in DtoAndMsg im Fehlerfall
          * @param function

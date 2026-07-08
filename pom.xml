@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.7</version>
+        <version>3.5.16</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -55,35 +55,38 @@
 
     <properties><!-- automatisch ersetzt aus shared properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Spring Boot -->
+        <spring-boot.version>3.5.16</spring-boot.version>
+        <spring-boot-starter.version>3.5.16</spring-boot-starter.version>
+
+        <!-- Java -->
         <java.version>25</java.version>
-        <maven-archiver.version>3.6.1</maven-archiver.version>
-        <maven-mapping.version>3.0.0</maven-mapping.version>
-        <maven-core.version>3.9.4</maven-core.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
-        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+
+        <!-- Maven Plugins -->
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
-        <!-- wegen Spring-Boot Version wird 3.1.1185 statt 3.2.1263 verwendet -->
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+
+        <!--maven-archiver.version>3.6.1</maven-archiver.version>
+        <maven-mapping.version>3.0.0</maven-mapping.version>
+        <maven-core.version>3.9.4</maven-core.version-->
         <typescript-generator-maven-plugin.version>3.2.1263</typescript-generator-maven-plugin.version>
 
+        <!-- LeTTo -->
         <letto.version>1.3</letto.version>
 
-        <tomcat.version>10.1.34</tomcat.version>
-        <!--spring-boot-starter.version>3.4.1</spring-boot-starter.version>
-        <spring.security.version>6.4.2</spring.security.version -->
-        <spring-boot-starter.version>3.3.7</spring-boot-starter.version>
-        <spring.security.version>6.3.1</spring.security.version>
-        <spring-web.version>6.2.1</spring-web.version>
-        <springdoc.version>2.2.0</springdoc.version>
+        <!-- Externe Bibliotheken, die NICHT zuverlässig von Spring Boot verwaltet werden -->
+        <springdoc.version>2.8.9</springdoc.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <thymeleaf-extras-springsecurity5.version>3.1.3.RELEASE</thymeleaf-extras-springsecurity5.version>
+        <thymeleaf-extras-springsecurity6.version>3.1.3.RELEASE</thymeleaf-extras-springsecurity6.version>
 
         <jersey.version>3.1.9</jersey.version>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
         <apache.cxf.version>4.1.0</apache.cxf.version>
         <jaxb.version>4.0.5</jaxb.version>
         <!-- wegen Spring-Boot wird 1.3.1.Final statt 1.6.3  genommen -->
@@ -112,11 +115,6 @@
         <google-code-prettify.version>1.0.5</google-code-prettify.version>
         <com.google.zxing.version>3.5.3</com.google.zxing.version>
         <bootsfaces.version>1.5.0</bootsfaces.version>
-
-        <jackson.version>2.18.2</jackson.version>
-        <junit.version>5.11.4</junit.version>
-        <junit.platform.version>1.10.2</junit.platform.version>
-        <snakeyaml.version>2.3</snakeyaml.version>
 
         <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
         <h2.version>2.4.240</h2.version>
@@ -156,19 +154,18 @@
         <juniversalchardet.version>1.0.3</juniversalchardet.version>
         <slf4j-simple.version>2.0.16</slf4j-simple.version>
         <log4j-core.version>2.20.0</log4j-core.version>
-        <logback-core.version>1.5.13</logback-core.version>
-    </properties><!-- automatisch ersetzt aus shared properties -->
+       <!-- ENDE automatisch ersetzt aus shared properties -->
+
+        <!-- Properties die nur im Parent-POM verwendet werden -->
+        <swagger-annotations.version>2.2.30</swagger-annotations.version>
+
+    </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -178,23 +175,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>${spring.security.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
-            <version>${spring.security.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -205,7 +193,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -216,17 +203,15 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
-            <version>${thymeleaf-extras-springsecurity5.version}</version>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+            <version>${thymeleaf-extras-springsecurity6.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -260,30 +245,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
             <version>${juniversalchardet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>${junit.platform.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -320,11 +287,6 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>${pdfbox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -428,7 +390,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lettuce</groupId>
@@ -440,7 +401,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
-            <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -465,6 +425,29 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <release>${java.version}</release>
+                    <useIncrementalCompilation>false</useIncrementalCompilation>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -476,6 +459,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

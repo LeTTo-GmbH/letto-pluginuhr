@@ -1,6 +1,8 @@
 package at.letto.databaseclient.repository.mongo.letto;
 
+import at.letto.databaseclient.dto.SessionCountByUserId;
 import at.letto.databaseclient.modelMongo.login.LeTToSession;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -31,5 +33,15 @@ public interface LeTToSessionRepository  extends MongoRepository<LeTToSession, S
 
     /** Sucht alle Sessions die noch eingeloggt sind */
     List<LeTToSession> findByActiveIsTrue();
+
+    /**
+     * Zählt alle Sessions je Benutzer, deren Login-Datum zwischen from und to liegt.
+     * from und to sind inklusive.
+     */
+    @Aggregation(pipeline = {
+            "{ $match: { dateIntegerLogin: { $gte: ?0, $lte: ?1 } } }",
+            "{ $group: { _id: '$userID', count: { $sum: 1 } } }"
+    })
+    List<SessionCountByUserId> countSessionsByUserIdBetween(long fromDateInteger, long toDateInteger);
 
 }

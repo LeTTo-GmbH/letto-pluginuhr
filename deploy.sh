@@ -27,7 +27,7 @@ pwd=$(pwd)
 
 deployok=true
 
-binary=pluginuhr-1.2.jar
+binary=pluginuhr-1.3.jar
 # pluginservice
 if [ -e $pwd/target/$binary ] ; then
   cp $pwd/target/$binary /deploy/pluginuhr.jar

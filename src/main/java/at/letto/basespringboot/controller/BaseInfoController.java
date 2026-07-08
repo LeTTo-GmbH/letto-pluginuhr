@@ -2,7 +2,6 @@ package at.letto.basespringboot.controller;
 
 import at.letto.dto.ServiceInfoDTO;
 import at.letto.restclient.endpoint.BaseEndpoints;
-import at.letto.restclient.endpoint.InfoControllerInterface;
 import at.letto.service.microservice.AdminInfoDto;
 import at.letto.tools.Datum;
 import at.letto.tools.ServerStatus;

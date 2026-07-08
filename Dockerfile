@@ -24,7 +24,7 @@ RUN apt-get clean && \
 EXPOSE 5080 7080 8080
 
 RUN mkdir /scripts -p
-COPY target/pluginuhr-1.2.jar pluginuhr.jar
+COPY target/pluginuhr-1.3.jar pluginuhr.jar
 COPY scripts/*.sh     /scripts/
 COPY src/main/resources/revision.txt revision.txt
 RUN dos2unix /scripts/*.sh

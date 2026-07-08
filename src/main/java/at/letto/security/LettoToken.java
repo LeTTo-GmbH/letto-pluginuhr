@@ -77,6 +77,8 @@ public class LettoToken {
     /** Benutzerkennnug eines HTML-Render-Tokens */
     public static final String ROLE_HTML_RENDER         = "htmlrender";
 
+    public static final String ROLE_PREVIEWUSER         = "PREVIEWUSER";
+    
     // JWT-Token als String
     private  final String token;
 

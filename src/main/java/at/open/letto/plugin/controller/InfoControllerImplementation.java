@@ -1,8 +1,8 @@
 package at.open.letto.plugin.controller;
 
 import at.letto.basespringboot.controller.BaseInfoController;
+import at.letto.basespringboot.controller.InfoControllerInterface;
 import at.letto.dto.ServiceInfoDTO;
-import at.letto.restclient.endpoint.InfoControllerInterface;
 import at.letto.service.microservice.AdminInfoDto;
 import at.open.letto.plugin.PluginApplication;
 import at.open.letto.plugin.config.TomcatConfiguration;
