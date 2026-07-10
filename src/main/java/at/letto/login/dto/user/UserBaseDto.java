@@ -10,7 +10,7 @@ public class UserBaseDto {
     // -------------------- Primary Key ----------------------
     private Integer id;
 
-    private Integer IDAbteilung;
+    private Integer idAbteilung;
     private String  activeDirectoryName;
     private Date    birthdate;
 
@@ -54,7 +54,7 @@ public class UserBaseDto {
 
     /** Passwort am SVN-Server */
     private String  svnPasswort;
-    private String  SVNr;
+    private String  svNr;
     private String  tel;
     private String  tempPasswort;
 
