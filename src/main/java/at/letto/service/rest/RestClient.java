@@ -5,6 +5,8 @@ import at.letto.service.interfaces.MicroService;
 import at.letto.tools.JSON;
 import at.letto.tools.rest.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -477,7 +479,10 @@ public abstract class RestClient implements MicroService {
             if (response.getStatusInfo() == Response.Status.OK || response.getStatus() == 200) {
                 String json = response.readEntity(String.class);
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
                 mapper.disable(SerializationFeature.INDENT_OUTPUT);
+                mapper.disable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+                mapper.disable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
                 return mapper.readValue(json, type);
 
             }
@@ -487,7 +492,10 @@ public abstract class RestClient implements MicroService {
                 ret.setMsg(new Msg("auth.error",MsgType.ERROR,""));
                 String json = JSON.objToJson(ret);
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
                 mapper.disable(SerializationFeature.INDENT_OUTPUT);
+                mapper.disable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+                mapper.disable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
                 return mapper.readValue(json, type);
             }
             else if (jsonExternal) {

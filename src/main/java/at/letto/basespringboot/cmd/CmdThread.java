@@ -1,6 +1,5 @@
 package at.letto.basespringboot.cmd;
 
-import at.letto.tools.Cmd;
 import at.letto.tools.Datum;
 import at.letto.tools.threads.ThreadStatus;
 import lombok.Getter;
@@ -9,445 +8,916 @@ import org.unbescape.html.HtmlEscape;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Thread.interrupted;
 
 /**
- * Objekt welche für jedes asynchron gestartete Kommando auf der Commandline erzeugt wird
+ * Objekt, das für jedes asynchron gestartete Kommando erzeugt wird.
  */
-//@AllArgsConstructor
 @Getter
 public class CmdThread implements Runnable {
 
-    public enum CmdMode{ NORMAL, CMD, BATCH, BASH, SH }
+    public enum CmdMode {
+        NORMAL,
+        CMD,
+        BATCH,
+        BASH,
+        SH
+    }
+
+    private static final AtomicLong ID_COUNTER = new AtomicLong();
+    private static final Pattern COMMAND_MARKER =
+            Pattern.compile("^XXX(\\d+):(.*)$");
 
     protected final CmdMode cmdMode;
-    /** aktuell höchster Wert der Thread id */
-    protected static long id_counter = 0;
-    /** Thread id für die eindeutige Identifikation des Threads */
     protected final long id;
-    /** Homeverzeichnis des Commandos */
     protected final String homedir;
-    /** Liste aller Commandos welche ausgeführt werden */
     protected final String[] cmd;
-    /** Alle Befehle durch Beistrich getrennt */
     protected final String command;
-    /** Zeichensatz mit dem die Kommandos ausgeführt werden */
-    protected String charset;
-    /** Thread der läuft */
     protected final Thread thread;
-    /** Startzeit des Threads in ms */
     protected final long starttime;
-    /** Startzeit als Systemzeit */
     protected final Date startdate;
-    /** Endzeit des Threads in ms */
-    protected long stoptime=0;
-    /** aktueller Status des Threads */
-    protected ThreadStatus threadStatus = ThreadStatus.NEW;
-    /** Fehlermeldung bei einer fehlerhaften Beendigung */
-    protected Throwable error=null;
-    /** Standard-Ausgabe des Befehls */
-    private Vector<Vector<String>> out = new Vector<Vector<String>>();
-    /** Error-Ausgabe des Befehls */
-    private Vector<Vector<String>> err = new Vector<Vector<String>>();
-    /** Hier werden alle Ausgaben in HTML-formatierter Form angehängt */
-    protected Vector<String> htmlOutput = new Vector<String>();
-    /** Backlink für die Rückverlinkung */
-    protected String backlink="";
-    /** HTML-Template für die Rückverlinkung */
-    protected String template="";
-    /** Datei für Batchverarbeitung */
-    public File batchfile;
-    /** Prozess für das Commando, welches abgesetzt wurde */
-    protected Process p=null;
 
-    public CmdThread(String homedir, String charset, CmdMode cmdMode, String ... cmd) {
-        this.id      = ++id_counter;
-        this.homedir = homedir;
-        Vector<String> cv = new Vector<String>();
-        for (String c:cmd) {
-            c = c.replaceAll("\\r","").trim();
-            for (String cs:c.split("\\n")) {
-                cs = cs.trim();
-                if (cs.startsWith("#") || cs.startsWith("/*") || cs.startsWith("//")) {
-                    // Bemerkungen werden ignoriert
-                } else cv.add(cs);
+    protected String charset;
+    protected long stoptime = 0;
+    protected volatile ThreadStatus threadStatus = ThreadStatus.NEW;
+    protected volatile Throwable error = null;
+
+    private final Vector<Vector<String>> out = new Vector<>();
+    private final Vector<Vector<String>> err = new Vector<>();
+    protected final Vector<String> htmlOutput = new Vector<>();
+
+    protected String backlink = "";
+    protected String template = "";
+
+    public volatile File batchfile;
+    protected volatile Process p = null;
+
+    public CmdThread(
+            String homedir,
+            String charset,
+            CmdMode cmdMode,
+            String... cmd
+    ) {
+        this.id = ID_COUNTER.incrementAndGet();
+        this.homedir = homedir == null ? "" : homedir;
+        this.charset = charset == null || charset.isBlank()
+                ? StandardCharsets.UTF_8.name()
+                : charset;
+        this.cmdMode = Objects.requireNonNullElse(cmdMode, CmdMode.NORMAL);
+
+        List<String> commands = new ArrayList<>();
+
+        if (cmd != null) {
+            for (String commandText : cmd) {
+                if (commandText == null) {
+                    continue;
+                }
+
+                String normalized = commandText.replace("\r", "").trim();
+
+                for (String line : normalized.split("\n")) {
+                    String trimmed = line.trim();
+
+                    if (trimmed.isEmpty()
+                            || trimmed.startsWith("#")
+                            || trimmed.startsWith("/*")
+                            || trimmed.startsWith("//")) {
+                        continue;
+                    }
+
+                    commands.add(trimmed);
+                }
             }
         }
-        String[] nc = new String[cv.size()];
-        for (int i=0;i<cv.size();i++) nc[i] = cv.get(i);
-        this.cmd     = nc;
 
-        this.charset = charset;
-        this.cmdMode = cmdMode;
+        this.cmd = commands.toArray(String[]::new);
+        this.command = String.join(", ", this.cmd);
 
-        String command1 = "";
-        if (this.cmd.length==1) command1 = this.cmd[0];
-        else if (this.cmd.length<1)  command1 = "";
-        else {
-            command1 = this.cmd[0];
-            for (int i = 1; i < this.cmd.length; i++)
-                command1 += ", " + this.cmd[i];
-        }
-        command = command1;
-
-        this.thread  = new Thread(this);
+        this.thread = new Thread(this, "CmdThread-" + id);
         this.starttime = System.currentTimeMillis();
         this.startdate = new Date();
     }
 
-    public static CmdThread createThread(String homedir, String charset, String ... cmd) {
-        CmdThread t = new CmdThread(homedir,charset,CmdMode.NORMAL, cmd);
-        t.start();
-        return t;
+    public static CmdThread createThread(
+            String homedir,
+            String charset,
+            String... cmd
+    ) {
+        CmdThread thread =
+                new CmdThread(homedir, charset, CmdMode.NORMAL, cmd);
+        thread.start();
+        return thread;
     }
 
-    public static CmdThread createThread(String homedir, String charset, CmdMode cmdMode, String ... cmd) {
-        CmdThread t = new CmdThread(homedir,charset,cmdMode, cmd);
-        t.start();
-        return t;
+    public static CmdThread createThread(
+            String homedir,
+            String charset,
+            CmdMode cmdMode,
+            String... cmd
+    ) {
+        CmdThread thread =
+                new CmdThread(homedir, charset, cmdMode, cmd);
+        thread.start();
+        return thread;
     }
 
     public static CmdThread createThreadMessage(String message) {
-        CmdThread t =  new CmdThread("","UTF-8",CmdMode.NORMAL,"message");
-        t.start();
-        t.htmlOutput.add("<div style=\"color:blue;\">"+ HtmlEscape.escapeHtml5(message)+"</div>");
-        t.threadStatus=ThreadStatus.FINISHED;
-        t.stoptime = System.currentTimeMillis();
-        return t;
+        CmdThread thread = new CmdThread(
+                "",
+                StandardCharsets.UTF_8.name(),
+                CmdMode.NORMAL,
+                "message"
+        );
+
+        thread.htmlOutput.add(
+                "<div style=\"color:blue;\">"
+                        + HtmlEscape.escapeHtml5(message)
+                        + "</div>"
+        );
+        thread.threadStatus = ThreadStatus.FINISHED;
+        thread.stoptime = System.currentTimeMillis();
+
+        return thread;
     }
 
-    public CmdThread backlink(String backlink) { this.backlink = backlink; return this; }
+    public CmdThread backlink(String backlink) {
+        this.backlink = backlink == null ? "" : backlink;
+        return this;
+    }
 
-    public CmdThread template(String template) { this.template = template; return this; }
+    public CmdThread template(String template) {
+        this.template = template == null ? "" : template;
+        return this;
+    }
 
     public void start() {
         thread.start();
     }
 
-    /** @param cmd cmd wird als blauer String ausgegeben alle Sonderzeichen werden duch Entities ersetzt! */
+    /**
+     * Gibt ein Kommando blau und HTML-escaped aus.
+     */
     public void htmlCmd(String cmd) {
-        htmlOutput.add("<div style=\"color:blue;\">"+ HtmlEscape.escapeHtml5(cmd)+"</div>");
-    }
-    /** @param cmd cmd wird als blauer String ausgegeben. Es können im String cmd HTML-Tags verwendet werden. */
-    protected void htmlCmdPlain(String cmd) {
-        htmlOutput.add("<div style=\"color:blue;\">"+ HtmlEscape.escapeHtml5(cmd)+"</div>");
-    }
-    /** @param cmd cmd wird als String ausgegeben alle Sonderzeichen werden duch Entities ersetzt! */
-    public void htmlOut(String cmd) {
-        htmlOutput.add("<div style=\"color:black;\">"+ HtmlEscape.escapeHtml5(cmd)+"</div>");
-    }
-    /** @param cmd cmd wird als String ausgegeben. Es können im String cmd HTML-Tags verwendet werden. */
-    protected void htmlOutPlain(String cmd) {
-        htmlOutput.add("<div style=\"color:black;\">"+ HtmlEscape.escapeHtml5(cmd)+"</div>");
-    }
-    /** @param cmd cmd wird als roter String ausgegeben alle Sonderzeichen werden duch Entities ersetzt! */
-    public void htmlErr(String cmd) {
-        htmlOutput.add("<div style=\"color:red;\">"+ HtmlEscape.escapeHtml5(cmd)+"</div>");
-    }
-    /** @param cmd cmd wird als roter String ausgegeben. Es können im String cmd HTML-Tags verwendet werden. */
-    protected void htmlErrPlain(String cmd) {
-        htmlOutput.add("<div style=\"color:red;\">"+ HtmlEscape.escapeHtml5(cmd)+"</div>");
+        htmlOutput.add(
+                "<div style=\"color:blue;\">"
+                        + HtmlEscape.escapeHtml5(cmd)
+                        + "</div>"
+        );
     }
 
     /**
-     * Führt mehrer Kommandos auf der Betriebssystem-Commandline aus
-     * @param cmd     Kommand
+     * Gibt ein Kommando blau aus.
+     *
+     * Der Name wurde aus Kompatibilitätsgründen beibehalten.
      */
-    public final void runCmd(String ... cmd) {
-        Vector<String> vout;
-        Vector<String> verr;
-        if (cmdMode==CmdMode.BATCH || cmdMode==CmdMode.BASH || cmdMode==CmdMode.SH) {
-            // Batchverarbeitung mit Batchdatei
-            int i=0;
-            do {
-                String filename = ("b"+(Math.random() * 1e12)).replaceAll("\\.","").replaceAll("E","");
-                if (cmdMode==CmdMode.BATCH) filename += ".bat"; else filename += ".sh";
-                batchfile = new File(filename);
-                if (batchfile.exists()) batchfile=null;
-                else {
-                    try {
-                        batchfile.createNewFile();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                i++;
-            } while (i<1000 && batchfile==null);
-            if (!batchfile.exists()) batchfile=null;
-            if (batchfile==null) throw new RuntimeException("Fehler, Batchdatei kann nicht erstellt werden!!");
-            Vector<String> data = new Vector<>();
-            if (cmdMode==CmdMode.BASH) data.add("#!/bin/bash -e");
-            if (cmdMode==CmdMode.SH) data.add("#!/bin/sh -e");
-            if (cmdMode==CmdMode.BATCH) data.add("@echo off");
-            for (i=0; i<cmd.length; i++) {
-                if (cmdMode==CmdMode.BATCH) data.add("echo XXX"+i+":"+cmd[i]);
-                else                        data.add("echo \"XXX"+i+":"+cmd[i].replaceAll("\"","\\\\\"")+"\"");
-                data.add(cmd[i]);
+    protected void htmlCmdPlain(String cmd) {
+        htmlOutput.add(
+                "<div style=\"color:blue;\">"
+                        + HtmlEscape.escapeHtml5(cmd)
+                        + "</div>"
+        );
+    }
+
+    /**
+     * Gibt eine normale Ausgabe HTML-escaped aus.
+     */
+    public void htmlOut(String text) {
+        htmlOutput.add(
+                "<div style=\"color:black;\">"
+                        + HtmlEscape.escapeHtml5(text)
+                        + "</div>"
+        );
+    }
+
+    /**
+     * Gibt eine normale Ausgabe aus.
+     *
+     * Der Name wurde aus Kompatibilitätsgründen beibehalten.
+     */
+    protected void htmlOutPlain(String text) {
+        htmlOutput.add(
+                "<div style=\"color:black;\">"
+                        + HtmlEscape.escapeHtml5(text)
+                        + "</div>"
+        );
+    }
+
+    /**
+     * Gibt eine Fehlerausgabe rot und HTML-escaped aus.
+     */
+    public void htmlErr(String text) {
+        htmlOutput.add(
+                "<div style=\"color:red;\">"
+                        + HtmlEscape.escapeHtml5(text)
+                        + "</div>"
+        );
+    }
+
+    /**
+     * Gibt eine Fehlerausgabe rot aus.
+     *
+     * Der Name wurde aus Kompatibilitätsgründen beibehalten.
+     */
+    protected void htmlErrPlain(String text) {
+        htmlOutput.add(
+                "<div style=\"color:red;\">"
+                        + HtmlEscape.escapeHtml5(text)
+                        + "</div>"
+        );
+    }
+
+    /**
+     * Führt mehrere Kommandos aus.
+     */
+    public final void runCmd(String... commands) {
+        if (commands == null || commands.length == 0) {
+            return;
+        }
+
+        if (isScriptMode()) {
+            runAsScript(commands);
+            return;
+        }
+
+        for (String currentCommand : commands) {
+            if (currentCommand == null || currentCommand.isBlank()) {
+                continue;
             }
-            Cmd.writelnfile(data,batchfile);
-            batchfile.setExecutable(true);
-            String c = batchfile.getAbsolutePath();
-            htmlCmd(c);
-            vout = new Vector<String>();
-            verr = new Vector<String>();
-            out.add(vout);
-            err.add(verr);
-            systemcall(c,charset,vout);
-            try { if (batchfile!=null && batchfile.exists()) batchfile.delete(); batchfile=null;} catch (Exception ex) {}
-        } else {
-            // Alle Befehle getrennt voneineander einzeln starten
-            for (int i=0; i<cmd.length; i++) {
-                String c = cmd[i];
-                htmlCmd(c);
-                vout = new Vector<String>();
-                verr = new Vector<String>();
-                out.add(vout);
-                err.add(verr);
-                systemcall(c,charset,vout,verr);
+
+            htmlCmd(currentCommand);
+
+            Vector<String> currentOut = new Vector<>();
+            Vector<String> currentErr = new Vector<>();
+
+            out.add(currentOut);
+            err.add(currentErr);
+
+            systemcall(
+                    currentCommand,
+                    charset,
+                    currentOut,
+                    currentErr
+            );
+
+            if (Thread.currentThread().isInterrupted()) {
+                return;
             }
         }
     }
 
-    public void task(){
+    private boolean isScriptMode() {
+        return cmdMode == CmdMode.BATCH
+                || cmdMode == CmdMode.BASH
+                || cmdMode == CmdMode.SH;
+    }
+
+    private void runAsScript(String[] commands) {
+        Vector<String> currentOut = new Vector<>();
+        Vector<String> currentErr = new Vector<>();
+
+        out.add(currentOut);
+        err.add(currentErr);
+
+        try {
+            batchfile = createScriptFile(commands);
+            htmlCmd(batchfile.getAbsolutePath());
+
+            List<String> processCommand = switch (cmdMode) {
+                case BASH -> List.of(
+                        "/bin/bash",
+                        "-e",
+                        batchfile.getAbsolutePath()
+                );
+                case SH -> List.of(
+                        "/bin/sh",
+                        "-e",
+                        batchfile.getAbsolutePath()
+                );
+                case BATCH -> List.of(
+                        "cmd.exe",
+                        "/c",
+                        batchfile.getAbsolutePath()
+                );
+                default -> throw new IllegalStateException(
+                        "Kein Script-Modus: " + cmdMode
+                );
+            };
+
+            executeProcess(
+                    processCommand,
+                    charset,
+                    currentOut,
+                    currentErr
+            );
+        } catch (IOException ex) {
+            registerStartError(
+                    "Script kann nicht erstellt oder gestartet werden",
+                    ex,
+                    currentOut,
+                    currentErr
+            );
+        } finally {
+            deleteBatchFile();
+        }
+    }
+
+    private File createScriptFile(String[] commands) throws IOException {
+        Path directory = resolveWorkingDirectoryForTempFile();
+        String suffix = cmdMode == CmdMode.BATCH ? ".bat" : ".sh";
+
+        Path scriptPath = Files.createTempFile(
+                directory,
+                "letto-cmd-",
+                suffix
+        );
+
+        List<String> lines = new ArrayList<>();
+
+        if (cmdMode == CmdMode.BATCH) {
+            lines.add("@echo off");
+        } else if (cmdMode == CmdMode.BASH) {
+            lines.add("#!/bin/bash");
+        } else {
+            lines.add("#!/bin/sh");
+        }
+
+        for (int i = 0; i < commands.length; i++) {
+            String currentCommand =
+                    commands[i] == null ? "" : commands[i];
+
+            if (cmdMode == CmdMode.BATCH) {
+                lines.add("echo XXX" + i + ":" + currentCommand);
+            } else {
+                lines.add(
+                        "printf '%s\\n' "
+                                + shellQuote(
+                                "XXX" + i + ":" + currentCommand
+                        )
+                );
+            }
+
+            lines.add(currentCommand);
+        }
+
+        Files.write(
+                scriptPath,
+                lines,
+                resolveCharset(charset),
+                StandardOpenOption.TRUNCATE_EXISTING
+        );
+
+        File scriptFile = scriptPath.toFile();
+
+        if (cmdMode != CmdMode.BATCH) {
+            scriptFile.setExecutable(true, true);
+        }
+
+        return scriptFile;
+    }
+
+    private Path resolveWorkingDirectoryForTempFile() throws IOException {
+        if (homedir != null && !homedir.isBlank()) {
+            Path path = Path.of(homedir).toAbsolutePath().normalize();
+
+            if (!Files.isDirectory(path)) {
+                throw new IOException(
+                        "Arbeitsverzeichnis existiert nicht "
+                                + "oder ist kein Verzeichnis: "
+                                + path
+                );
+            }
+
+            return path;
+        }
+
+        Path currentDirectory =
+                Path.of(System.getProperty("user.dir"))
+                        .toAbsolutePath()
+                        .normalize();
+
+        if (Files.isDirectory(currentDirectory)
+                && Files.isWritable(currentDirectory)) {
+            return currentDirectory;
+        }
+
+        return Path.of(System.getProperty("java.io.tmpdir"))
+                .toAbsolutePath()
+                .normalize();
+    }
+
+    private static String shellQuote(String value) {
+        return "'"
+                + value.replace("'", "'\"'\"'")
+                + "'";
+    }
+
+    public void task() {
         runCmd(cmd);
     }
 
     @Override
     public void run() {
         threadStatus = ThreadStatus.RUNNING;
-        File batchfile=null;
+
         try {
             task();
-            // Verarbeitung des Threads ist fertig
-            if (interrupted())
+
+            if (Thread.currentThread().isInterrupted()) {
                 threadStatus = ThreadStatus.STOPPED;
-            else
+            } else if (threadStatus != ThreadStatus.ERROR) {
                 threadStatus = ThreadStatus.FINISHED;
-        } catch (Exception ex) {
+            }
+        } catch (Throwable throwable) {
+            error = throwable;
             threadStatus = ThreadStatus.ERROR;
-            error = ex;
-        } catch (Error err) {
-            threadStatus = ThreadStatus.ERROR;
-            error = err;
+            htmlErr(
+                    throwable.getMessage() == null
+                            ? throwable.getClass().getName()
+                            : throwable.getMessage()
+            );
+        } finally {
+            deleteBatchFile();
+            stoptime = System.currentTimeMillis();
         }
-        try { if (batchfile!=null && batchfile.exists()) batchfile.delete(); batchfile=null;} catch (Exception ex) {}
-        this.stoptime = System.currentTimeMillis();
     }
 
-    /** @return liefert die Ausgabe des Befehls */
     public String getHtmlOutput() {
-        StringBuilder sb = new StringBuilder();
-        try {
-            for (int i=0;i<htmlOutput.size();i++)
-                sb.append(htmlOutput.get(i));
-        } catch (Exception ex) {}
-        String s = sb.toString();
-        return s;
+        StringBuilder result = new StringBuilder();
+
+        synchronized (htmlOutput) {
+            for (String line : htmlOutput) {
+                result.append(line);
+            }
+        }
+
+        return result.toString();
     }
 
-    public void systemcall(String cmd, String charset,Vector<String> out) {
-        systemcall(cmd,charset,out,null);
+    public void systemcall(
+            String cmd,
+            String charset,
+            Vector<String> out
+    ) {
+        systemcall(cmd, charset, out, null);
     }
 
     /**
-     * Führt das Kommando cmd im Betriebssystem aus, und wartet bis
-     * es wieder beendet wird!
-     * @param cmd     Kommando
-     * @param charset Character-Set
-     * @param out     Output des Programmes als Vektor von Strings
-     * @param err     Fehlerausgabe des Programmes, wenn null - dann Fehler in out!
+     * Führt ein Kommando aus und wartet auf dessen Beendigung.
      */
-    public void systemcall(String cmd, String charset,Vector<String> out, Vector<String> err) {
-        p=null;
+    public void systemcall(
+            String cmd,
+            String charset,
+            Vector<String> out,
+            Vector<String> err
+    ) {
+        Objects.requireNonNull(out, "out darf nicht null sein");
+
         try {
-            String acmd = "";
-            String h    = cmd;
-            int    mode=0;      // 0 normal 1..innerhalb von Hochkomma
-            int    f;
+            List<String> processCommand = buildProcessCommand(cmd);
 
-            /*
-             * Zerlegen des Kommandos in die Parameterliste und Entfernen der Doppelhochkomma
-             */
-            Vector<String> cv = new Vector<String>();
-            if (cmdMode==CmdMode.CMD || cmdMode==CmdMode.BATCH) { cv.add("cmd"); cv.add("/c"); }
+            executeProcess(
+                    processCommand,
+                    charset,
+                    out,
+                    err
+            );
+        } catch (IOException ex) {
+            registerStartError(
+                    cmd + " kann nicht gestartet werden",
+                    ex,
+                    out,
+                    err
+            );
+        }
+    }
 
-            do {
-                // Durchuche den String nach dem nächsten Vorkommen von " oder blank
-                int pos      = h.length();
-                char c       = 'a';
-                f = h.indexOf("\""); if ((f>-1) && (f<pos)) { pos=f;c='"'; }
-                f = h.indexOf(" "); if ((f>-1) && (f<pos)) { pos=f;c=' '; }
-                if (c!='a') {
-                    acmd += h.substring(0,pos);
-                    h = h.substring(pos);
+    private List<String> buildProcessCommand(String commandText)
+            throws IOException {
+
+        if (commandText == null || commandText.isBlank()) {
+            throw new IOException("Das Kommando ist leer.");
+        }
+
+        if (cmdMode == CmdMode.CMD) {
+            return List.of("cmd.exe", "/c", commandText);
+        }
+
+        List<String> arguments = parseCommandLine(commandText);
+
+        if (arguments.isEmpty()) {
+            throw new IOException("Das Kommando ist leer.");
+        }
+
+        return arguments;
+    }
+
+    /**
+     * Zerlegt eine Kommandozeile in Programm und Argumente.
+     *
+     * Unterstützt einfache und doppelte Anführungszeichen sowie Backslash-
+     * Escaping. Shell-Operatoren wie |, >, && oder Variablenexpansion werden
+     * im NORMAL-Modus absichtlich nicht ausgewertet.
+     */
+    private static List<String> parseCommandLine(String commandText)
+            throws IOException {
+
+        List<String> result = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+
+        boolean inSingleQuotes = false;
+        boolean inDoubleQuotes = false;
+        boolean escaped = false;
+        boolean tokenStarted = false;
+
+        for (int i = 0; i < commandText.length(); i++) {
+            char c = commandText.charAt(i);
+
+            if (escaped) {
+                current.append(c);
+                tokenStarted = true;
+                escaped = false;
+                continue;
+            }
+
+            if (c == '\\' && !inSingleQuotes) {
+                escaped = true;
+                tokenStarted = true;
+                continue;
+            }
+
+            if (c == '\'' && !inDoubleQuotes) {
+                inSingleQuotes = !inSingleQuotes;
+                tokenStarted = true;
+                continue;
+            }
+
+            if (c == '"' && !inSingleQuotes) {
+                inDoubleQuotes = !inDoubleQuotes;
+                tokenStarted = true;
+                continue;
+            }
+
+            if (Character.isWhitespace(c)
+                    && !inSingleQuotes
+                    && !inDoubleQuotes) {
+
+                if (tokenStarted) {
+                    result.add(current.toString());
+                    current.setLength(0);
+                    tokenStarted = false;
                 }
-                if (c=='"') {
-                    if (mode==1) mode=0;
-                    else         mode=1;
-                    h = h.substring(1);
-                } else if (c==' ') {
-                    if (mode==1) {
-                        acmd += " ";
-                    } else {
-                        if (acmd.length()>0) cv.add(acmd);
-                        acmd="";
-                    }
-                    h = h.substring(1);
-                }  else {
-                    acmd += h;
-                    h="";
-                }
-            } while (h.length()>0);
 
-            if (acmd.length()>0) cv.add(acmd);
-            String cmdlst[] = new String[cv.size()];
-            for (int j=0;j<cv.size();j++) cmdlst[j] = cv.get(j);
-            /**
-             * Starten den Prozesses
-             */
-            ProcessBuilder pb = new ProcessBuilder(cmdlst);
-            if (err==null) pb.redirectErrorStream(true);  // Leite des Error auf Output um!
-            File hd = new File(homedir);
-            if (hd.exists()) pb = pb.directory(hd);
+                continue;
+            }
 
-            p = pb.start();
-            BufferedReader reader=new BufferedReader(new InputStreamReader(p.getInputStream(),charset));
-            BufferedReader error=null;
-            error =new BufferedReader(new InputStreamReader(p.getErrorStream(),charset));
+            current.append(c);
+            tokenStarted = true;
+        }
 
-            String line, line1;
-            Pattern pattern = Pattern.compile("^XXX(\\d+):(.+)$");
-            Matcher m;
-            while ((line=reader.readLine())!=null) {
-                if ((m=pattern.matcher(line)).find()) {
-                    htmlCmd(m.group(2));
+        if (escaped) {
+            current.append('\\');
+        }
+
+        if (inSingleQuotes || inDoubleQuotes) {
+            throw new IOException(
+                    "Nicht geschlossenes Anführungszeichen im Kommando: "
+                            + commandText
+            );
+        }
+
+        if (tokenStarted) {
+            result.add(current.toString());
+        }
+
+        return result;
+    }
+
+    private void executeProcess(
+            List<String> processCommand,
+            String charsetName,
+            Vector<String> out,
+            Vector<String> err
+    ) throws IOException {
+
+        Charset processCharset = resolveCharset(charsetName);
+        ProcessBuilder processBuilder =
+                new ProcessBuilder(processCommand);
+
+        if (err == null) {
+            processBuilder.redirectErrorStream(true);
+        }
+
+        configureWorkingDirectory(processBuilder);
+
+        Process process = processBuilder.start();
+        p = process;
+
+        Thread stdoutReader = Thread.ofVirtual()
+                .name("CmdThread-" + id + "-stdout")
+                .start(() -> readStream(
+                        process.getInputStream(),
+                        processCharset,
+                        out,
+                        false
+                ));
+
+        Thread stderrReader = null;
+
+        if (err != null) {
+            stderrReader = Thread.ofVirtual()
+                    .name("CmdThread-" + id + "-stderr")
+                    .start(() -> readStream(
+                            process.getErrorStream(),
+                            processCharset,
+                            err,
+                            true
+                    ));
+        }
+
+        try {
+            int exitCode = process.waitFor();
+
+            stdoutReader.join();
+
+            if (stderrReader != null) {
+                stderrReader.join();
+            }
+
+            if (exitCode != 0) {
+                String message =
+                        "Kommando wurde mit Exit-Code "
+                                + exitCode
+                                + " beendet: "
+                                + String.join(" ", processCommand);
+
+                if (err == null) {
+                    out.add(message);
+                    htmlErr(message);
                 } else {
-                    out.add(line);
-                    htmlOut(line);
-                }
-                if (interrupted()) {
-                    p.destroyForcibly();
-                    p=null;
-                    return;
+                    err.add(message);
+                    htmlErr(message);
                 }
             }
-            if (err!=null && error!=null)
-                while ((line1=error.readLine())!=null) {
-                    err.add(line1);
-                    htmlErr(line1);
-                }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            process.destroy();
 
-            p.destroyForcibly();
-        } catch(IOException e1) {
-            String e = cmd+" kann nicht gestartet werden!";
-            if (err==null) { out.add(e); htmlOut(e); }
-            else           { err.add(e); htmlErr(e); }
+            try {
+                if (!process.waitFor(
+                        500,
+                        java.util.concurrent.TimeUnit.MILLISECONDS
+                )) {
+                    process.destroyForcibly();
+                }
+            } catch (InterruptedException interruptedAgain) {
+                Thread.currentThread().interrupt();
+                process.destroyForcibly();
+            }
+        } finally {
+            p = null;
         }
-        p=null;
+    }
+
+    private void configureWorkingDirectory(
+            ProcessBuilder processBuilder
+    ) throws IOException {
+
+        if (homedir == null || homedir.isBlank()) {
+            return;
+        }
+
+        Path directory =
+                Path.of(homedir).toAbsolutePath().normalize();
+
+        if (!Files.isDirectory(directory)) {
+            throw new IOException(
+                    "Arbeitsverzeichnis existiert nicht "
+                            + "oder ist kein Verzeichnis: "
+                            + directory
+            );
+        }
+
+        processBuilder.directory(directory.toFile());
+    }
+
+    private void readStream(
+            InputStream inputStream,
+            Charset charset,
+            Vector<String> target,
+            boolean errorStream
+    ) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream, charset)
+        )) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = COMMAND_MARKER.matcher(line);
+
+                if (!errorStream && matcher.matches()) {
+                    htmlCmd(matcher.group(2));
+                } else {
+                    target.add(line);
+
+                    if (errorStream) {
+                        htmlErr(line);
+                    } else {
+                        htmlOut(line);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            if (p != null && p.isAlive()) {
+                String message =
+                        "Fehler beim Lesen der Prozessausgabe: "
+                                + ex.getMessage();
+
+                target.add(message);
+                htmlErr(message);
+            }
+        }
+    }
+
+    private static Charset resolveCharset(String charsetName) {
+        if (charsetName == null || charsetName.isBlank()) {
+            return StandardCharsets.UTF_8;
+        }
+
+        return Charset.forName(charsetName);
+    }
+
+    private void registerStartError(
+            String prefix,
+            IOException ex,
+            Vector<String> out,
+            Vector<String> err
+    ) {
+        error = ex;
+        threadStatus = ThreadStatus.ERROR;
+
+        String message = prefix + ": " + ex.getMessage();
+
+        if (err == null) {
+            out.add(message);
+        } else {
+            err.add(message);
+        }
+
+        htmlErr(message);
+    }
+
+    private void deleteBatchFile() {
+        File file = batchfile;
+        batchfile = null;
+
+        if (file == null) {
+            return;
+        }
+
+        try {
+            Files.deleteIfExists(file.toPath());
+        } catch (IOException ex) {
+            htmlErr(
+                    "Temporäre Scriptdatei konnte nicht gelöscht werden: "
+                            + file.getAbsolutePath()
+                            + " – "
+                            + ex.getMessage()
+            );
+        }
     }
 
     public void stop() {
-        if (threadStatus==ThreadStatus.RUNNING) {
-            try {
-                thread.interrupt();
-                int ms=0;
-                while (ms<1000 && thread.isAlive()) {
-                    ms += 10;
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                    }
-                    if (ms==500)
-                        p.destroyForcibly();
-                }
-                //this.thread.stop();
-                //if (thread.isAlive())
-                //    this.thread.destroy();
-            } catch (Exception ex) {
-                System.out.println("Prozess konnte nicht gestoppt werden!"+this.command.replaceAll("\n"," "));
-                threadStatus=ThreadStatus.ZOMBIE;
-            } catch (Error error) {
-                System.out.println("Error: Prozess konnte nicht gestoppt werden!");
-                threadStatus=ThreadStatus.ZOMBIE;
-            }
-            if (thread.isAlive())
-                threadStatus=ThreadStatus.ZOMBIE;
-            else
-                threadStatus=ThreadStatus.STOPPED;
-            // Lösche das Batchfile
-            try { if (batchfile!=null && batchfile.exists()) batchfile.delete(); batchfile=null;} catch (Exception ex) {}
+        if (threadStatus != ThreadStatus.RUNNING) {
+            return;
         }
+
+        thread.interrupt();
+
+        Process process = p;
+
+        if (process != null && process.isAlive()) {
+            process.destroy();
+
+            try {
+                if (!process.waitFor(
+                        500,
+                        java.util.concurrent.TimeUnit.MILLISECONDS
+                )) {
+                    process.destroyForcibly();
+                }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                process.destroyForcibly();
+            }
+        }
+
+        try {
+            thread.join(1000);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+
+        if (thread.isAlive()) {
+            threadStatus = ThreadStatus.ZOMBIE;
+        } else {
+            threadStatus = ThreadStatus.STOPPED;
+        }
+
+        deleteBatchFile();
     }
 
     public String getTimeInfoHTML() {
-        String ret = "<span style=\"color:orange\">"+ Datum.formatDateTime(startdate)+"</span> - <span style=\"color:blue\">";
-        if (isFinished()) ret += (stoptime-starttime)/1000.0;
-        else ret += (System.currentTimeMillis()-starttime)/1000.0;
-        ret += " s </span>";
-        return ret;
+        long end = isFinished()
+                ? stoptime
+                : System.currentTimeMillis();
+
+        return "<span style=\"color:orange\">"
+                + Datum.formatDateTime(startdate)
+                + "</span> - <span style=\"color:blue\">"
+                + (end - starttime) / 1000.0
+                + " s </span>";
     }
 
     public boolean isFinished() {
-        switch (threadStatus) {
-            default:
-            case NEW:
-            case RUNNING:
-                return false;
-            case ZOMBIE:
-            case ERROR:
-            case STOPPED:
-            case FINISHED:
-                return true;
-        }
+        return switch (threadStatus) {
+            case NEW, RUNNING -> false;
+            case ZOMBIE, ERROR, STOPPED, FINISHED -> true;
+            default -> true;
+        };
     }
 
     public CmdDto getCmdDto() {
         CmdDto cmdDto = new CmdDto();
-        String cmd = ""; for (String s:getCmd()) cmd+=(cmd.length()>0?"\n":"")+s;
-        cmdDto.setCmd(cmd);
-        cmdDto.setHomedir(cmdDto.getHomedir());
+
+        cmdDto.setCmd(String.join("\n", getCmd()));
+        cmdDto.setHomedir(getHomedir());
         cmdDto.setBacklink(getBacklink());
         cmdDto.setId(getId());
         cmdDto.setUserAction("");
+
         return cmdDto;
     }
 
     public String lastOutputLine(int lines) {
-        String ret = "";
-        if (out!=null && out.size()>0) {
-            Vector<String> lastcmd = out.lastElement();
-            if (lastcmd!=null && lastcmd.size()>0) {
-                int start = lastcmd.size()-lines;
-                if (start<0) start=0;
-                for (int i=start;i<lastcmd.size();i++)
-                    ret += (ret.length()>0 ? " " : "") + lastcmd.get(i);
-            }
+        if (lines <= 0 || out.isEmpty()) {
+            return "";
         }
-        return ret;
+
+        Vector<String> lastCommand = out.lastElement();
+
+        if (lastCommand == null || lastCommand.isEmpty()) {
+            return "";
+        }
+
+        int start = Math.max(0, lastCommand.size() - lines);
+        StringBuilder result = new StringBuilder();
+
+        for (int i = start; i < lastCommand.size(); i++) {
+            if (!result.isEmpty()) {
+                result.append(' ');
+            }
+
+            result.append(lastCommand.get(i));
+        }
+
+        return result.toString();
     }
 
     /**
-     * Wartet seconds Sekunden bis weitergemacht wird
-     * @param seconds Wartezeit in Sekunden
+     * Wartet die angegebene Anzahl Sekunden.
      */
     public void wait(int seconds) {
-        wait(seconds*1000);
+        waitms(seconds * 1000);
     }
 
     /**
-     * Wartet milliseconds Millisekunden bis weitergemacht wird
-     * @param milliseconds Wartezeit in Millisekunden
+     * Wartet die angegebene Anzahl Millisekunden.
      */
     public void waitms(int milliseconds) {
+        if (milliseconds <= 0) {
+            return;
+        }
+
         try {
             Thread.sleep(milliseconds);
-        } catch (InterruptedException e) { }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
-
 }
