@@ -488,7 +488,14 @@ public class LettoToken {
     /** @return Liefert den Zuständigkeitsbereich des Tokens */
     public String getAudience() {
         try {
-            return claims.getAudience();
+            Set<String> audiences = claims.getAudience();
+            if (audiences == null || audiences.isEmpty()) {
+                return null;
+            }
+            if (audiences.size() == 1) {
+                return audiences.iterator().next();
+            }
+            return String.join(",", audiences);
         } catch (Exception ex) {}
         return null;
     }
@@ -540,7 +547,7 @@ public class LettoToken {
 
     private Claims calcAllClaimsFromToken(String secret) {
         try {
-            return Jwts.parserBuilder().setSigningKey(checkSecret(secret))
+            return Jwts.parser().setSigningKey(checkSecret(secret))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -552,7 +559,7 @@ public class LettoToken {
     /** @return Liefert eine Java-Web-Token-Darstellung des LeTTo-Tokens */
     public Jwt calcJwt(String secret) {
         try {
-            return Jwts.parserBuilder().setSigningKey(checkSecret(secret)).build().parse(token);
+            return Jwts.parser().setSigningKey(checkSecret(secret)).build().parse(token);
         } catch (Exception ex) {
             return null;
         }

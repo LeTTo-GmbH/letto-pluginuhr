@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <version>1.3</version>
     <name>pluginuhr</name>
-    <description>Template für ein Plugin</description>
+    <description>Template fÃ¼r ein Plugin</description>
 
     <licenses>
         <license>
@@ -32,7 +32,7 @@
     <developers>
         <developer>
             <id>damb</id>
-            <name>Werner Damböck</name>
+            <name>Werner DambÃ¶ck</name>
             <email>werner.damboeck@letto.at</email>
             <url>https://www.letto.at</url>
             <organization>LeTTo GmbH</organization>
@@ -80,18 +80,18 @@
         <!-- LeTTo -->
         <letto.version>1.3</letto.version>
 
-        <!-- Externe Bibliotheken, die NICHT zuverlässig von Spring Boot verwaltet werden -->
-        <springdoc.version>2.8.9</springdoc.version>
+        <!-- Externe Bibliotheken, die NICHT zuverlÃ¤ssig von Spring Boot verwaltet werden -->
+        <springdoc.version>3.0.3</springdoc.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <thymeleaf-extras-springsecurity6.version>3.1.3.RELEASE</thymeleaf-extras-springsecurity6.version>
 
         <jersey.version>3.1.9</jersey.version>
         <lombok.version>1.18.46</lombok.version>
         <apache.cxf.version>4.1.0</apache.cxf.version>
-        <jaxb.version>4.0.5</jaxb.version>
+        <jaxb.version>4.0.9</jaxb.version>
         <!-- wegen Spring-Boot wird 1.3.1.Final statt 1.6.3  genommen -->
         <mapstruct.version>1.6.3</mapstruct.version>
-        <modelmapper.version>3.2.2</modelmapper.version>
+        <modelmapper.version>3.2.6</modelmapper.version>
         <fx.version>20</fx.version>
         <primefaces.version>14.0.9</primefaces.version>
         <primefaces.lehrplan.version>8.0</primefaces.lehrplan.version>
@@ -101,7 +101,7 @@
         <aristo.version>1.1.0</aristo.version>
         <javaee-web-api.version>8.0</javaee-web-api.version>
         <jakarta.jakartaee-web-api.version>10.0.0</jakarta.jakartaee-web-api.version>
-        <jakarta.mail.version>2.0.1</jakarta.mail.version>
+        <jakarta.mail.version>2.0.2</jakarta.mail.version>
         <ldapsdk.version>4.1</ldapsdk.version>
         <jldap.version>4.3</jldap.version>
         <eclipselink.version>2.7.3</eclipselink.version>
@@ -116,36 +116,36 @@
         <com.google.zxing.version>3.5.3</com.google.zxing.version>
         <bootsfaces.version>1.5.0</bootsfaces.version>
 
-        <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
+        <mysql-connector-j.version>9.7.0</mysql-connector-j.version>
         <h2.version>2.4.240</h2.version>
         <mongodb-crypt.version>1.8.0</mongodb-crypt.version>
 
-        <jjwt-api.version>0.11.5</jjwt-api.version>
-        <batik-transcoder.version>1.18</batik-transcoder.version>
-        <pdfbox.version>3.0.3</pdfbox.version>
+        <jjwt-api.version>0.13.0</jjwt-api.version>
+        <batik-transcoder.version>1.19</batik-transcoder.version>
+        <pdfbox.version>3.0.8</pdfbox.version>
         <classgraph.version>4.8.157</classgraph.version>
-        <xmlgraphics-commons.version>2.10</xmlgraphics-commons.version>
+        <xmlgraphics-commons.version>2.11</xmlgraphics-commons.version>
         <xercesImpl.version>2.12.2</xercesImpl.version>
         <poi.version>5.2.3</poi.version>
         <poi-ooxml>4.0.1</poi-ooxml>
         <jtidy.version>r938</jtidy.version>
         <svnkit.version>1.9.3</svnkit.version>
-        <guava.version>33.4.0-jre</guava.version>
+        <guava.version>33.6.0-jre</guava.version>
         <generex.version>1.0.2</generex.version>
-        <javaparser-core.version>3.24.10</javaparser-core.version>
+        <javaparser-core.version>3.28.2</javaparser-core.version>
         <net.openhft.compiler.version>2.23ea0</net.openhft.compiler.version>
         <janino.version>3.1.12</janino.version>
         <jsch.agentproxy.svnkit-trilead-ssh2.version>0.0.9</jsch.agentproxy.svnkit-trilead-ssh2.version>
 
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <commons-codec.version>1.17.1</commons-codec.version>
+        <commons-codec.version>1.22.0</commons-codec.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <commons-text.version>1.13.0</commons-text.version>
+        <commons-text.version>1.15.0</commons-text.version>
         <!-- Wegen Spring-Boot wird 2.11.0 genommen -->
-        <commons-io.version>2.18.0</commons-io.version>
-        <commons-fileupload.version>1.5</commons-fileupload.version>
+        <commons-io.version>2.22.0</commons-io.version>
+        <commons-fileupload.version>1.6.0</commons-fileupload.version>
         <commons-fileupload2-javax.version>2.0.0-M2</commons-fileupload2-javax.version>
         <unbescape.version>1.1.6.RELEASE</unbescape.version>
         <juniversalchardet.version>1.0.3</juniversalchardet.version>
@@ -154,7 +154,7 @@
        <!-- ENDE automatisch ersetzt aus shared properties -->
 
         <!-- Properties die nur im Parent-POM verwendet werden -->
-        <swagger-annotations.version>2.2.30</swagger-annotations.version>
+        <swagger-annotations.version>2.2.52</swagger-annotations.version>
 
     </properties>
 
@@ -455,9 +455,24 @@
                 <configuration>
                     <additionalJOption>-private</additionalJOption>
                     <show>private</show>
+                    <javadocExecutable>${javadoc.executable}</javadocExecutable>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>windows-jdk25-javadoc</id>
+            <activation>
+                <file>
+                    <exists>C:\Program Files\Java\jdk-25\bin\javadoc.exe</exists>
+                </file>
+            </activation>
+            <properties>
+                <javadoc.executable>C:\Program Files\Java\jdk-25\bin\javadoc.exe</javadoc.executable>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

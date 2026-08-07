@@ -531,7 +531,8 @@ public class CmdThread implements Runnable {
      * Zerlegt eine Kommandozeile in Programm und Argumente.
      *
      * Unterstützt einfache und doppelte Anführungszeichen sowie Backslash-
-     * Escaping. Shell-Operatoren wie |, >, && oder Variablenexpansion werden
+     * Escaping. Shell-Operatoren wie {@code |}, {@code >}, {@code &&} oder
+     * Variablenexpansion werden
      * im NORMAL-Modus absichtlich nicht ausgewertet.
      */
     private static List<String> parseCommandLine(String commandText)

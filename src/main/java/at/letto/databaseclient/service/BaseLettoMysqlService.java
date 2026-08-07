@@ -66,7 +66,6 @@ public class BaseLettoMysqlService {
      * @param user       Benutzername
      * @param password   Klartextpasswort
      * @return           true wenn erfolgreich
-     * @throws SQLException Fehlermeldung wenn etwas nicht funktioniert hat
      */
     public boolean checklMysqlConnection(String database, String user, String password) {
         return mysqlConnection(database,user,password)!=null;
@@ -78,7 +77,6 @@ public class BaseLettoMysqlService {
      * @param user       Benutzername
      * @param password   Klartextpasswort
      * @return           true wenn erfolgreich
-     * @throws SQLException Fehlermeldung wenn etwas nicht funktioniert hat
      */
     public boolean checklMysqlUrlConnection(String url, String user, String password) {
         return mysqlUrlConnection(url,user,password)!=null;
@@ -117,7 +115,7 @@ public class BaseLettoMysqlService {
      * Führt ein SQL-Statement aus ohne ein Ergebnis auszuwerten
      * @param con            MySQL-Server-Verbindung
      * @param sqlStatement   SQL-Statement
-     * @return               Leerstring wenn ok oder Fehlermeldung als String
+     * @throws SQLException  Fehlermeldung wenn etwas nicht funktioniert hat
      */
     public void execute(Connection con, String sqlStatement) throws SQLException {
         Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);

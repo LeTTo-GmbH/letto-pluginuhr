@@ -39,7 +39,7 @@ public abstract class GenericRedisCache<T extends IdEntity> implements CacheInte
 
     /**
      * Methode zum Laden des DTOs aus der Datenbank. Muss im Kindelement überschrieben werden,
-     * um den korrekten Typ an loadData(id, Class<T> type, ... ) übergeben zu können.
+     * um den korrekten Typ an {@code loadData(id, Class<T> type, ...)} übergeben zu können.
      * Wird intern von load(...) aufgerufen.
      * @param id    ID, nach der gesucht werden soll
      * @param token LettoToken zur Ermittlung des Schul-Namens

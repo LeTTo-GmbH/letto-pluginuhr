@@ -88,7 +88,7 @@ public class BaseLettoRedisDBService {
 
     /**
      * Liefert ein Redis-Template auf die Standard-Redis-Datenbank des Services
-     * @return RedisTemplate<String, Object> für den Datenbankzugriff
+     * @return {@code RedisTemplate<String, Object>} für den Datenbankzugriff
      */
     public RedisTemplate<String, Object> redisTemplate() {
         return redisTemplate(databaseConnectionService.getRedisDefaultDatabase());
@@ -97,7 +97,7 @@ public class BaseLettoRedisDBService {
     /**
      * Liefert ein Redis-Template auf angegebene Datenbank
      * @param database Datenbank auf die verbunden wird
-     * @return RedisTemplate<String, Object> für den Datenbankzugriff
+     * @return {@code RedisTemplate<String, Object>} für den Datenbankzugriff
      */
     public RedisTemplate<String, Object> redisTemplate(int database) {
         return databaseConnectionService.redisTemplate(database);
