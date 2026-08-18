@@ -96,6 +96,7 @@ public class ResponseToolsObject {
     }
 
 
+
     /**
      * Aufruf einer Service-Funktion mit drei Parameter, try-catch-Stacktrace in DtoAndMsg im Fehlerfall
      * @param function
