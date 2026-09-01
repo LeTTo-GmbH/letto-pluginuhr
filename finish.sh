@@ -31,10 +31,10 @@ pwd=$(pwd)
 
 finishok=true
 
-if [[ $VERSION == "1.2" ]] ; then
-  echo LeTTo Version 1.2
+if [[ $VERSION == "1.3" ]] ; then
+  echo LeTTo Version 1.3
   # Docker Container am Build-Server neu starten!
-  if [[ $daily == "on" ]] ; then
+  if [[ $daily == "on" || $stable == "on" || $beta == "on" ]] ; then
     echo restart daily-Version on build-server
     cd /opt/letto/docker/compose/letto
     docker compose -f docker-service-pluginuhr.yml down
