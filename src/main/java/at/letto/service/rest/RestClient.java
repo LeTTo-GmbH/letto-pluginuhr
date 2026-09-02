@@ -26,8 +26,12 @@ import lombok.Setter;
 import org.apache.cxf.logging.NoOpFaultListener;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import javax.net.ssl.*;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
@@ -149,12 +153,12 @@ public abstract class RestClient implements MicroService {
                         @Override
                         public boolean verify(String paramString, SSLSession paramSSLSession) { return true; }
                     });
-             client = clientBuilder
-                     .connectTimeout(timeoutMilliseconds,TimeUnit.MILLISECONDS)
-                     .readTimeout(timeoutMilliseconds,TimeUnit.MILLISECONDS)
+            client = clientBuilder
+                    .connectTimeout(timeoutMilliseconds,TimeUnit.MILLISECONDS)
+                    .readTimeout(timeoutMilliseconds,TimeUnit.MILLISECONDS)
                     .build()
-                     .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
-                    ;
+                    .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
+            ;
         } catch (Exception e) {
             client = ClientBuilder
                     .newBuilder()
@@ -208,6 +212,161 @@ public abstract class RestClient implements MicroService {
             System.out.println(e.getMessage()+ " - " + e.getDetails());
             return null;
         }
+    }
+
+    /**
+     * Sendet eine {@code multipart/form-data}-POST-Anfrage mit einem Datei-Part
+     * und einem zusätzlichen JSON-Part.
+     *
+     * <p>Die Anfrage verwendet denselben Jersey-Client wie die übrigen REST-Zugriffe
+     * und damit auch die im Konstruktor konfigurierte Basic-Authentifikation.</p>
+     *
+     * @param endpoint     REST-Endpunkt
+     * @param filePartName Name des Datei-Parts, z.B. {@code file}
+     * @param bytes        Dateiinhalt
+     * @param filename     ursprünglicher Dateiname
+     * @param contentType  MIME-Type der Datei; bei {@code null} oder ungültigem Wert
+     *                     wird {@code application/octet-stream} verwendet
+     * @param jsonPartName Name des JSON-Parts, z.B. {@code options}
+     * @param jsonPart     Objekt, das als JSON übertragen wird
+     * @param type         Rückgabetyp inklusive generischer Typinformation
+     * @param <T>          Typ des Rückgabewertes
+     * @return deserialisierte REST-Antwort oder {@code null}, wenn die Anfrage fehlschlägt
+     */
+    public <T> T postMultipart(
+            String endpoint,
+            String filePartName,
+            byte[] bytes,
+            String filename,
+            String contentType,
+            String jsonPartName,
+            Object jsonPart,
+            TypeReference<T> type) {
+
+        return postMultipart(
+                endpoint,
+                filePartName,
+                bytes,
+                filename,
+                contentType,
+                jsonPartName,
+                jsonPart,
+                type,
+                null);
+    }
+
+    /**
+     * Sendet eine {@code multipart/form-data}-POST-Anfrage mit einem Datei-Part,
+     * einem JSON-Part und optionalem Bearer-Token.
+     *
+     * @param endpoint     REST-Endpunkt
+     * @param filePartName Name des Datei-Parts
+     * @param bytes        Dateiinhalt
+     * @param filename     ursprünglicher Dateiname
+     * @param contentType  MIME-Type der Datei
+     * @param jsonPartName Name des JSON-Parts
+     * @param jsonPart     Objekt, das als JSON übertragen wird
+     * @param type         Rückgabetyp inklusive generischer Typinformation
+     * @param token        optionaler JWT/Bearer-Token
+     * @param <T>          Typ des Rückgabewertes
+     * @return deserialisierte REST-Antwort oder {@code null}, wenn die Anfrage fehlschlägt
+     */
+    public <T> T postMultipart(
+            String endpoint,
+            String filePartName,
+            byte[] bytes,
+            String filename,
+            String contentType,
+            String jsonPartName,
+            Object jsonPart,
+            TypeReference<T> type,
+            String token) {
+
+        String uri = this.baseURI;
+        if (endpoint != null && !endpoint.isEmpty())
+            uri += (endpoint.startsWith("/") ? "" : "/") + endpoint;
+        while (uri.endsWith("/"))
+            uri = uri.substring(0, uri.length() - 1);
+
+        Response response = null;
+
+        try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
+             FormDataMultiPart multipart = new FormDataMultiPart()) {
+
+            if (jsonPart != null) {
+                multipart.field(
+                        jsonPartName,
+                        JSON.objToJson(jsonPart),
+                        MediaType.APPLICATION_JSON_TYPE);
+            }
+
+            MediaType fileMediaType;
+            try {
+                fileMediaType = contentType != null && !contentType.isBlank()
+                        ? MediaType.valueOf(contentType)
+                        : MediaType.APPLICATION_OCTET_STREAM_TYPE;
+            } catch (Exception e) {
+                fileMediaType = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+            }
+
+            StreamDataBodyPart filePart = new StreamDataBodyPart(
+                    filePartName,
+                    input,
+                    filename,
+                    fileMediaType);
+
+            multipart.bodyPart(filePart);
+
+            WebTarget webTarget = client.target(uri);
+            Invocation.Builder builder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+
+            if (token != null && !token.isBlank())
+                builder = builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+
+            response = builder.post(Entity.entity(multipart, multipart.getMediaType()));
+
+            if (response.getStatusInfo() == Response.Status.OK || response.getStatus() == 200) {
+                String json = response.readEntity(String.class);
+                ObjectMapper mapper = createObjectMapper();
+                return mapper.readValue(json, type);
+            }
+
+            if (response.getStatus() == 403) {
+                DtoAndMsg<Object> ret = new DtoAndMsg<>();
+                ret.setData(null);
+                ret.setMsg(new Msg("auth.error", MsgType.ERROR, ""));
+
+                ObjectMapper mapper = createObjectMapper();
+                return mapper.readValue(JSON.objToJson(ret), type);
+            }
+
+            if (response.getStatus() == 401)
+                throw new TokenException("Token fehlerhaft");
+
+        } catch (TokenException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null)
+                response.close();
+        }
+
+        return null;
+    }
+
+    /**
+     * Erzeugt den für generische REST-Antworten verwendeten Jackson-Mapper.
+     *
+     * @return vorkonfigurierter ObjectMapper
+     */
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        mapper.disable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+        mapper.disable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        return mapper;
     }
 
 
@@ -478,11 +637,7 @@ public abstract class RestClient implements MicroService {
                 response = builder.get();
             if (response.getStatusInfo() == Response.Status.OK || response.getStatus() == 200) {
                 String json = response.readEntity(String.class);
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-                mapper.disable(SerializationFeature.INDENT_OUTPUT);
-                mapper.disable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-                mapper.disable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+                ObjectMapper mapper = createObjectMapper();
                 return mapper.readValue(json, type);
 
             }
@@ -491,11 +646,7 @@ public abstract class RestClient implements MicroService {
                 ret.setData(null);
                 ret.setMsg(new Msg("auth.error",MsgType.ERROR,""));
                 String json = JSON.objToJson(ret);
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-                mapper.disable(SerializationFeature.INDENT_OUTPUT);
-                mapper.disable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-                mapper.disable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+                ObjectMapper mapper = createObjectMapper();
                 return mapper.readValue(json, type);
             }
             else if (jsonExternal) {
@@ -552,6 +703,7 @@ public abstract class RestClient implements MicroService {
             ClientBuilder clientBuilder = ClientBuilder.newBuilder()
                     .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
                     .sslContext(sslContext)
+                    .register(MultiPartFeature.class)
                     .hostnameVerifier(new HostnameVerifier(){
                         @Override
                         public boolean verify(String paramString, SSLSession paramSSLSession) { return true; }
@@ -563,16 +715,18 @@ public abstract class RestClient implements MicroService {
                     //.property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
                     ;
             return client;
-        } catch (Exception e) {	}
+        } catch (Exception e) { }
         if (basicAuth!=null)
             return ClientBuilder
                     .newBuilder()
                     .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
+                    .register(MultiPartFeature.class)
                     .register(basicAuth)
                     .build();
         return ClientBuilder
                 .newBuilder()
                 .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
+                .register(MultiPartFeature.class)
                 .build();
     }
 
@@ -589,11 +743,13 @@ public abstract class RestClient implements MicroService {
             return ClientBuilder
                     .newBuilder()
                     .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
+                    .register(MultiPartFeature.class)
                     .register(basicAuth)
                     .build();
         return ClientBuilder
                 .newBuilder()
                 .property("org.apache.cxf.logging.FaultListener", new NoOpFaultListener())
+                .register(MultiPartFeature.class)
                 .build();
     }
 

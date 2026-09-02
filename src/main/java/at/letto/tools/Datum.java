@@ -665,4 +665,46 @@ public class Datum {
         return s2-s1;
     }
 
+    /**
+     * Normalisiert ein Datum auf 12:00 Uhr des gleichen Kalendertages.
+     *
+     * <p>Die Methode unterstützt sowohl {@link java.util.Date} als auch
+     * {@link java.sql.Date}. Bei {@code java.sql.Date} darf {@code toInstant()}
+     * nicht verwendet werden, da diese Methode dort eine
+     * {@link UnsupportedOperationException} wirft.</p>
+     *
+     * <p>Die Uhrzeit 12:00 wird bewusst verwendet, damit nachfolgende
+     * Zeitzonenumrechnungen durch Jackson, Hibernate oder JDBC den
+     * Kalendertag nicht auf den vorherigen Tag verschieben.</p>
+     *
+     * @param date zu normalisierendes Datum
+     * @return Datum am selben Kalendertag um 12:00 Uhr oder {@code null}
+     */
+    public static Date safeDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        ZoneId zone = ZoneId.of("Europe/Vienna");
+        LocalDate localDate;
+
+        /*
+         * java.sql.Date unterstützt toInstant() nicht.
+         */
+        if (date instanceof java.sql.Date sqlDate) {
+            localDate = sqlDate.toLocalDate();
+        } else {
+            localDate = date.toInstant()
+                    .atZone(zone)
+                    .toLocalDate();
+        }
+
+        return Date.from(
+                localDate
+                        .atTime(12, 0)
+                        .atZone(zone)
+                        .toInstant()
+        );
+    }
+
 }
