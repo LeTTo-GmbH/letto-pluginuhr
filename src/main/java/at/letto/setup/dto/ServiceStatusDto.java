@@ -65,11 +65,11 @@ public class ServiceStatusDto {
     /** Main-Service läuft */
     private boolean main=false;
 
-    /** alle notwendigen Services der Version 1.2 sind installiert als docker-service-...yml */
-    private boolean v12ymlpresent=false;
+    /** alle notwendigen Services der Version 1.3 sind installiert als docker-service-...yml */
+    private boolean v13ymlpresent=false;
 
-    /** alle notwendigen Services der Version 1.2 laufen korrekt */
-    private boolean v12servicesOk=false;
+    /** alle notwendigen Services der Version 1.3 laufen korrekt */
+    private boolean v13servicesOk=false;
 
     /** services installiert */
     private HashMap<String,Boolean> serviceInstalled = new HashMap<>();

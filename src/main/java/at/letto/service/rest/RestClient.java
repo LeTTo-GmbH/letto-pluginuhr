@@ -33,6 +33,7 @@ import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import javax.net.ssl.*;
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
@@ -200,16 +201,81 @@ public abstract class RestClient implements MicroService {
     public <T> T getDto(String endpoint, Object dto, TypeReference<T> Class, String token) {
         return rest(endpoint, dto, Class, false, token, false);
     }
+
+    /**
+     * Führt einen POST-Aufruf aus.
+     *
+     * @param endpoint REST-Endpunkt
+     * @param dto      Request-DTO
+     * @param Class    Rückgabetyp
+     * @param token    optionaler JWT/Bearer-Token
+     * @param <T>      Rückgabetyp
+     * @return deserialisierte Antwort
+     */
     public <T> T postDto(String endpoint, Object dto, TypeReference<T> Class, String token) {
         return rest(endpoint, dto, Class, true, token, false);
     }
 
-    public <T> T postDtoJson(String endpoint, Object dto, TypeReference<T> Class, String token) {
+    /**
+     * Führt einen POST-Aufruf mit zusätzlichen HTTP-Headern aus.
+     *
+     * <p>Diese Überladung ist insbesondere für technische Request-Metadaten wie
+     * Transaktions-IDs vorgesehen. Bestehende Aufrufe bleiben unverändert kompatibel.</p>
+     *
+     * @param endpoint REST-Endpunkt
+     * @param dto      Request-DTO
+     * @param Class    Rückgabetyp
+     * @param token    optionaler JWT/Bearer-Token
+     * @param headers  zusätzliche HTTP-Header; darf {@code null} sein
+     * @param <T>      Rückgabetyp
+     * @return deserialisierte Antwort
+     */
+    public <T> T postDto(String endpoint, Object dto, TypeReference<T> Class,
+                         String token, Map<String, String> headers) {
+        return rest(endpoint, dto, Class, true, token, false, headers);
+    }
+
+    public <T> T postDtoJson(
+            String endpoint,
+            Object dto,
+            TypeReference<T> type,
+            String token,
+            Map<String, String> headers) {
+
         try {
-            return rest(endpoint, dto, Class, true, token, true);
+            return rest(
+                    endpoint,
+                    dto,
+                    type,
+                    true,
+                    token,
+                    true,
+                    headers
+            );
+        } catch (MsgException e) {
+            System.out.println(e.getMessage() + " - " + e.getDetails());
+            return null;
         }
-        catch (MsgException e) {
-            System.out.println(e.getMessage()+ " - " + e.getDetails());
+    }
+
+    public <T> T postDtoJson(
+            String endpoint,
+            Object dto,
+            TypeReference<T> type,
+            String token) {
+
+        try {
+            return rest(
+                    endpoint,
+                    dto,
+                    type,
+                    true,
+                    token,
+                    true,
+                    null
+            );
+        } catch (MsgException e) {
+            System.out.println(e.getMessage() + " - " + e.getDetails());
             return null;
         }
     }
@@ -606,12 +672,32 @@ public abstract class RestClient implements MicroService {
      */
     private <T> T rest(String endpoint, Object dto,
                        TypeReference<T> type, boolean post, String token, boolean jsonExternal) {
+        return rest(endpoint, dto, type, post, token, jsonExternal, null);
+    }
+
+    /**
+     * Führt eine REST-Anfrage mit generischem Rückgabetyp und optionalen zusätzlichen HTTP-Headern aus.
+     *
+     * @param endpoint     REST-Endpunkt
+     * @param dto          Request-DTO
+     * @param type         Rückgabetyp inklusive generischer Typinformation
+     * @param post         {@code true} für POST, {@code false} für GET
+     * @param token        optionaler JWT/Bearer-Token
+     * @param jsonExternal DTO wird mit externem JSONer vorab in JSON umgewandelt
+     * @param headers      zusätzliche HTTP-Header; darf {@code null} sein
+     * @param <T>          Rückgabetyp
+     * @return deserialisierte REST-Antwort oder {@code null} im Fehlerfall
+     */
+    private <T> T rest(String endpoint, Object dto,
+                       TypeReference<T> type, boolean post, String token, boolean jsonExternal,
+                       Map<String, String> headers) {
         String uri = this.baseURI;
-        if (endpoint!=null && endpoint.length()>0)
-            uri += (endpoint.startsWith("/")?"":"/")+endpoint;
+        if (endpoint != null && endpoint.length() > 0)
+            uri += (endpoint.startsWith("/") ? "" : "/") + endpoint;
         while (uri.endsWith("/"))
-            uri=uri.substring(0,uri.length()-1);
-        Response response=null;
+            uri = uri.substring(0, uri.length() - 1);
+
+        Response response = null;
         try {
             Entity entity = null;
             if (dto != null) {
@@ -626,25 +712,34 @@ public abstract class RestClient implements MicroService {
             }
 
             WebTarget webTarget = client.target(uri);
-
             Invocation.Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
+
             if (token != null && token.length() > 0)
                 builder = builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+
+            if (headers != null) {
+                for (Map.Entry<String, String> header : headers.entrySet()) {
+                    if (header.getKey() != null && !header.getKey().isBlank() &&
+                            header.getValue() != null && !header.getValue().isBlank()) {
+                        builder = builder.header(header.getKey(), header.getValue());
+                    }
+                }
+            }
 
             if (post)
                 response = builder.post(entity);
             else
                 response = builder.get();
+
             if (response.getStatusInfo() == Response.Status.OK || response.getStatus() == 200) {
                 String json = response.readEntity(String.class);
                 ObjectMapper mapper = createObjectMapper();
                 return mapper.readValue(json, type);
-
             }
             else if (response.getStatus() == 403) {
                 DtoAndMsg<Object> ret = new DtoAndMsg<>();
                 ret.setData(null);
-                ret.setMsg(new Msg("auth.error",MsgType.ERROR,""));
+                ret.setMsg(new Msg("auth.error", MsgType.ERROR, ""));
                 String json = JSON.objToJson(ret);
                 ObjectMapper mapper = createObjectMapper();
                 return mapper.readValue(json, type);
@@ -663,7 +758,7 @@ public abstract class RestClient implements MicroService {
             }
 //            e.printStackTrace();
         }
-        if (response!=null && response.getStatusInfo().getStatusCode()==401) {
+        if (response != null && response.getStatusInfo().getStatusCode() == 401) {
             throw new TokenException("Token fehlerhaft");
         }
         return null;
@@ -868,3 +963,4 @@ public abstract class RestClient implements MicroService {
     }
 
 }
+
