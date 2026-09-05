@@ -34,11 +34,11 @@ finishok=true
 if [[ $VERSION == "1.2" ]] ; then
   echo LeTTo Version 1.2
   # Docker Container am Build-Server neu starten!
-  if [[ $daily == "on" ]] ; then
-    echo restart daily-Version on build-server
-    cd /opt/letto/docker/compose/letto
-    docker compose -f docker-service-pluginuhr.yml down
-    docker compose -f docker-service-pluginuhr.yml up -d
+  if [[ $daily == "on" || $stable == "on" || $beta == "on" ]] ; then
+    echo NO restart daily-Version on build-server
+    #cd /opt/letto/docker/compose/letto
+    #docker compose -f docker-service-pluginuhr.yml down
+    #docker compose -f docker-service-pluginuhr.yml up -d
   fi
 fi
 
