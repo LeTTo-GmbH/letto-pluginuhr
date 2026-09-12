@@ -86,7 +86,7 @@
         <thymeleaf-extras-springsecurity6.version>3.1.3.RELEASE</thymeleaf-extras-springsecurity6.version>
 
         <jersey.version>3.1.9</jersey.version>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <apache.cxf.version>4.1.0</apache.cxf.version>
         <jaxb.version>4.0.9</jaxb.version>
         <!-- wegen Spring-Boot wird 1.3.1.Final statt 1.6.3  genommen -->
