@@ -179,7 +179,10 @@ public class Listen {
      * @param <T1> Klasse mit implementiertem Interface IdEntity (getId)
      * @return 3 Listen (add, del und change), geben an welche DTOs in DB
      * hinzugefügt, gelöscht oder geändert werden sollen
+     * @deprecated Die Liste del ist als List&lt;T&gt; deklariert, enthält aber Objekte vom Typ T1!
+     * Stattdessen {@link #detectAddDel(List, List)} verwenden.
      */
+    @Deprecated
     public static <T extends IdEntity, T1 extends IdEntity> ChangeLists<T> detectChanges(List<T> save, List<T1> orig) {
         List<T> add = (List)save.stream().filter((r1) -> {
             return orig.stream().noneMatch((rx) -> {
@@ -192,6 +195,28 @@ public class Listen {
             });
         }).collect(Collectors.toList());
         return new ChangeLists(add, del, null);
+    }
+
+    /**
+     * Ermittlung von einzufügenden und zu löschenden Objekten mit korrekt typisierten Listen.
+     * Es erfolgt keine Gleichheitsprüfung, verglichen werden nur die IDs der Objekte.
+     *
+     * @param save Liste mit Objekten, die gespeichert gehören (zB. DTOs)
+     * @param orig Original-Liste, die an save angepasst werden soll (zB. Entities)
+     * @param <T>  Typ der Speicher-Liste
+     * @param <T1> Typ der Original-Liste
+     * @return add: Elemente aus save ohne Gegenstück in orig, del: Elemente aus orig ohne Gegenstück in save
+     */
+    public static <T extends IdEntity, T1 extends IdEntity> AddDelLists<T, T1> detectAddDel(List<T> save, List<T1> orig) {
+        Set<Integer> origIds = orig.stream().map(IdEntity::getId).collect(Collectors.toSet());
+        Set<Integer> saveIds = save.stream().map(IdEntity::getId).collect(Collectors.toSet());
+        List<T> add = save.stream()
+                .filter(s -> !origIds.contains(s.getId()))
+                .collect(Collectors.toList());
+        List<T1> del = orig.stream()
+                .filter(o -> !saveIds.contains(o.getId()))
+                .collect(Collectors.toList());
+        return new AddDelLists<>(add, del);
     }
 
     /**
