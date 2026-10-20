@@ -15,12 +15,9 @@
     </style>
 </head>
 <body>
-    <h1><img th:src="${endpoints.getLogoEP10()}"/>
-        Plugin-Uhr Configuration - ERROR</h1>
-    <div th:if="${msg!=null && msg.length()>0 && msg.toLowerCase().startsWith('ok')}" style="color:green;" th:text="${msg}"/>
-    <div th:if="${msg!=null && msg.length()>0 && !msg.toLowerCase().startsWith('ok')}" style="color:red;" th:text="${msg}"/>
-    <form th:action="@{${endpoints.getIframeConfig()}}" method="POST" id="form1">
-
-    </form>
+    <h1>Plugin-Uhr - Fehler</h1>
+    <!-- msg ist die Map der Fehler-Attribute, status der HttpStatus (siehe ErrorHandlerController) -->
+    <div style="color:red;" th:text="${status}"></div>
+    <div th:if="${msg!=null}" th:text="${msg['path']}"></div>
 </body>
 </html>

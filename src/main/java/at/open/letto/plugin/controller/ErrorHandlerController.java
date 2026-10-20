@@ -1,6 +1,7 @@
 package at.open.letto.plugin.controller;
 
 import at.open.letto.plugin.config.Endpoint;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.webmvc.error.ErrorAttributes;
@@ -52,7 +53,7 @@ public class ErrorHandlerController implements ErrorController {
 
     private HttpStatus getStatus(HttpServletRequest request) {
         Integer statusCode = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+                .getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if (statusCode != null) {
             try {
                 return HttpStatus.valueOf(statusCode);
