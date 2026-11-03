@@ -1,0 +1,45 @@
+# Zeilenenden: im Repository immer LF, in der Arbeitskopie ebenfalls LF (unabhängig von core.autocrlf).
+# Hintergrund: Docker-Container, Skripte und Vorlagen laufen auf Linux, CRLF in der Windows-Arbeitskopie
+# führte zu fehlschlagenden Tests und zu den Warnungen "LF will be replaced by CRLF".
+* text=auto eol=lf
+
+# Windows-Skripte brauchen CRLF in der Arbeitskopie (im Repository bleibt LF)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binärdateien nie umwandeln
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.bmp binary
+*.tif binary
+*.tiff binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tgz binary
+*.7z binary
+*.jar binary
+*.war binary
+*.class binary
+*.so binary
+*.dll binary
+*.exe binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.otf binary
+*.mp3 binary
+*.mp4 binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.odt binary
+*.p12 binary
+*.jks binary
+*.keystore binary
